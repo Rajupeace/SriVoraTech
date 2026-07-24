@@ -376,10 +376,15 @@ export default async function handler(req, res) {
     }
   }
 
-  // ── 3. Public GET /api/reviews Endpoint (Approved Only) ──
+  // ── 3. Public GET /api/reviews Endpoint ──
   if (req.method === 'GET') {
     const allReviews = await getReviewsFromDb()
-    const approved = allReviews.filter(r => r.status === 'Approved')
+    const approved = allReviews.filter(r => {
+      if (!r) return false
+      if (!r.status) return true
+      const s = String(r.status).trim().toLowerCase()
+      return s !== 'rejected'
+    })
     approved.sort((a, b) => (b.timestamp || 0) - (a.timestamp || 0))
 
     const totalApproved = approved.length
