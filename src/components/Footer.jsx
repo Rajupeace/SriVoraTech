@@ -30,7 +30,6 @@ const socialLinks = [
   { label: 'Facebook', href: 'https://www.facebook.com/p/SriVoratech-SriVoratech-61591870486562/' },
   { label: 'X (Twitter)', href: 'https://x.com/srivorateclrqn' },
   { label: 'LinkedIn', href: 'https://www.linkedin.com/in/srikanthbadisa/' },
-  { label: 'GitHub', href: 'https://github.com/srivoratech9' },
 ]
 
 export default function Footer() {
