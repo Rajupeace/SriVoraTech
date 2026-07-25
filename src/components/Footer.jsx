@@ -26,7 +26,9 @@ const servicesList = [
 const socialLinks = [
   { label: 'Email Us', href: 'mailto:srivoratech9@gmail.com' },
   { label: 'WhatsApp Chat', href: 'https://wa.me/919182030946' },
-  { label: 'Instagram', href: 'https://www.instagram.com/srivora_tech?igsh=MTg2eTZnczRuemJ6bg==' },
+  { label: 'Instagram', href: 'https://www.instagram.com/srivora_tech?igsh=MWRxOWJ6Z2F6bnUzdg==' },
+  { label: 'Facebook', href: 'https://www.facebook.com/p/SriVoratech-SriVoratech-61591870486562/' },
+  { label: 'X (Twitter)', href: 'https://x.com/srivorateclrqn' },
   { label: 'LinkedIn', href: 'https://www.linkedin.com/in/srikanthbadisa/' },
   { label: 'GitHub', href: 'https://github.com/srivoratech9' },
 ]
