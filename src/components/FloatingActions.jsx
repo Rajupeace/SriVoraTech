@@ -86,6 +86,14 @@ export default function FloatingActions() {
                 <span>srivoratech9@gmail.com</span>
               </div>
             </a>
+
+            <div className="drawer-social-bar">
+              <span>Follow Us:</span>
+              <a href="https://www.facebook.com/p/SriVoratech-SriVoratech-61591870486562/" target="_blank" rel="noopener noreferrer" title="Facebook">FB</a>
+              <a href="https://x.com/srivorateclrqn" target="_blank" rel="noopener noreferrer" title="X (Twitter)">X</a>
+              <a href="https://www.instagram.com/srivora_tech?igsh=MWRxOWJ6Z2F6bnUzdg==" target="_blank" rel="noopener noreferrer" title="Instagram">IG</a>
+              <a href="https://wa.me/919182030946" target="_blank" rel="noopener noreferrer" title="WhatsApp">WA</a>
+            </div>
           </div>
         </div>
       )}
