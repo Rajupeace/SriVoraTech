@@ -1,0 +1,7 @@
+# Allow all search engine crawlers
+User-agent: *
+Allow: /
+
+# Sitemap
+Sitemap: https://srivoratech.in/sitemap.xml
+Sitemap: https://www.srivoratech.in/sitemap.xml
