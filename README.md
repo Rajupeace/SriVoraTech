@@ -33,7 +33,7 @@ Ensure you have [Node.js](https://nodejs.org/) installed (v18 or higher recommen
 
 1. **Clone the repository**:
    ```bash
-   git clone https://github.com/srivoratech9/srivoratech.git
+   git clone https://github.com/saimanindragarapati-ui/repro.git
    cd srivoratech
    ```
 
