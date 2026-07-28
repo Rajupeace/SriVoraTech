@@ -1,7 +1,30 @@
+# SriVoraTech - Robots.txt
+# Website: https://srivoratech.in
+
 # Allow all search engine crawlers
 User-agent: *
 Allow: /
+Disallow: /api/
+Disallow: /uploads/
 
-# Sitemap
+# Google
+User-agent: Googlebot
+Allow: /
+Crawl-delay: 1
+
+# Bing
+User-agent: Bingbot
+Allow: /
+Crawl-delay: 2
+
+# Yandex
+User-agent: Yandex
+Allow: /
+Crawl-delay: 5
+
+# Sitemap locations
 Sitemap: https://srivoratech.in/sitemap.xml
 Sitemap: https://www.srivoratech.in/sitemap.xml
+
+# Host directive
+Host: https://srivoratech.in

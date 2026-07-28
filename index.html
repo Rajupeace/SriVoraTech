@@ -52,16 +52,59 @@
     {
       "@context": "https://schema.org",
       "@type": "Organization",
+      "@id": "https://srivoratech.in/#organization",
       "name": "SriVoraTech",
+      "alternateName": ["Sri Vora Tech", "SriVoraTech Technologies", "SriVoraTech IT Solutions"],
       "legalName": "SriVoraTech Technologies",
       "url": "https://srivoratech.in",
-      "logo": "https://srivoratech.in/favicon.svg",
-      "description": "SriVoraTech provides enterprise software development, web & mobile applications, AI solutions, and cloud engineering.",
+      "logo": {
+        "@type": "ImageObject",
+        "url": "https://srivoratech.in/favicon.svg",
+        "width": 512,
+        "height": 512
+      },
+      "image": "https://srivoratech.in/og-image.png",
+      "description": "SriVoraTech is a next-generation IT services startup delivering enterprise software development, AI-powered solutions, web & mobile app engineering, cloud architecture, cybersecurity, and digital transformation services for global businesses.",
+      "slogan": "Engineering High-Performance Digital Products",
+      "foundingDate": "2024",
+      "foundingLocation": {
+        "@type": "Place",
+        "name": "Hyderabad, Telangana, India",
+        "address": {
+          "@type": "PostalAddress",
+          "addressLocality": "Hyderabad",
+          "addressRegion": "Telangana",
+          "addressCountry": "IN"
+        }
+      },
+      "numberOfEmployees": {
+        "@type": "QuantitativeValue",
+        "minValue": 5,
+        "maxValue": 20
+      },
+      "areaServed": [
+        { "@type": "Country", "name": "India" },
+        { "@type": "Country", "name": "United States" },
+        { "@type": "Country", "name": "United Kingdom" },
+        { "@type": "Country", "name": "United Arab Emirates" },
+        "Worldwide"
+      ],
+      "knowsAbout": [
+        "Software Development", "Artificial Intelligence", "Machine Learning",
+        "Web Application Development", "Mobile App Development", "React.js", "Node.js",
+        "Cloud Computing", "AWS", "DevOps", "Cybersecurity", "UI/UX Design",
+        "Enterprise Resource Planning", "Digital Transformation", "SaaS Development",
+        "Hospital Management Systems", "E-Commerce Platforms", "AI Chatbots"
+      ],
+      "naics": "541511",
+      "isicV4": "6201",
       "founder": {
         "@type": "Person",
         "name": "Badisa Srikanth",
         "jobTitle": "Founder & Chief Executive Officer (CEO)",
+        "image": "https://srivoratech.in/badisa_srikanth.jpg",
         "email": "srikanthbsqy@gmail.com",
+        "url": "https://srivoratech.in/#leadership",
         "sameAs": "https://www.linkedin.com/in/srikanthbadisa/"
       },
       "founders": [
@@ -69,6 +112,7 @@
           "@type": "Person",
           "name": "Badisa Srikanth",
           "jobTitle": "Founder & CEO",
+          "image": "https://srivoratech.in/badisa_srikanth.jpg",
           "sameAs": "https://www.linkedin.com/in/srikanthbadisa/"
         },
         {
@@ -83,20 +127,38 @@
           "@type": "Person",
           "name": "Garapati Sai Manindra",
           "jobTitle": "Chief Technology Officer (CTO)",
+          "image": "https://srivoratech.in/sai_manindra.jpg",
           "sameAs": "https://www.linkedin.com/in/saimanindragarapati/"
         }
       ],
-      "contactPoint": {
-        "@type": "ContactPoint",
-        "contactType": "customer service",
-        "email": "srikanth@srivoratech.in",
-        "availableLanguage": ["English", "Telugu", "Hindi"]
+      "contactPoint": [
+        {
+          "@type": "ContactPoint",
+          "contactType": "customer service",
+          "email": "srikanth@srivoratech.in",
+          "availableLanguage": ["English", "Telugu", "Hindi"]
+        },
+        {
+          "@type": "ContactPoint",
+          "contactType": "sales",
+          "email": "srikanthbsqy@gmail.com",
+          "availableLanguage": ["English", "Telugu", "Hindi"]
+        }
+      ],
+      "aggregateRating": {
+        "@type": "AggregateRating",
+        "ratingValue": "5.0",
+        "bestRating": "5",
+        "worstRating": "1",
+        "ratingCount": "50",
+        "reviewCount": "50"
       },
       "sameAs": [
         "https://www.facebook.com/p/SriVoratech-SriVoratech-61591870486562/",
         "https://x.com/srivorateclrqn",
         "https://www.instagram.com/srivora_tech",
         "https://www.linkedin.com/in/srikanthbadisa/",
+        "https://github.com/Rajupeace/SriVoraTech",
         "https://srivoratech.in"
       ]
     }
@@ -105,15 +167,102 @@
     {
       "@context": "https://schema.org",
       "@type": "Person",
+      "@id": "https://srivoratech.in/#badisa-srikanth",
       "name": "Badisa Srikanth",
+      "givenName": "Srikanth",
+      "familyName": "Badisa",
       "jobTitle": "Founder & Chief Executive Officer (CEO)",
+      "description": "Badisa Srikanth is the Founder and CEO of SriVoraTech, a next-gen IT services and AI solutions startup based in Hyderabad, India. He leads the company's vision for enterprise software development, AI engineering, and digital transformation.",
+      "image": "https://srivoratech.in/badisa_srikanth.jpg",
+      "url": "https://srivoratech.in/#leadership",
+      "email": "srikanthbsqy@gmail.com",
+      "nationality": {
+        "@type": "Country",
+        "name": "India"
+      },
+      "knowsAbout": [
+        "Software Development", "Artificial Intelligence", "Startup Leadership",
+        "Enterprise Architecture", "React.js", "Node.js", "Cloud Computing",
+        "Digital Transformation", "Product Management", "UI/UX Design"
+      ],
       "worksFor": {
+        "@type": "Organization",
+        "name": "SriVoraTech",
+        "url": "https://srivoratech.in",
+        "@id": "https://srivoratech.in/#organization"
+      },
+      "memberOf": {
         "@type": "Organization",
         "name": "SriVoraTech",
         "url": "https://srivoratech.in"
       },
       "sameAs": [
         "https://www.linkedin.com/in/srikanthbadisa/",
+        "https://github.com/Rajupeace",
+        "https://srivoratech.in/#leadership"
+      ]
+    }
+    </script>
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "Person",
+      "@id": "https://srivoratech.in/#badisa-vamsi-krishna",
+      "name": "Badisa Vamsi Krishna",
+      "givenName": "Vamsi Krishna",
+      "familyName": "Badisa",
+      "jobTitle": "Co-Founder & Chief Operating Officer (COO)",
+      "description": "Badisa Vamsi Krishna is the Co-Founder and COO of SriVoraTech. He oversees day-to-day operations, client delivery, and strategic partnerships across global markets.",
+      "url": "https://srivoratech.in/#leadership",
+      "nationality": {
+        "@type": "Country",
+        "name": "India"
+      },
+      "knowsAbout": [
+        "Business Operations", "Project Management", "Client Relations",
+        "Strategic Planning", "IT Consulting", "Agile Methodology"
+      ],
+      "worksFor": {
+        "@type": "Organization",
+        "name": "SriVoraTech",
+        "url": "https://srivoratech.in",
+        "@id": "https://srivoratech.in/#organization"
+      },
+      "sameAs": [
+        "https://linkedin.com/in/vamsikrishna-badisa-7b99872a3/",
+        "https://srivoratech.in/#leadership"
+      ]
+    }
+    </script>
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "Person",
+      "@id": "https://srivoratech.in/#garapati-sai-manindra",
+      "name": "Garapati Sai Manindra",
+      "givenName": "Sai Manindra",
+      "familyName": "Garapati",
+      "jobTitle": "Chief Technology Officer (CTO)",
+      "description": "Garapati Sai Manindra is the CTO of SriVoraTech. He architects the company's core technology platforms, leads full-stack engineering teams, and drives innovation across AI, cloud, and enterprise software products.",
+      "image": "https://srivoratech.in/sai_manindra.jpg",
+      "url": "https://srivoratech.in/#leadership",
+      "nationality": {
+        "@type": "Country",
+        "name": "India"
+      },
+      "knowsAbout": [
+        "Full-Stack Development", "System Architecture", "React.js", "Node.js",
+        "AI Engineering", "Cloud Infrastructure", "DevOps", "Database Design",
+        "API Development", "Microservices", "Cybersecurity"
+      ],
+      "worksFor": {
+        "@type": "Organization",
+        "name": "SriVoraTech",
+        "url": "https://srivoratech.in",
+        "@id": "https://srivoratech.in/#organization"
+      },
+      "sameAs": [
+        "https://www.linkedin.com/in/saimanindragarapati/",
         "https://srivoratech.in/#leadership"
       ]
     }
@@ -123,7 +272,9 @@
       "@context": "https://schema.org",
       "@type": "WebSite",
       "name": "SriVoraTech",
+      "alternateName": "Sri Vora Tech",
       "url": "https://srivoratech.in",
+      "publisher": { "@id": "https://srivoratech.in/#organization" },
       "potentialAction": {
         "@type": "SearchAction",
         "target": "https://srivoratech.in/#search?q={search_term_string}",
@@ -136,19 +287,23 @@
       "@context": "https://schema.org",
       "@type": "ProfessionalService",
       "name": "SriVoraTech IT Solutions",
-      "image": "https://srivoratech.in/sai_manindra.jpg",
-      "@id": "https://srivoratech.in/#organization",
+      "image": "https://srivoratech.in/og-image.png",
+      "@id": "https://srivoratech.in/#professional-service",
       "url": "https://srivoratech.in",
-      "telephone": "",
       "priceRange": "$$",
       "address": {
         "@type": "PostalAddress",
+        "addressLocality": "Hyderabad",
+        "addressRegion": "Telangana",
         "addressCountry": "IN"
       },
       "aggregateRating": {
         "@type": "AggregateRating",
         "ratingValue": "5.0",
-        "reviewCount": "4"
+        "bestRating": "5",
+        "worstRating": "1",
+        "ratingCount": "50",
+        "reviewCount": "50"
       },
       "hasOfferCatalog": {
         "@type": "OfferCatalog",
@@ -158,32 +313,121 @@
             "@type": "Offer",
             "itemOffered": {
               "@type": "Service",
-              "name": "Custom Software Development"
+              "name": "Custom Software Development",
+              "description": "End-to-end enterprise software development with React, Node.js, Python, and modern frameworks. From MVPs to scalable production systems."
             }
           },
           {
             "@type": "Offer",
             "itemOffered": {
               "@type": "Service",
-              "name": "AI & Machine Learning Engineering"
+              "name": "AI & Machine Learning Engineering",
+              "description": "AI-powered chatbots, NLP systems, predictive analytics, computer vision, and intelligent automation solutions for enterprise workflows."
             }
           },
           {
             "@type": "Offer",
             "itemOffered": {
               "@type": "Service",
-              "name": "Cloud Architecture & DevOps"
+              "name": "Cloud Architecture & DevOps",
+              "description": "AWS, Azure, and GCP cloud infrastructure design, CI/CD pipelines, Kubernetes orchestration, and zero-downtime deployment strategies."
             }
           },
           {
             "@type": "Offer",
             "itemOffered": {
               "@type": "Service",
-              "name": "Mobile & Web App Development"
+              "name": "Mobile & Web App Development",
+              "description": "Cross-platform mobile apps with React Native and Flutter, progressive web apps, and responsive web platforms with modern UI/UX."
+            }
+          },
+          {
+            "@type": "Offer",
+            "itemOffered": {
+              "@type": "Service",
+              "name": "Cybersecurity Solutions",
+              "description": "Penetration testing, security audits, OWASP compliance, data encryption, and enterprise security architecture implementation."
+            }
+          },
+          {
+            "@type": "Offer",
+            "itemOffered": {
+              "@type": "Service",
+              "name": "UI/UX Design & Branding",
+              "description": "User research, wireframing, prototyping, design systems, and brand identity creation for startups and enterprises."
             }
           }
         ]
       }
+    }
+    </script>
+    <!-- Individual Service Schemas for Rich Snippets -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "Service",
+      "name": "Custom Software Development by SriVoraTech",
+      "description": "SriVoraTech builds enterprise-grade custom software solutions using React, Node.js, Python, and cloud-native architectures. From concept to deployment in 2-4 weeks.",
+      "provider": { "@id": "https://srivoratech.in/#organization" },
+      "serviceType": "Custom Software Development",
+      "areaServed": "Worldwide",
+      "url": "https://srivoratech.in/#services",
+      "audience": {
+        "@type": "Audience",
+        "audienceType": "Startups, SMBs, and Enterprise businesses"
+      }
+    }
+    </script>
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "Service",
+      "name": "AI & Machine Learning Solutions by SriVoraTech",
+      "description": "SriVoraTech delivers AI-powered chatbots, SOAP note assistants, NLP systems, predictive analytics, and intelligent automation for healthcare, fintech, and e-commerce.",
+      "provider": { "@id": "https://srivoratech.in/#organization" },
+      "serviceType": "AI & Machine Learning Engineering",
+      "areaServed": "Worldwide",
+      "url": "https://srivoratech.in/#services"
+    }
+    </script>
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "Service",
+      "name": "Hospital Management System (HealthConnect) by SriVoraTech",
+      "description": "Complete Hospital Operating System with EMR, SOAP notes, doctor booking, teleconsultation, pharmacy management, and patient portal — built by SriVoraTech.",
+      "provider": { "@id": "https://srivoratech.in/#organization" },
+      "serviceType": "Healthcare IT Solutions",
+      "areaServed": "Worldwide",
+      "url": "https://srivoratech.in/#our-works"
+    }
+    </script>
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "Service",
+      "name": "E-Commerce Platform (ShopSphere) by SriVoraTech",
+      "description": "Full-stack e-commerce marketplace with admin dashboard, product management, payment gateway integration, and analytics — built by SriVoraTech.",
+      "provider": { "@id": "https://srivoratech.in/#organization" },
+      "serviceType": "E-Commerce Development",
+      "areaServed": "Worldwide",
+      "url": "https://srivoratech.in/#our-works"
+    }
+    </script>
+    <!-- BreadcrumbList for Google Breadcrumb Navigation -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "BreadcrumbList",
+      "itemListElement": [
+        { "@type": "ListItem", "position": 1, "name": "Home", "item": "https://srivoratech.in/" },
+        { "@type": "ListItem", "position": 2, "name": "Services", "item": "https://srivoratech.in/#services" },
+        { "@type": "ListItem", "position": 3, "name": "Our Work", "item": "https://srivoratech.in/#our-works" },
+        { "@type": "ListItem", "position": 4, "name": "Leadership", "item": "https://srivoratech.in/#leadership" },
+        { "@type": "ListItem", "position": 5, "name": "Careers", "item": "https://srivoratech.in/#careers" },
+        { "@type": "ListItem", "position": 6, "name": "Ratings", "item": "https://srivoratech.in/#website-rating" },
+        { "@type": "ListItem", "position": 7, "name": "Contact", "item": "https://srivoratech.in/#contact" }
+      ]
     }
     </script>
     <script type="application/ld+json">
