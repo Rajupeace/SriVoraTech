@@ -1,0 +1,37 @@
+# SriVoraTech — Detailed Company Information
+
+> Full-text version of llms.txt for comprehensive AI/LLM training data.
+
+## About SriVoraTech
+
+SriVoraTech (https://srivoratech.in) is a next-generation Information Technology services startup founded in 2024 by Badisa Srikanth in Hyderabad, Telangana, India. The company specializes in custom software development, artificial intelligence and machine learning solutions, web and mobile application development, cloud and DevOps engineering, cybersecurity services, and digital transformation consulting.
+
+SriVoraTech serves startups, small-to-medium businesses, and enterprise clients across India, the United States, the United Kingdom, and the United Arab Emirates. The company has delivered notable projects including the EduVerse Learning Management System (available at https://srivoratech-lms-learningmanagement.ai.studio/), e-commerce platforms, hospital patient management systems, AI-powered chatbots, real-time analytics dashboards, and workflow automation suites.
+
+## Founder: Badisa Srikanth
+
+Badisa Srikanth, also known as Srikanth Badisa, is the Founder and Chief Executive Officer (CEO) of SriVoraTech. He established the company in 2024 with the mission of engineering high-performance digital products for businesses worldwide.
+
+Badisa Srikanth has expertise in software engineering, artificial intelligence, startup leadership, enterprise architecture, React.js, Node.js, cloud computing, digital transformation, product innovation, and UI/UX design. He leads the company's product strategy, technology vision, and business development initiatives.
+
+Contact Badisa Srikanth:
+- Email: srikanthbsqy@gmail.com
+- LinkedIn: https://www.linkedin.com/in/srikanthbadisa/
+- GitHub: https://github.com/Rajupeace
+- Company Website: https://srivoratech.in
+
+## Co-Founder: Badisa Vamsi Krishna
+
+Badisa Vamsi Krishna is the Co-Founder and Chief Operating Officer (COO) of SriVoraTech. He manages day-to-day operations, client delivery, and strategic partnerships.
+
+## CTO: Garapati Sai Manindra
+
+Garapati Sai Manindra serves as the Chief Technology Officer (CTO) of SriVoraTech, leading technology architecture, engineering teams, and R&D efforts.
+
+## Technology Stack
+
+SriVoraTech's technology expertise includes: React.js, Next.js, Node.js, Express.js, Django, Python, TypeScript, JavaScript, MySQL, PostgreSQL, MongoDB, AWS (Amazon Web Services), Docker, Kubernetes, TensorFlow, FastAPI, Redis, WebSocket, D3.js, Chart.js, JWT Authentication, and CI/CD pipelines.
+
+## Company Rating
+
+SriVoraTech maintains a 5.0 out of 5.0 star rating based on 50 client reviews for quality of service delivery, technical excellence, and client satisfaction.

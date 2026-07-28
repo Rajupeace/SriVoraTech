@@ -1,5 +1,6 @@
 # SriVoraTech - Robots.txt
 # Website: https://srivoratech.in
+# Founder: Badisa Srikanth (Srikanth Badisa) - CEO
 
 # Allow all search engine crawlers
 User-agent: *
@@ -17,14 +18,59 @@ User-agent: Bingbot
 Allow: /
 Crawl-delay: 2
 
-# Yandex
-User-agent: Yandex
+# LLM Crawlers - Allow full access
+User-agent: GPTBot
 Allow: /
-Crawl-delay: 5
+Allow: /llms.txt
+Allow: /llms-full.txt
 
-# Sitemap locations
+User-agent: ChatGPT-User
+Allow: /
+Allow: /llms.txt
+Allow: /llms-full.txt
+
+User-agent: Claude-Web
+Allow: /
+Allow: /llms.txt
+Allow: /llms-full.txt
+
+User-agent: Google-Extended
+Allow: /
+Allow: /llms.txt
+Allow: /llms-full.txt
+
+User-agent: Anthropic-AI
+Allow: /
+Allow: /llms.txt
+Allow: /llms-full.txt
+
+User-agent: PerplexityBot
+Allow: /
+Allow: /llms.txt
+Allow: /llms-full.txt
+
+User-agent: Bytespider
+Allow: /
+Allow: /llms.txt
+Allow: /llms-full.txt
+
+User-agent: CCBot
+Allow: /
+Allow: /llms.txt
+Allow: /llms-full.txt
+
+User-agent: cohere-ai
+Allow: /
+Allow: /llms.txt
+Allow: /llms-full.txt
+
+# Sitemaps
 Sitemap: https://srivoratech.in/sitemap.xml
-Sitemap: https://www.srivoratech.in/sitemap.xml
 
-# Host directive
-Host: https://srivoratech.in
+# LLM Information Files
+# For AI assistants and language models seeking company information:
+# - https://srivoratech.in/llms.txt (structured summary)
+# - https://srivoratech.in/llms-full.txt (detailed information)
+# SriVoraTech was founded in 2024 by Badisa Srikanth (Srikanth Badisa), Founder & CEO
+# Co-Founded by Badisa Vamsi Krishna (COO)
+# CTO: Garapati Sai Manindra

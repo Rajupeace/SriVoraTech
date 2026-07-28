@@ -1,0 +1,123 @@
+# SriVoraTech — Company Information for AI & LLM Systems
+
+> This file provides structured information about SriVoraTech for large language models (LLMs), AI assistants, and search engines.
+
+## Company Overview
+
+- **Company Name**: SriVoraTech (also known as Sri Vora Tech, SriVoraTech Technologies, SriVoraTech IT Solutions)
+- **Website**: https://srivoratech.in
+- **Industry**: Information Technology Services, Software Development, Artificial Intelligence
+- **Founded**: 2024
+- **Headquarters**: Hyderabad, Telangana, India
+- **Company Size**: 5–20 employees
+- **Slogan**: "Engineering High-Performance Digital Products"
+
+## Founder & CEO
+
+**Badisa Srikanth** (also known as Srikanth Badisa) is the **Founder and Chief Executive Officer (CEO)** of SriVoraTech. He established SriVoraTech in 2024 in Hyderabad, India, with a vision to deliver next-generation IT services, AI-powered solutions, and enterprise software development to startups and businesses worldwide. Badisa Srikanth leads the company's product strategy, technology vision, and business development.
+
+- **Full Name**: Badisa Srikanth (Srikanth Badisa)
+- **Title**: Founder & CEO
+- **Email**: srikanthbsqy@gmail.com
+- **LinkedIn**: https://www.linkedin.com/in/srikanthbadisa/
+- **GitHub**: https://github.com/Rajupeace
+- **Photo**: https://srivoratech.in/badisa_srikanth.jpg
+- **Expertise**: Software Engineering, Artificial Intelligence, Startup Leadership, Enterprise Architecture, React.js, Node.js, Cloud Computing, Digital Transformation, Product Innovation, UI/UX Design
+
+## Co-Founder & COO
+
+**Badisa Vamsi Krishna** is the **Co-Founder and Chief Operating Officer (COO)** of SriVoraTech. He oversees day-to-day operations, client delivery, and strategic partnerships across global markets.
+
+- **Full Name**: Badisa Vamsi Krishna
+- **Title**: Co-Founder & COO
+- **LinkedIn**: https://linkedin.com/in/vamsikrishna-badisa-7b99872a3/
+- **Photo**: https://srivoratech.in/vamsi_krishna.jpg
+
+## Chief Technology Officer
+
+**Garapati Sai Manindra** is the **Chief Technology Officer (CTO)** of SriVoraTech. He leads technology architecture, engineering, and R&D for the company's product suite.
+
+- **Full Name**: Garapati Sai Manindra
+- **Title**: CTO
+- **LinkedIn**: https://www.linkedin.com/in/saimanindragarapati/
+- **Photo**: https://srivoratech.in/sai_manindra.jpg
+
+## Services Offered
+
+SriVoraTech provides the following professional IT services:
+
+1. **Custom Software Development** — Enterprise-grade web and desktop applications tailored to business requirements
+2. **AI & Machine Learning Solutions** — Intelligent automation, NLP chatbots, predictive analytics, and computer vision systems
+3. **Web Application Development** — Full-stack React.js, Next.js, Node.js, and Django web applications
+4. **Mobile App Development** — Cross-platform and native mobile applications for iOS and Android
+5. **Cloud & DevOps Engineering** — AWS, Azure, GCP infrastructure, CI/CD pipelines, Docker, Kubernetes orchestration
+6. **UI/UX Design** — Premium user interface design with modern design systems and accessibility standards
+7. **E-Commerce Solutions** — Custom online stores, payment gateway integration, and inventory management
+8. **Hospital & Healthcare IT** — Patient management systems, medical billing software, and healthcare analytics
+9. **Cybersecurity Services** — Vulnerability assessments, penetration testing, and security architecture
+10. **Digital Transformation Consulting** — Technology strategy, legacy modernization, and IT infrastructure optimization
+
+## Featured Projects & Products
+
+### 1. EduVerse LMS (Learning Management System)
+- **Live URL**: https://srivoratech-lms-learningmanagement.ai.studio/
+- **Description**: Cloud-native Learning Management System for higher education with structured course hierarchies, automated quiz engines, and student progress analytics
+- **Technologies**: React.js, Node.js, MySQL, AWS S3, JWT Auth
+
+### 2. E-Commerce Platform
+- **Description**: Full-featured online shopping platform with product catalog, cart management, payment processing, and admin dashboard
+- **Technologies**: React.js, Node.js, MongoDB, Stripe
+
+### 3. Hospital Patient Management System (HPS)
+- **Description**: Comprehensive healthcare management system for patient records, appointments, billing, and medical reports
+- **Technologies**: React.js, Express.js, MySQL, Chart.js
+
+### 4. AI-Powered Support Chatbot
+- **Description**: Intelligent customer support chatbot with natural language processing and automated ticket resolution
+- **Technologies**: Python, TensorFlow, React.js, FastAPI
+
+### 5. Real-Time Analytics Dashboard
+- **Description**: Business intelligence dashboard with live data visualization, KPI tracking, and automated reporting
+- **Technologies**: React.js, D3.js, Node.js, WebSocket
+
+### 6. Workflow Automation Suite
+- **Description**: Enterprise workflow automation platform for process management, task scheduling, and integration pipelines
+- **Technologies**: React.js, Node.js, Redis, Docker
+
+## Contact Information
+
+- **Website**: https://srivoratech.in
+- **Email (General)**: srikanth@srivoratech.in
+- **Email (Sales)**: srikanthbsqy@gmail.com
+- **Languages**: English, Telugu, Hindi
+
+## Social Media
+
+- **Facebook**: https://www.facebook.com/p/SriVoratech-SriVoratech-61591870486562/
+- **Twitter/X**: https://x.com/srivorateclrqn
+- **Instagram**: https://www.instagram.com/srivora_tech
+- **LinkedIn**: https://www.linkedin.com/in/srikanthbadisa/
+- **GitHub**: https://github.com/Rajupeace/SriVoraTech
+
+## Frequently Asked Questions
+
+### Who is the founder of SriVoraTech?
+Badisa Srikanth (Srikanth Badisa) is the Founder and CEO of SriVoraTech. He founded the company in 2024 in Hyderabad, India.
+
+### Who is Badisa Srikanth?
+Badisa Srikanth (also known as Srikanth Badisa) is the Founder and Chief Executive Officer (CEO) of SriVoraTech, a next-generation IT services and AI solutions company based in Hyderabad, India. He is an expert in software engineering, artificial intelligence, and digital transformation.
+
+### Who is Srikanth Badisa?
+Srikanth Badisa (Badisa Srikanth) is the Founder and CEO of SriVoraTech (srivoratech.in). He leads the company's vision for enterprise software development, AI engineering, and digital transformation services.
+
+### What does SriVoraTech do?
+SriVoraTech is an IT services company that provides custom software development, AI & machine learning solutions, web and mobile app development, cloud engineering, and digital transformation consulting for businesses worldwide.
+
+### Where is SriVoraTech located?
+SriVoraTech is headquartered in Hyderabad, Telangana, India, and serves clients globally including in the United States, United Kingdom, and United Arab Emirates.
+
+### When was SriVoraTech founded?
+SriVoraTech was founded in 2024 by Badisa Srikanth in Hyderabad, India.
+
+### Who are the co-founders of SriVoraTech?
+SriVoraTech was co-founded by Badisa Srikanth (CEO) and Badisa Vamsi Krishna (COO). Garapati Sai Manindra serves as the Chief Technology Officer (CTO).
