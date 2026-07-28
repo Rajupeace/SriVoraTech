@@ -151,6 +151,8 @@ export default function Leadership() {
                   tabIndex={0}
                   role="button"
                   aria-expanded={isExpanded}
+                  itemScope
+                  itemType="https://schema.org/Person"
                 >
                   {/* Top Accent Gradient Ribbon */}
                   <div className="card-top-accent-line" style={{ background: `linear-gradient(90deg, ${leader.color}, #38bdf8)` }} />
@@ -159,7 +161,7 @@ export default function Leadership() {
                   <div className="leader-left-profile">
                     <div className="leader-avatar-wrapper">
                       {leader.photo ? (
-                        <img src={leader.photo} alt={leader.name} className="leader-avatar-img circular-pic" />
+                        <img src={leader.photo} alt={leader.name} itemProp="image" className="leader-avatar-img circular-pic" />
                       ) : (
                         <div className="leader-avatar-circle circular-pic" style={{ background: leader.color }}>
                           <span>{leader.initials}</span>
@@ -177,8 +179,8 @@ export default function Leadership() {
                       </span>
                     </div>
 
-                    <h3 className="leader-name">{leader.name}</h3>
-                    <p className="leader-role" style={{ color: leader.color }}>{leader.role}</p>
+                    <h3 className="leader-name" itemProp="name">{leader.name}</h3>
+                    <p className="leader-role" itemProp="jobTitle" style={{ color: leader.color }}>{leader.role}</p>
 
                     {/* Social Action Buttons */}
                     <div className="leader-social-actions" onClick={(e) => e.stopPropagation()}>
