@@ -60,12 +60,13 @@ const projects = [
     id: 5,
     name: 'EduVerse LMS',
     category: 'Education Platform',
-    desc: 'A cloud-based Learning Management System (LMS) for schools, colleges, and training institutes, providing online classes, assessments, course management, attendance tracking, and progress analytics.',
-    techs: ['React.js', 'Django', 'PostgreSQL', 'AWS S3', 'JWT Auth'],
+    desc: 'A cloud-native Learning Management System (LMS) for higher education, featuring structured course hierarchies, automated quiz engines, assignment grading, student progress analytics, and role-based JWT authentication.',
+    techs: ['React.js', 'Node.js', 'MySQL', 'AWS S3', 'JWT Auth'],
     color: '#f59e0b',
     initial: 'E',
     icon: GraduationCap,
-    showcaseImg: '/eduverse-dashboard.png',
+    liveUrl: 'https://srivoratech-lms-learningmanagement.ai.studio/',
+    showcaseImg: '/srivoratech-lms-dashboard.png',
     metrics: ['Live Assessments', 'Progress Analytics', 'Cloud AWS S3 Storage']
   },
   {

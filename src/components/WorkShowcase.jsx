@@ -425,21 +425,24 @@ const works = [
     catGroup: 'education',
     clientName: 'Badisa Srikanth',
     clientRole: 'Founder & CEO, SriVoraTech',
-    showcaseImg: '/eduverse-dashboard.png',
-    adminImg: '/eduverse-dashboard.png',
+    liveUrl: 'https://srivoratech-lms-learningmanagement.ai.studio/',
+    showcaseImg: '/srivoratech-lms-dashboard.png',
+    adminImg: '/srivoratech-lms-student-dashboard.png',
     galleryImgs: [
-      { src: '/eduverse-dashboard.png', title: 'Cloud LMS Course Stream & Student Assessment Analytics' }
+      { src: '/srivoratech-lms-dashboard.png', title: 'SriVoraTech LMS Landing — Featured Learning Programs & Course Catalog' },
+      { src: '/srivoratech-lms-student-dashboard.png', title: 'Student Dashboard — Enrolled Courses, Progress & Wishlist Tracking' },
+      { src: '/srivoratech-lms-analytics.png', title: 'Learning Progress & Analytics — Completion Metrics & Subject Reports' }
     ],
     color: '#f59e0b',
     gradient: 'linear-gradient(135deg, #f59e0b, #f97316)',
-    about: 'A cloud-based Learning Management System (LMS) for schools, colleges, and training institutes, providing online classes, assessments, course management, and progress analytics.',
+    about: 'A cloud-native Learning Management System (LMS) for higher education, featuring structured course hierarchies, automated quiz engines, assignment grading, student progress analytics, and role-based JWT authentication.',
     hq: 'Hyderabad, India',
     industry: 'EdTech & Education',
     companySize: 'Institutes & Universities',
-    servicesOffered: ['React.js Dashboard', 'Django REST Framework', 'PostgreSQL DB', 'AWS S3 Video Streaming'],
-    heroQuote: 'Cloud-Based LMS Empowering Universities & Institutes with Online Assessment & Classes',
+    servicesOffered: ['React.js Dashboard', 'Node.js / Express REST API', 'MySQL Database', 'AWS S3 Video Streaming'],
+    heroQuote: 'Cloud-Native LMS Empowering Higher Education with Structured Courses, Quizzes & Analytics',
     challenge: 'Educational institutions need reliable platforms to manage course materials, stream video lectures, track student attendance, and conduct online assessments.',
-    solution: 'SriVoraTech designed EduVerse LMS with Django REST APIs, AWS S3 video streaming, and automated grading analytics.',
+    solution: 'SriVoraTech designed EduVerse LMS with Node.js REST APIs, MySQL persistence, AWS S3 video streaming, and automated grading analytics.',
     approach: [
       'Architected secure AWS S3 video streaming for HD lecture playback.',
       'Built automated quiz & assignment grading engines with instant results.',
@@ -461,7 +464,7 @@ const works = [
       'Enabled seamless remote learning and assessment management.'
     ],
     closingQuote: 'EduVerse LMS transforms traditional education into a modern, accessible cloud learning experience.',
-    technologies: ['React.js', 'Django', 'PostgreSQL', 'AWS S3', 'JWT Auth'],
+    technologies: ['React.js', 'Node.js', 'MySQL', 'AWS S3', 'JWT Auth'],
     results: ['40,000+ Enrolled Students', '99.8% Exam Streaming Reliability', '30+ Hours Saved per Faculty']
   },
   {
