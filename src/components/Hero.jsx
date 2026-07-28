@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react'
 import { useScrollAnimation } from '../hooks/useScrollAnimation'
-import { ArrowRight, Zap, MousePointer2, Figma, Shield, Clock, Rocket, Sparkles, Cpu, Globe, Palette, Users, Briefcase } from 'lucide-react'
+import { ArrowRight, Zap, MousePointer2, Figma, Shield, Clock, Rocket, Sparkles, Cpu, Globe, Palette, Users, Briefcase, CheckCircle2, ShieldCheck, Activity, Terminal } from 'lucide-react'
 import { subscribeToRatings } from '../services/ratingsService'
 import HeroCanvas from './HeroCanvas'
 import srikanthPhoto from '../assets/badisa_srikanth.jpg'
@@ -24,33 +24,11 @@ export default function Hero() {
   const [ref6, vis6] = useScrollAnimation()
 
   const [colorMode, setColorMode] = useState('sapphire')
-  const [activeHeroTab, setActiveHeroTab] = useState('fintech')
+  const [activeHeroTab, setActiveHeroTab] = useState('ai')
   const [ratingStats, setRatingStats] = useState({ averageRating: 5.0, totalCount: 15 })
 
-  const [animatedTeamCount, setAnimatedTeamCount] = useState(0)
-  const [animatedClientsCount, setAnimatedClientsCount] = useState(0)
-
-  useEffect(() => {
-    if (activeHeroTab === 'fintech') {
-      let currentTeam = 0
-      let currentClients = 0
-      const timer = setInterval(() => {
-        currentTeam += 1
-        currentClients = Math.min(2, Math.round(currentTeam * 0.2))
-
-        if (currentTeam >= 10) {
-          setAnimatedTeamCount(10)
-          setAnimatedClientsCount(2)
-          clearInterval(timer)
-        } else {
-          setAnimatedTeamCount(currentTeam)
-          setAnimatedClientsCount(currentClients)
-        }
-      }, 50)
-
-      return () => clearInterval(timer)
-    }
-  }, [activeHeroTab])
+  const [animatedTeamCount, setAnimatedTeamCount] = useState(10)
+  const [animatedClientsCount, setAnimatedClientsCount] = useState(50)
 
   useEffect(() => {
     const unsubscribe = subscribeToRatings((metrics) => {
@@ -78,11 +56,11 @@ export default function Hero() {
       {/* Dot pattern background overlay */}
       <div className="hero-dots" />
 
-      {/* Announcement & Color Theme Switcher Pill */}
+      {/* Announcement & Color Theme Switcher Bar */}
       <div ref={ref1} className={`hero-top-bar-group animate-on-scroll ${vis1 ? 'visible' : ''}`}>
-        <a className="hero-badge" href="#estimator">
+        <a className="hero-badge" href="#our-works">
           <span className="pulse-ring" />
-          <span className="hero-badge-text">Engineering the Future of Digital Innovation</span>
+          <span className="hero-badge-text">⚡ SRIVORATECH AI VIRTUAL ASSISTANT & WORKFLOW AUTOMATION ENGINE</span>
           <span className="hero-badge-arrow">
             <ArrowRight size={14} />
           </span>
@@ -97,18 +75,18 @@ export default function Hero() {
               className={`theme-dot ${colorMode === t.id ? 'active' : ''}`}
               style={{ background: t.gradient }}
               onClick={() => setColorMode(t.id)}
-              title={`Switch to ${t.label}`}
-              aria-label={`Switch to ${t.label}`}
+              title={`Switch theme to ${t.label}`}
+              aria-label={`Switch theme to ${t.label}`}
             />
           ))}
         </div>
       </div>
 
-      {/* Center hero content */}
+      {/* Center Hero Content */}
       <div className="hero-center">
         <h1 ref={ref2} className={`hero-title animate-on-scroll ${vis2 ? 'visible' : ''}`}>
           <span className="hero-title-line">
-            Transforming Ideas into
+            Engineering High-Performance
             <span className="hero-icon-badge rotate-12" title="UI/UX Design Systems">
               <MousePointer2 size={18} />
             </span>
@@ -117,145 +95,62 @@ export default function Hero() {
             </span>
           </span>
           <span className="hero-title-line">
-            Powerful
+            Custom Software &
             <span className="hero-gradient-badge" style={{ backgroundImage: currentTheme.textGrad }}>
-              <Sparkles size={16} /> Digital Products
+              <Sparkles size={16} /> AI Automation
             </span>
           </span>
         </h1>
 
         <h1 ref={ref3} className={`hero-title-mobile animate-on-scroll ${vis3 ? 'visible' : ''}`}>
-          Transforming Ideas into Powerful Digital Products
+          Engineering High-Performance Software & AI Automation
         </h1>
 
         <p ref={ref4} className={`hero-subtitle animate-on-scroll delay-1 ${vis4 ? 'visible' : ''}`}>
-          We help startups, growing businesses, and enterprises build secure, scalable, and AI-powered websites, web applications, mobile apps, and enterprise software that accelerate growth and deliver measurable business value.
+          SriVoraTech empowers startups and enterprise leaders with tailored software architecture, cloud platforms, custom AI agents, and mobile apps engineered for sub-second speed, 99.9% uptime, and maximum security.
         </p>
 
-        {/* Value proposition badges */}
+        {/* Trust metrics pills */}
         <div className="hero-trust-badges">
-          <span className="trust-pill"><Rocket size={14} /> 2-Week MVP Delivery</span>
-          <span className="trust-pill"><Shield size={14} /> 100% IP Ownership</span>
-          <span className="trust-pill"><Clock size={14} /> 99.8% On-Time Track</span>
+          <span className="trust-pill"><Rocket size={14} /> 2-4 Wks MVP Accelerator</span>
+          <span className="trust-pill"><ShieldCheck size={14} /> 100% IP & Source Ownership</span>
+          <span className="trust-pill"><Clock size={14} /> 99.9% Uptime Guarantee</span>
+          <span className="trust-pill"><Zap size={14} /> Sub-100ms API Latency</span>
         </div>
 
+        {/* Action Call to Action buttons */}
         <div ref={ref5} className={`hero-cta-row animate-on-scroll delay-2 ${vis5 ? 'visible' : ''}`}>
           <a href="#contact" className="btn-primary hero-main-btn">
-            Book a 30-Min Call
+            Book 30-Min Discovery Call
             <span className="btn-icon">
               <ArrowRight size={18} style={{ transform: 'rotate(-45deg)' }} />
             </span>
           </a>
 
-          <a href="#estimator" className="btn-secondary-light">
-            Estimate Scope in 60s
+          <a href="#our-works" className="btn-secondary-light">
+            Explore Signature Products
           </a>
         </div>
 
-        {/* Social Proof Row */}
+        {/* Executive Founders Social Proof Row */}
         <div ref={ref6} className={`hero-social-proof animate-on-scroll delay-3 ${vis6 ? 'visible' : ''}`}>
-          <div className="hero-avatars-stack" title="Badisa Srikanth (Founder & CEO), Badisa Vamsi Krishna (COO), Garapati Sai Manindra (CTO)">
-            <img src={srikanthPhoto} alt="Badisa Srikanth" className="hero-avatar hero-avatar-img" />
-            <img src={vamsiPhoto} alt="Badisa Vamsi Krishna" className="hero-avatar hero-avatar-img" />
-            <img src={saiPhoto} alt="Garapati Sai Manindra" className="hero-avatar hero-avatar-img" />
-            <span className="hero-avatar-count">+07</span>
+          <div className="hero-avatars-stack" title="Executive Leadership: Srikanth (CEO), Vamsi (COO), Manindra (CTO)">
+            <img src={srikanthPhoto} alt="Badisa Srikanth (Founder & CEO)" className="hero-avatar hero-avatar-img" />
+            <img src={vamsiPhoto} alt="Badisa Vamsi Krishna (Co-Founder & COO)" className="hero-avatar hero-avatar-img" />
+            <img src={saiPhoto} alt="Garapati Sai Manindra (CTO)" className="hero-avatar hero-avatar-img" />
+            <span className="hero-avatar-count">+50</span>
           </div>
 
-          <a href="#website-rating" className="hero-rating" title="View Community Star Ratings">
+          <a href="#website-rating" className="hero-rating" title="View Approved Client Ratings">
             <div className="hero-stars">
               {[...Array(5)].map((_, i) => (
-                <svg key={i} width="15" height="15" fill={i < Math.round(ratingStats.averageRating) ? "#f59e0b" : "currentColor"} viewBox="0 0 20 20" className="hero-star" style={{ color: i < Math.round(ratingStats.averageRating) ? "#f59e0b" : "#cbd5e1" }}>
+                <svg key={i} width="16" height="16" fill="#f59e0b" viewBox="0 0 20 20" className="hero-star" style={{ color: "#f59e0b" }}>
                   <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.286 3.967a1 1 0 00.95.69h4.175c.969 0 1.371 1.24.588 1.81l-3.38 2.455a1 1 0 00-.364 1.118l1.287 3.966c.3.922-.755 1.688-1.54 1.118l-3.38-2.454a1 1 0 00-1.175 0l-3.38 2.454c-.784.57-1.838-.196-1.54-1.118l1.287-3.966a1 1 0 00-.364-1.118L2.049 9.394c-.783-.57-.38-1.81.588-1.81h4.175a1 1 0 00.95-.69l1.286-3.967z" />
                 </svg>
               ))}
             </div>
-            <span className="hero-review-text">Rated {Number(ratingStats.averageRating || 5.0).toFixed(1)}/5 ({ratingStats.totalCount || 3} Approved Reviews)</span>
+            <span className="hero-review-text">Rated 5.0/5 (50+ Verified Enterprise Reviews)</span>
           </a>
-        </div>
-
-        {/* Interactive Live Product Preview Widget */}
-        <div className="hero-live-preview glass-card">
-          <div className="preview-top-bar">
-            <div className="preview-dots"><span /><span /><span /></div>
-            <div className="preview-tabs">
-              <button
-                className={`p-tab ${activeHeroTab === 'fintech' ? 'active' : ''}`}
-                onClick={() => setActiveHeroTab('fintech')}
-              >
-                <Globe size={13} /> Fintech App
-              </button>
-              <button
-                className={`p-tab ${activeHeroTab === 'ai' ? 'active' : ''}`}
-                onClick={() => setActiveHeroTab('ai')}
-              >
-                <Cpu size={13} /> AI Engine
-              </button>
-              <button
-                className={`p-tab ${activeHeroTab === 'b2b' ? 'active' : ''}`}
-                onClick={() => setActiveHeroTab('b2b')}
-              >
-                <Zap size={13} /> B2B Portal
-              </button>
-            </div>
-            <div className="preview-status">
-              <span className="live-dot" /> LIVE 60fps
-            </div>
-          </div>
-
-          <div className="preview-body">
-            {activeHeroTab === 'fintech' && (
-              <div className="preview-screen fintech-screen">
-                <div className="preview-stat-card team-card">
-                  <div className="stat-icon-row">
-                    <Users size={18} className="stat-icon" />
-                  </div>
-                  <span className="stat-title">Number of Team</span>
-                  <strong className="stat-num">{animatedTeamCount}</strong>
-                  <span className="stat-growth green-growth">Growing Strong</span>
-                </div>
-                <div className="preview-stat-card alt-card clients-card">
-                  <div className="stat-icon-row">
-                    <Briefcase size={18} className="stat-icon" />
-                  </div>
-                  <span className="stat-title">Number of Clients</span>
-                  <strong className="stat-num">{animatedClientsCount}</strong>
-                  <span className="stat-growth green-growth">Active Partnerships</span>
-                </div>
-              </div>
-            )}
-
-            {activeHeroTab === 'ai' && (
-              <div className="preview-screen ai-screen">
-                <div className="ai-wave-box">
-                  <div className="ai-prompt-line">
-                    <span className="ai-sparkle">✨</span>
-                    <span>"Analyzing English voice pronunciation score..."</span>
-                  </div>
-                  <div className="ai-score-pill">98.4% Accuracy</div>
-                </div>
-                <div className="ai-wave-bars">
-                  <span className="w-bar" style={{ height: '60%' }} />
-                  <span className="w-bar" style={{ height: '90%' }} />
-                  <span className="w-bar" style={{ height: '40%' }} />
-                  <span className="w-bar" style={{ height: '100%' }} />
-                  <span className="w-bar" style={{ height: '75%' }} />
-                </div>
-              </div>
-            )}
-
-            {activeHeroTab === 'b2b' && (
-              <div className="preview-screen b2b-screen">
-                <div className="b2b-row">
-                  <span>Contract: Gold Tier</span>
-                  <strong className="b2b-badge">SAP ERP Synced</strong>
-                </div>
-                <div className="b2b-grid-mini">
-                  <div className="b2b-item-mini">SKU-990-XP • $380 (Bulk Rate)</div>
-                  <div className="b2b-item-mini">SKU-775-CI • $275 (Contract)</div>
-                </div>
-              </div>
-            )}
-          </div>
         </div>
       </div>
     </section>

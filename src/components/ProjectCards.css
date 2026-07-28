@@ -508,3 +508,26 @@
   font-size: 16px;
   color: var(--color-gray-900);
 }
+
+.card-live-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 16px;
+  background: var(--color-accent);
+  color: #ffffff !important;
+  font-size: 13px;
+  font-weight: 700;
+  border-radius: var(--radius-full);
+  text-decoration: none;
+  transition: all 250ms var(--ease-out-smooth);
+  box-shadow: 0 4px 14px rgba(0, 103, 244, 0.25);
+}
+
+.card-live-btn:hover {
+  background: #0052cc;
+  transform: translateY(-2px);
+  box-shadow: 0 6px 18px rgba(0, 103, 244, 0.35);
+  color: #ffffff !important;
+}
+

@@ -5,6 +5,7 @@ const DB_NAME = 'srivoratech'
 
 let cachedClient = null
 let cachedDb = null
+let connectionFailed = false
 
 export async function connectToDatabase() {
   if (cachedClient && cachedDb) {
@@ -12,7 +13,7 @@ export async function connectToDatabase() {
   }
 
   const uri = process.env.MONGODB_URI
-  if (!uri) {
+  if (!uri || uri.includes('your_username') || uri.includes('your-cluster') || connectionFailed) {
     return { client: null, db: null }
   }
 
@@ -30,7 +31,8 @@ export async function connectToDatabase() {
 
     return { client, db }
   } catch (error) {
-    console.warn('MongoDB Atlas connection skipped:', error.message)
+    connectionFailed = true
+    console.warn('MongoDB Atlas connection skipped (using fast local JSON fallback):', error.message)
     return { client: null, db: null }
   }
 }

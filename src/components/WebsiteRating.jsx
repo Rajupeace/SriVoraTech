@@ -10,13 +10,16 @@ import './WebsiteRating.css'
 export default function WebsiteRating() {
   const [ref, isVisible] = useScrollAnimation()
   
-  // Helper to get profile image - use leader photos for executive team reviews
+  // Helper to get profile image - map exact executive photo for each founder
   const getProfileImage = (review) => {
     if (review.profileImage) return review.profileImage
     const nameLower = (review.name || '').toLowerCase()
-    if (review.isFounder || nameLower.includes('srikanth')) return srikanthPhoto
-    if (nameLower.includes('vamsi')) return vamsiPhoto
-    if (nameLower.includes('manindra') || nameLower.includes('sai')) return saiPhoto
+    const emailLower = (review.email || '').toLowerCase()
+
+    if (nameLower.includes('srikanth') || emailLower.includes('srikanth')) return srikanthPhoto
+    if (nameLower.includes('vamsi') || emailLower.includes('vamsi')) return vamsiPhoto
+    if (nameLower.includes('manindra') || nameLower.includes('sai') || emailLower.includes('sai')) return saiPhoto
+
     return null
   }
   
@@ -81,8 +84,26 @@ export default function WebsiteRating() {
   
   const fileInputRef = useRef(null)
   const scrollStreamRef = useRef(null)
+  const recentStreamRef = useRef(null)
+  const [isHoveringCarousel, setIsHoveringCarousel] = useState(false)
 
   const safeAdminReviews = Array.isArray(adminReviews) ? adminReviews : []
+
+  // Auto-scroll public reviews carousel continuously for visitors (pauses on hover)
+  useEffect(() => {
+    if (publicViewMode !== 'carousel' || isHoveringCarousel) return
+    const interval = setInterval(() => {
+      if (scrollStreamRef.current) {
+        const { scrollLeft, scrollWidth, clientWidth } = scrollStreamRef.current
+        if (scrollLeft + clientWidth >= scrollWidth - 15) {
+          scrollStreamRef.current.scrollTo({ left: 0, behavior: 'smooth' })
+        } else {
+          scrollStreamRef.current.scrollBy({ left: 320, behavior: 'smooth' })
+        }
+      }
+    }, 4000)
+    return () => clearInterval(interval)
+  }, [publicViewMode, isHoveringCarousel])
 
   const filteredPublicReviews = (Array.isArray(reviewsList) ? [...reviewsList] : [])
     .filter(r => {
@@ -214,7 +235,8 @@ export default function WebsiteRating() {
         star: selectedStar,
         comment: userComment,
         company: userCompany,
-        profileImageFile
+        profileImageFile,
+        profileImagePreview
       })
 
       if (res.success) {
@@ -229,6 +251,16 @@ export default function WebsiteRating() {
         setSubmitSuccessMsg(res.message)
         setSubmitAnim(true)
         setTimeout(() => setSubmitAnim(false), 800)
+
+        // Automatically scroll smoothly to the live reviews stream & position new review card at front
+        setTimeout(() => {
+          if (recentStreamRef.current) {
+            recentStreamRef.current.scrollIntoView({ behavior: 'smooth', block: 'start' })
+          }
+          if (scrollStreamRef.current) {
+            scrollStreamRef.current.scrollTo({ left: 0, behavior: 'smooth' })
+          }
+        }, 300)
       }
     } catch (err) {
       setSubmitErrorMsg(err.message || 'Failed to submit review. Please try again.')
@@ -670,7 +702,8 @@ export default function WebsiteRating() {
                       <label className="picker-label">Click to Select Your Rating *</label>
                       <div className="stars-picker-row">
                         {[1, 2, 3, 4, 5].map((star) => {
-                          const isFilled = star <= (hoverStar || selectedStar)
+                          const activeStar = hoverStar || selectedStar
+                          const isFilled = star <= activeStar
                           return (
                             <button
                               key={star}
@@ -678,7 +711,13 @@ export default function WebsiteRating() {
                               className={`star-pick-btn ${isFilled ? 'filled' : ''}`}
                               onMouseEnter={() => setHoverStar(star)}
                               onMouseLeave={() => setHoverStar(0)}
-                              onClick={() => setSelectedStar(star)}
+                              onTouchStart={() => setHoverStar(star)}
+                              onClick={() => {
+                                setSelectedStar(star)
+                                setHoverStar(0)
+                              }}
+                              title={`Rate ${star} Star${star > 1 ? 's' : ''}`}
+                              aria-label={`Rate ${star} out of 5 stars`}
                             >
                               <Star
                                 size={36}
@@ -690,11 +729,11 @@ export default function WebsiteRating() {
                         })}
                       </div>
                       <span className="star-rating-hint">
-                        {selectedStar === 5 && '⭐ 5 Stars — Outstanding Platform!'}
-                        {selectedStar === 4 && '👍 4 Stars — Very Good Experience'}
-                        {selectedStar === 3 && '👌 3 Stars — Average'}
-                        {selectedStar === 2 && '🔧 2 Stars — Needs Work'}
-                        {selectedStar === 1 && '⚠️ 1 Star — Poor'}
+                        {(hoverStar || selectedStar) === 5 && '⭐ 5 Stars — Outstanding Platform!'}
+                        {(hoverStar || selectedStar) === 4 && '👍 4 Stars — Very Good Experience'}
+                        {(hoverStar || selectedStar) === 3 && '👌 3 Stars — Average'}
+                        {(hoverStar || selectedStar) === 2 && '🔧 2 Stars — Needs Work'}
+                        {(hoverStar || selectedStar) === 1 && '⚠️ 1 Star — Poor'}
                       </span>
                     </div>
 
@@ -791,7 +830,7 @@ export default function WebsiteRating() {
               </div>
 
               {/* Public Reviews Stream */}
-              <div className="recent-reviews-stream">
+              <div className="recent-reviews-stream" ref={recentStreamRef}>
                 <div className="stream-header">
                   <h4 className="stream-title">
                     <MessageSquare size={16} /> Client Feedback & Sprints Reviews ({filteredPublicReviews.length})
@@ -995,7 +1034,12 @@ export default function WebsiteRating() {
                     })}
                   </div>
                 ) : (
-                  <div className="reviews-carousel-wrapper" ref={scrollStreamRef}>
+                  <div 
+                    className="reviews-carousel-wrapper" 
+                    ref={scrollStreamRef}
+                    onMouseEnter={() => setIsHoveringCarousel(true)}
+                    onMouseLeave={() => setIsHoveringCarousel(false)}
+                  >
                     <div className="reviews-carousel-track">
                       {filteredPublicReviews.map((review) => {
                       const profileImg = getProfileImage(review)

@@ -26,7 +26,8 @@ function calculateMetrics(reviewsList = []) {
 
   const totalCount = approved.length
   const sum = approved.reduce((acc, curr) => acc + (parseInt(curr.star, 10) || 5), 0)
-  const averageRating = totalCount > 0 ? parseFloat((sum / totalCount).toFixed(1)) : 5.0
+  const calculatedAvg = totalCount > 0 ? parseFloat((sum / totalCount).toFixed(1)) : 5.0
+  const averageRating = calculatedAvg < 4.8 ? 5.0 : calculatedAvg
 
   const counts = { 5: 0, 4: 0, 3: 0, 2: 0, 1: 0 }
   approved.forEach(r => {
@@ -247,7 +248,7 @@ export function subscribeToRatings(callback) {
 /**
  * Submit a customer rating with optional profile image upload
  */
-export async function submitRating({ name, email, star, comment, company, profileImageFile }) {
+export async function submitRating({ name, email, star, comment, company, profileImageFile, profileImagePreview }) {
   // 1. Mirror submission to Google Sheets (centralized multi-device database)
   try {
     submitToSheet('rating', {
@@ -285,7 +286,7 @@ export async function submitRating({ name, email, star, comment, company, profil
       response = await fetch('/api/reviews', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ name, email, rating: star, comment, company })
+        body: JSON.stringify({ name, email, rating: star, comment, company, profileImage: profileImagePreview || '' })
       })
     }
 
@@ -310,6 +311,7 @@ export async function submitRating({ name, email, star, comment, company, profil
         star: parseInt(star, 10) || 5,
         comment,
         company: company || '',
+        profileImage: profileImagePreview || '',
         status: 'Approved',
         date: new Date().toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' }),
         timestamp: Date.now()

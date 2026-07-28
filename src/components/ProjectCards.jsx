@@ -1,6 +1,6 @@
 import { useState, useEffect, useCallback } from 'react'
 import { useScrollAnimation } from '../hooks/useScrollAnimation'
-import { ChevronLeft, ChevronRight, Sparkles, CheckCircle2, ShieldCheck, Zap, ArrowRight, Layers, Cpu, ShoppingBag, Activity, GraduationCap, Briefcase } from 'lucide-react'
+import { ChevronLeft, ChevronRight, Sparkles, CheckCircle2, ShieldCheck, Zap, ArrowRight, Layers, Cpu, ShoppingBag, Activity, GraduationCap, Briefcase, ExternalLink, Globe } from 'lucide-react'
 import './ProjectCards.css'
 
 const projects = [
@@ -13,6 +13,8 @@ const projects = [
     color: '#0067f4',
     initial: 'E',
     icon: Layers,
+    liveUrl: 'https://vu-universe-360.vercel.app/',
+    showcaseImg: '/srierp-admin-dashboard.png',
     metrics: ['Automated Payroll & HR', 'Real-Time Inventory', 'Sub-Second Analytics']
   },
   {
@@ -24,6 +26,8 @@ const projects = [
     color: '#8b5cf6',
     initial: 'A',
     icon: Cpu,
+    liveUrl: 'https://srivoratech-ai-virtual-assistant-workflow-automat.ai.studio/',
+    showcaseImg: '/smartai-dashboard-overview.png',
     metrics: ['99.4% Query Accuracy', 'Automated Workflows', 'Vector Search Engine']
   },
   {
@@ -35,17 +39,21 @@ const projects = [
     color: '#10b981',
     initial: 'S',
     icon: ShoppingBag,
+    liveUrl: 'https://sritheeagle.github.io/e-commerce-/',
+    showcaseImg: '/shopsphere-ecommerce-live.png',
     metrics: ['Stripe / Razorpay Sync', 'Bulk Order Tracking', 'Instant Checkout']
   },
   {
     id: 4,
-    name: 'HealthConnect',
+    name: 'HealthConnect Healthcare',
     category: 'Healthcare Platform',
     desc: 'A digital healthcare solution enabling online appointment booking, electronic medical records, teleconsultation, prescription management, and patient-doctor communication in a secure environment.',
     techs: ['React.js', 'Node.js', 'MySQL', 'WebRTC', 'Firebase'],
     color: '#ec4899',
     initial: 'H',
     icon: Activity,
+    liveUrl: 'https://papafoundation09-commits.github.io/hps/',
+    showcaseImg: '/healthconnect-emr-dashboard.png',
     metrics: ['HD Teleconsultation', 'Encrypted E-Records', 'Real-Time Rx Sync']
   },
   {
@@ -57,6 +65,7 @@ const projects = [
     color: '#f59e0b',
     initial: 'E',
     icon: GraduationCap,
+    showcaseImg: '/eduverse-dashboard.png',
     metrics: ['Live Assessments', 'Progress Analytics', 'Cloud AWS S3 Storage']
   },
   {
@@ -68,6 +77,7 @@ const projects = [
     color: '#06b6d4',
     initial: 'P',
     icon: Briefcase,
+    showcaseImg: '/projectflow-dashboard.png',
     metrics: ['Socket.IO Real-Time Chat', 'Automated Invoicing', 'Lead Pipeline Graph']
   },
   {
@@ -79,10 +89,39 @@ const projects = [
     color: '#8b5cf6',
     initial: 'A',
     icon: Cpu,
+    showcaseImg: '/srivora-agentic-dashboard.png',
     isUpcoming: true,
     statusTag: 'Upcoming Project (Q4 2026)',
     metrics: ['Multi-Agent Graph Orchestrator', '10x Speed Scaling', 'Q4 2026 Expected Launch']
   },
+  {
+    id: 8,
+    name: 'OmniChannel ERP Cloud',
+    category: 'Enterprise Software • Cloud ERP',
+    desc: 'An upcoming cloud-native ERP platform built specifically for retail chains, franchise networks, and multi-location warehouses to unify point-of-sale (POS), inventory, and automated replenishment.',
+    techs: ['Golang', 'React.js', 'Apache Kafka', 'PostgreSQL', 'Kubernetes'],
+    color: '#0067f4',
+    initial: 'O',
+    icon: Layers,
+    showcaseImg: '/omnichannel-erp-dashboard.png',
+    isUpcoming: true,
+    statusTag: 'Upcoming Project (Q4 2026)',
+    metrics: ['Sub-50ms POS Transaction', 'Kafka Event Streaming', 'Multi-Store Inventory']
+  },
+  {
+    id: 9,
+    name: 'FinTech PayShield Gateway v2',
+    category: 'Fintech • Payments & Security',
+    desc: 'An upcoming payment gateway and fraud prevention platform with AI transaction risk scoring, multi-currency payouts, instant settlements, and chargeback protection.',
+    techs: ['Next.js', 'Node.js', 'ClickHouse', 'Redis', 'Stripe Connect'],
+    color: '#10b981',
+    initial: 'F',
+    icon: ShieldCheck,
+    showcaseImg: '/payshield-fraud-dashboard.png',
+    isUpcoming: true,
+    statusTag: 'Upcoming Project (Q1 2027)',
+    metrics: ['AI Fraud Risk Scoring', 'Multi-Currency Settlement', '90% Fraud Reduction']
+  }
 ]
 
 const founderQuote = {
@@ -100,19 +139,37 @@ function ProjectMockup({ project }) {
       <div className="browser-mock-wrapper">
         <div className="b-header">
           <div className="b-dots"><span /><span /><span /></div>
-          <span className="b-url">srivoratech.com/products/{project.name.toLowerCase().replace(/\s+/g, '-')}</span>
+          {project.liveUrl ? (
+            <a
+              href={project.liveUrl}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="b-url b-url--link"
+              style={{ color: '#0067f4', fontWeight: 600, textDecoration: 'underline', display: 'inline-flex', alignItems: 'center', gap: '4px' }}
+            >
+              {project.liveUrl.replace('https://', '')} <ExternalLink size={11} />
+            </a>
+          ) : (
+            <span className="b-url">srivoratech.com/products/{project.name.toLowerCase().replace(/\s+/g, '-')}</span>
+          )}
           {project.isUpcoming && (
             <span className="b-upcoming-tag">🚀 Upcoming Project</span>
           )}
         </div>
         <div className="b-body">
-          <div className="b-score-card" style={{ background: `${project.color}08`, borderColor: `${project.color}30` }}>
-            <div className="b-project-icon-box" style={{ background: project.color, color: '#ffffff' }}>
-              <Icon size={22} />
+          {project.showcaseImg ? (
+            <div className="b-showcase-img-box" style={{ borderRadius: '8px', overflow: 'hidden', border: '1px solid var(--color-gray-200)', marginBottom: '12px' }}>
+              <img src={project.showcaseImg} alt={`${project.name} Screenshot`} style={{ width: '100%', height: '160px', objectFit: 'cover', display: 'block' }} />
             </div>
-            <span className="b-score-title" style={{ color: project.color }}>{project.category}</span>
-            <strong className="b-score-val" style={{ color: '#0f172a' }}>{project.name}</strong>
-          </div>
+          ) : (
+            <div className="b-score-card" style={{ background: `${project.color}08`, borderColor: `${project.color}30` }}>
+              <div className="b-project-icon-box" style={{ background: project.color, color: '#ffffff' }}>
+                <Icon size={22} />
+              </div>
+              <span className="b-score-title" style={{ color: project.color }}>{project.category}</span>
+              <strong className="b-score-val" style={{ color: '#0f172a' }}>{project.name}</strong>
+            </div>
+          )}
 
           <div className="b-tech-pills">
             {project.techs.map((tech) => (
@@ -203,14 +260,26 @@ export default function ProjectCards() {
                 </div>
               </div>
 
-              <div className="person-row">
-                <div className="person-avatar" style={{ background: '#0067f4' }}>
-                  {founderQuote.avatar}
+              <div className="person-row" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '12px' }}>
+                <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+                  <div className="person-avatar" style={{ background: '#0067f4' }}>
+                    {founderQuote.avatar}
+                  </div>
+                  <div className="person-meta">
+                    <strong className="person-name">{founderQuote.name}</strong>
+                    <span className="person-role">{founderQuote.role}</span>
+                  </div>
                 </div>
-                <div className="person-meta">
-                  <strong className="person-name">{founderQuote.name}</strong>
-                  <span className="person-role">{founderQuote.role}</span>
-                </div>
+                {project.liveUrl && (
+                  <a
+                    href={project.liveUrl}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="card-live-btn"
+                  >
+                    <Globe size={15} /> Launch Live Demo <ExternalLink size={15} />
+                  </a>
+                )}
               </div>
             </div>
           </div>

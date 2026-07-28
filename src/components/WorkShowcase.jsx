@@ -1,7 +1,201 @@
-import { useState, useEffect, useRef } from 'react'
+import { useState, useEffect, useRef, useCallback } from 'react'
 import { useScrollAnimation } from '../hooks/useScrollAnimation'
-import { ArrowUpRight, ArrowLeft, X, CheckCircle2, Search, Link2, MapPin, Building2, Users, Quote, ChevronRight, Filter } from 'lucide-react'
+import { ArrowUpRight, ArrowLeft, X, CheckCircle2, Search, Link2, MapPin, Building2, Users, Quote, ChevronRight, ChevronLeft, Filter, ExternalLink, Globe, Play, Pause } from 'lucide-react'
 import './WorkShowcase.css'
+
+/* Auto-playing image slideshow — cycles through images like a video */
+function ImageSlideshow({ images, interval = 3000, height = '340px', showControls = true, showThumbnails = false }) {
+  const [currentIdx, setCurrentIdx] = useState(0)
+  const [isPlaying, setIsPlaying] = useState(true)
+  const [progress, setProgress] = useState(0)
+  const timerRef = useRef(null)
+  const progressRef = useRef(null)
+
+  const startTimer = useCallback(() => {
+    if (timerRef.current) clearInterval(timerRef.current)
+    if (progressRef.current) clearInterval(progressRef.current)
+
+    const startTime = Date.now()
+    progressRef.current = setInterval(() => {
+      const elapsed = Date.now() - startTime
+      setProgress(Math.min((elapsed / interval) * 100, 100))
+    }, 50)
+
+    timerRef.current = setTimeout(() => {
+      setCurrentIdx(prev => (prev + 1) % images.length)
+      setProgress(0)
+    }, interval)
+  }, [images.length, interval])
+
+  useEffect(() => {
+    if (isPlaying && images.length > 1) {
+      startTimer()
+    }
+    return () => {
+      if (timerRef.current) clearTimeout(timerRef.current)
+      if (progressRef.current) clearInterval(progressRef.current)
+    }
+  }, [currentIdx, isPlaying, startTimer, images.length])
+
+  const goTo = (idx) => {
+    setCurrentIdx(idx)
+    setProgress(0)
+  }
+  const goNext = () => goTo((currentIdx + 1) % images.length)
+  const goPrev = () => goTo((currentIdx - 1 + images.length) % images.length)
+
+  if (!images || images.length === 0) return null
+
+  return (
+    <div className="img-slideshow" style={{ height }}>
+      {/* Image Stack with Fade */}
+      <div className="slideshow-images">
+        {images.map((img, idx) => (
+          <img
+            key={idx}
+            src={img.src}
+            alt={img.title}
+            className={`slideshow-img ${idx === currentIdx ? 'slideshow-img--active' : ''}`}
+          />
+        ))}
+      </div>
+
+      {/* Bottom Overlay Bar */}
+      <div className="slideshow-overlay-bar">
+        <div className="slideshow-caption">{images[currentIdx]?.title}</div>
+        <div className="slideshow-controls-row">
+          {showControls && (
+            <>
+              <button className="slideshow-btn" onClick={goPrev} aria-label="Previous"><ChevronLeft size={16} /></button>
+              <button className="slideshow-btn" onClick={() => setIsPlaying(!isPlaying)} aria-label={isPlaying ? 'Pause' : 'Play'}>
+                {isPlaying ? <Pause size={14} /> : <Play size={14} />}
+              </button>
+              <button className="slideshow-btn" onClick={goNext} aria-label="Next"><ChevronRight size={16} /></button>
+            </>
+          )}
+          <span className="slideshow-counter">{currentIdx + 1} / {images.length}</span>
+        </div>
+      </div>
+
+      {/* Progress Bar */}
+      <div className="slideshow-progress-track">
+        <div className="slideshow-progress-fill" style={{ width: `${progress}%` }} />
+      </div>
+
+      {/* Dot Indicators */}
+      {images.length > 1 && (
+        <div className="slideshow-dots">
+          {images.map((_, idx) => (
+            <button
+              key={idx}
+              className={`slideshow-dot ${idx === currentIdx ? 'slideshow-dot--active' : ''}`}
+              onClick={() => goTo(idx)}
+              aria-label={`Go to slide ${idx + 1}`}
+            />
+          ))}
+        </div>
+      )}
+
+      {/* Thumbnail Strip */}
+      {showThumbnails && images.length > 1 && (
+        <div className="slideshow-thumbnails">
+          {images.map((img, idx) => (
+            <img
+              key={idx}
+              src={img.src}
+              alt={img.title}
+              className={`slideshow-thumb ${idx === currentIdx ? 'slideshow-thumb--active' : ''}`}
+              onClick={() => goTo(idx)}
+            />
+          ))}
+        </div>
+      )}
+    </div>
+  )
+}
+
+/* Gallery Lightbox — "See All Pics" grid + fullscreen lightbox with Back button */
+function GalleryLightbox({ images, color }) {
+  const [showGrid, setShowGrid] = useState(false)
+  const [lightboxIdx, setLightboxIdx] = useState(-1)
+
+  if (!images || images.length === 0) return null
+
+  return (
+    <>
+      {/* See All Pics Button */}
+      <button
+        className="see-all-pics-btn"
+        onClick={() => setShowGrid(true)}
+        style={{ '--accent': color || '#6366f1' }}
+      >
+        <span className="see-all-pics-grid-icon">
+          {[0,1,2,3].map(i => <span key={i} className="grid-dot" />)}
+        </span>
+        See All {images.length} Pics
+      </button>
+
+      {/* Fullscreen Grid Modal */}
+      {showGrid && (
+        <div className="gallery-modal-overlay" onClick={() => setShowGrid(false)}>
+          <div className="gallery-modal" onClick={e => e.stopPropagation()}>
+            <div className="gallery-modal-header">
+              <button className="gallery-back-btn" onClick={() => setShowGrid(false)}>
+                <ArrowLeft size={18} />
+                <span>Back</span>
+              </button>
+              <h3 className="gallery-modal-title">All Screenshots ({images.length})</h3>
+              <button className="gallery-close-btn" onClick={() => setShowGrid(false)}>
+                <X size={20} />
+              </button>
+            </div>
+            <div className="gallery-grid">
+              {images.map((img, idx) => (
+                <div
+                  key={idx}
+                  className="gallery-grid-item"
+                  onClick={() => { setLightboxIdx(idx); setShowGrid(false) }}
+                >
+                  <img src={img.src} alt={img.title} />
+                  <span className="gallery-grid-label">{img.title}</span>
+                </div>
+              ))}
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Single Image Lightbox with Back button */}
+      {lightboxIdx >= 0 && (
+        <div className="lightbox-overlay" onClick={() => setLightboxIdx(-1)}>
+          <div className="lightbox-container" onClick={e => e.stopPropagation()}>
+            <div className="lightbox-header">
+              <button className="gallery-back-btn" onClick={() => { setLightboxIdx(-1); setShowGrid(true) }}>
+                <ArrowLeft size={18} />
+                <span>Back to Gallery</span>
+              </button>
+              <span className="lightbox-counter">{lightboxIdx + 1} / {images.length}</span>
+              <button className="gallery-close-btn" onClick={() => setLightboxIdx(-1)}>
+                <X size={20} />
+              </button>
+            </div>
+            <div className="lightbox-body">
+              <button className="lightbox-nav lightbox-nav--prev" onClick={() => setLightboxIdx((lightboxIdx - 1 + images.length) % images.length)}>
+                <ChevronLeft size={28} />
+              </button>
+              <img src={images[lightboxIdx].src} alt={images[lightboxIdx].title} className="lightbox-img" />
+              <button className="lightbox-nav lightbox-nav--next" onClick={() => setLightboxIdx((lightboxIdx + 1) % images.length)}>
+                <ChevronRight size={28} />
+              </button>
+            </div>
+            <div className="lightbox-caption">{images[lightboxIdx].title}</div>
+          </div>
+        </div>
+      )}
+    </>
+  )
+}
+
 
 const works = [
   {
@@ -12,6 +206,23 @@ const works = [
     catGroup: 'enterprise',
     clientName: 'Badisa Srikanth',
     clientRole: 'Founder & CEO, SriVoraTech',
+    liveUrl: 'https://vu-universe-360.vercel.app/',
+    showcaseImg: '/srierp-admin-dashboard.png',
+    adminImg: '/srierp-student-dashboard.png',
+    galleryImgs: [
+      { src: '/srierp-landing.png', title: 'Vu UniVerse360 Landing Page & Portal Selection' },
+      { src: '/srierp-student-dashboard.png', title: 'Student Dashboard — CGPA, Progress & AI Analytics' },
+      { src: '/srierp-admin-dashboard.png', title: 'Admin Command Center — System Status & Database Sync' },
+      { src: '/srierp-admin-students.png', title: 'Admin Panel — Student Records & Registration Management' },
+      { src: '/srierp-faculty-dashboard.png', title: 'Faculty Management — Staff Directory & Department Control' },
+      { src: '/srierp-grades-dashboard.png', title: 'Grades Module — CGPA Breakdown & Performance Analytics' },
+      { src: '/srierp-attendance-dashboard.png', title: 'Attendance Tracker — Biometric Logs & Leave Workflow' },
+      { src: '/srierp-exams-dashboard.png', title: 'Examination Portal — Schedule, Results & Hall Tickets' },
+      { src: '/srierp-schedule-dashboard.png', title: 'Class Schedule — Weekly Timetable & Room Allocation' },
+      { src: '/srierp-placements-dashboard.png', title: 'Placement Cell — Company Drives & Student Applications' },
+      { src: '/srierp-fees-dashboard.png', title: 'Finance Module — Fee Collection & Payment Tracking' },
+      { src: '/srierp-vuai-dashboard.png', title: 'VU AI Assistant — Smart Academic Query Engine' }
+    ],
     color: '#0067f4',
     gradient: 'linear-gradient(135deg, #0067f4, #6366f1)',
     about: 'A comprehensive Enterprise Resource Planning (ERP) platform managing HR, payroll, inventory, finance, attendance, customer management, and project workflows from one centralized dashboard.',
@@ -54,6 +265,23 @@ const works = [
     catGroup: 'ai',
     clientName: 'Badisa Srikanth',
     clientRole: 'Founder & CEO, SriVoraTech',
+    liveUrl: 'https://srivoratech-ai-virtual-assistant-workflow-automat.ai.studio/',
+    showcaseImg: '/smartai-dashboard-overview.png',
+    adminImg: '/smartai-workflow-canvas.png',
+    galleryImgs: [
+      { src: '/smartai-dashboard-overview.png', title: 'Executive Dashboard — Analytics & Platform Usage' },
+      { src: '/smartai-assistants-builder.png', title: 'AI Assistant Studio — Custom Instructions & Temperature' },
+      { src: '/smartai-workflow-canvas.png', title: 'Workflow Canvas — Visual Drag & Drop Automation Engine' },
+      { src: '/smartai-rag-knowledge.png', title: 'Knowledge Base (RAG) — Vector Embeddings & Document Indexing' },
+      { src: '/smartai-live-chat.png', title: 'Live Chat Inbox — Real-Time Customer Support & AI Co-pilot' },
+      { src: '/smartai-crm-pipelines.png', title: 'CRM & Lead Pipelines — Deal Stages & AI Lead Qualification' },
+      { src: '/smartai-triggers-cron.png', title: 'Triggers & Cron Engine — Scheduled Automation Tasks' },
+      { src: '/smartai-integrations-panel.png', title: 'Integrations Panel — Gemini, OpenAI, Anthropic, Slack, Twilio' },
+      { src: '/smartai-usage-costs.png', title: 'Usage & Cost Analytics — Token Spend & Latency Metrics' },
+      { src: '/smartai-billing-wallet.png', title: 'Billing & Wallet — Enterprise Plans & Credit Balance' },
+      { src: '/smartai-admin-security.png', title: 'Admin Security — SOC2 Compliance, Audit Logs & 2FA Control' },
+      { src: '/smartai-settings-page.png', title: 'Workspace Settings — Team Members, API Keys & Domain Whitelist' }
+    ],
     color: '#8b5cf6',
     gradient: 'linear-gradient(135deg, #8b5cf6, #ec4899)',
     about: 'An AI-powered virtual assistant that answers customer queries, automates business workflows, summarizes documents, and integrates with websites, CRM, and ERP platforms.',
@@ -96,6 +324,14 @@ const works = [
     catGroup: 'commerce',
     clientName: 'Badisa Srikanth',
     clientRole: 'Founder & CEO, SriVoraTech',
+    liveUrl: 'https://sritheeagle.github.io/e-commerce-/',
+    showcaseImg: '/shopsphere-ecommerce-live.png',
+    adminImg: '/shopsphere-admin-live.png',
+    galleryImgs: [
+      { src: '/shopsphere-ecommerce-live.png', title: 'Live Storefront Marketplace — Direct Sourcing from Verified Sellers & AI Search' },
+      { src: '/shopsphere-products-live.png', title: 'Daily Flash Sales & Product Catalog — Up to 50% Off Vendor Inventory' },
+      { src: '/shopsphere-admin-live.png', title: 'Admin & Seller Core Hub — Escrow Buyer Protection, Shipping & Payout Governance' }
+    ],
     color: '#10b981',
     gradient: 'linear-gradient(135deg, #10b981, #059669)',
     about: 'A modern e-commerce platform featuring secure payments, inventory management, order tracking, analytics, customer accounts, discount management, and an admin dashboard.',
@@ -134,10 +370,19 @@ const works = [
     id: 'healthconnect',
     title: 'HealthConnect Healthcare',
     headline: 'Digital Teleconsultation & Patient EMR Platform',
-    category: 'Healthcare • Telemed',
+    category: 'Healthcare • Telemedicine',
     catGroup: 'healthcare',
     clientName: 'Badisa Srikanth',
     clientRole: 'Founder & CEO, SriVoraTech',
+    liveUrl: 'https://papafoundation09-commits.github.io/hps/',
+    showcaseImg: '/healthconnect-emr-dashboard.png',
+    adminImg: '/healthconnect-soap-editor.png',
+    galleryImgs: [
+      { src: '/healthconnect-emr-dashboard.png', title: 'Doctor Dashboard — Real-Time Clinical Analytics & Patient Teleconsult Queue' },
+      { src: '/healthconnect-soap-editor.png', title: 'Clinical EMR Editor & AI SOAP Assistant — Voice Dictation & SOAP Notes' },
+      { src: '/healthconnect-public-home.png', title: 'Teleconsultation Portal — AI Symptom Checker, Triage & Specialty Directory' },
+      { src: '/healthconnect-doctors-booking.png', title: 'Doctor Directory & Instant Teleconsultation Appointment Booking' }
+    ],
     color: '#ec4899',
     gradient: 'linear-gradient(135deg, #ec4899, #8b5cf6)',
     about: 'A digital healthcare solution enabling online appointment booking, electronic medical records (EMR), teleconsultation, prescription management, and patient-doctor communication.',
@@ -180,6 +425,11 @@ const works = [
     catGroup: 'education',
     clientName: 'Badisa Srikanth',
     clientRole: 'Founder & CEO, SriVoraTech',
+    showcaseImg: '/eduverse-dashboard.png',
+    adminImg: '/eduverse-dashboard.png',
+    galleryImgs: [
+      { src: '/eduverse-dashboard.png', title: 'Cloud LMS Course Stream & Student Assessment Analytics' }
+    ],
     color: '#f59e0b',
     gradient: 'linear-gradient(135deg, #f59e0b, #f97316)',
     about: 'A cloud-based Learning Management System (LMS) for schools, colleges, and training institutes, providing online classes, assessments, course management, and progress analytics.',
@@ -222,6 +472,11 @@ const works = [
     catGroup: 'crm',
     clientName: 'Badisa Srikanth',
     clientRole: 'Founder & CEO, SriVoraTech',
+    showcaseImg: '/projectflow-dashboard.png',
+    adminImg: '/projectflow-dashboard.png',
+    galleryImgs: [
+      { src: '/projectflow-dashboard.png', title: 'Kanban Sales Funnel & Real-Time Team Collaboration' }
+    ],
     color: '#06b6d4',
     gradient: 'linear-gradient(135deg, #06b6d4, #3b82f6)',
     about: 'A customer relationship and project management platform with lead tracking, client communication, task assignment, milestone tracking, invoicing, team collaboration, and real-time reporting.',
@@ -266,6 +521,11 @@ const works = [
     statusTag: 'Upcoming Project (Q4 2026)',
     clientName: 'Badisa Srikanth',
     clientRole: 'Founder & CEO, SriVoraTech',
+    showcaseImg: '/srivora-agentic-dashboard.png',
+    adminImg: '/srivora-agentic-dashboard.png',
+    galleryImgs: [
+      { src: '/srivora-agentic-dashboard.png', title: 'Autonomous Multi-Agent Task Graph & Vector Pipeline' }
+    ],
     color: '#8b5cf6',
     gradient: 'linear-gradient(135deg, #8b5cf6, #3b82f6)',
     about: 'An upcoming autonomous multi-agent platform designed to orchestrate complex enterprise tasks, execute data pipelines, run automated software testing, and manage AI customer interactions.',
@@ -309,6 +569,11 @@ const works = [
     statusTag: 'Upcoming Project (Q4 2026)',
     clientName: 'Badisa Srikanth',
     clientRole: 'Founder & CEO, SriVoraTech',
+    showcaseImg: '/omnichannel-erp-dashboard.png',
+    adminImg: '/omnichannel-erp-dashboard.png',
+    galleryImgs: [
+      { src: '/omnichannel-erp-dashboard.png', title: 'Multi-Store Inventory, POS & Supply Chain Automation Engine' }
+    ],
     color: '#0067f4',
     gradient: 'linear-gradient(135deg, #0067f4, #06b6d4)',
     about: 'An upcoming cloud-native ERP platform built specifically for retail chains, franchise networks, and multi-location warehouses to unify point-of-sale (POS), inventory, and automated replenishment.',
@@ -352,6 +617,11 @@ const works = [
     statusTag: 'Upcoming Project (Q1 2027)',
     clientName: 'Badisa Srikanth',
     clientRole: 'Founder & CEO, SriVoraTech',
+    showcaseImg: '/payshield-fraud-dashboard.png',
+    adminImg: '/payshield-fraud-dashboard.png',
+    galleryImgs: [
+      { src: '/payshield-fraud-dashboard.png', title: 'AI Fraud Detection & Global Payout Settlement Engine' }
+    ],
     color: '#10b981',
     gradient: 'linear-gradient(135deg, #10b981, #3b82f6)',
     about: 'An upcoming payment gateway and fraud prevention platform with AI transaction risk scoring, multi-currency payouts, instant settlements, and chargeback protection.',
@@ -421,31 +691,84 @@ function WorkCard({ work, idx, onSelect }) {
         </div>
       )}
 
+      {work.liveUrl && (
+        <a
+          href={work.liveUrl}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="work-live-link-badge"
+          onClick={(e) => e.stopPropagation()}
+          title="Open Live Application"
+        >
+          <Globe size={12} /> Live Site ↗
+        </a>
+      )}
+
+      {/* Top Banner Image Container (CodeDale Style) */}
       <div className="work-card-image" style={{ background: work.gradient }}>
-        <div className="work-card-mockup">
-          <div className="mockup-browser">
-            <div className="mockup-dots"><span /><span /><span /></div>
-            <div className="mockup-content" style={{ background: `${work.color}22` }}>
-              <div className="mockup-header" style={{ background: `${work.color}44`, width: '60%', height: '14px', borderRadius: '6px' }} />
-              <div className="mockup-lines">
-                <div style={{ background: `${work.color}33`, width: '85%', height: '8px', borderRadius: '4px' }} />
-                <div style={{ background: `${work.color}33`, width: '65%', height: '8px', borderRadius: '4px' }} />
-                <div style={{ background: `${work.color}33`, width: '45%', height: '8px', borderRadius: '4px' }} />
+        {work.showcaseImg ? (
+          <div className="work-card-showcase-wrap">
+            <img src={work.showcaseImg} alt={work.title} className="work-card-showcase-img" />
+            <div className="showcase-img-badge">{work.category}</div>
+          </div>
+        ) : (
+          <div className="work-card-mockup">
+            <div className="mockup-browser">
+              <div className="mockup-dots"><span /><span /><span /></div>
+              <div className="mockup-content" style={{ background: `${work.color}22` }}>
+                <div className="mockup-header" style={{ background: `${work.color}44`, width: '60%', height: '14px', borderRadius: '6px' }} />
+                <div className="mockup-lines">
+                  <div style={{ background: `${work.color}33`, width: '85%', height: '8px', borderRadius: '4px' }} />
+                  <div style={{ background: `${work.color}33`, width: '65%', height: '8px', borderRadius: '4px' }} />
+                  <div style={{ background: `${work.color}33`, width: '45%', height: '8px', borderRadius: '4px' }} />
+                </div>
               </div>
             </div>
           </div>
+        )}
+      </div>
+
+      {/* CodeDale Chat Conversation Bubbles */}
+      <div className="work-card-chat-wrap">
+        <div className="card-chat-bubble card-chat-client">
+          <p className="card-chat-text">{work.about}</p>
+          <span className="card-chat-author">{work.clientName}</span>
         </div>
+        <div className="card-chat-bubble card-chat-reply">
+          <p className="card-chat-text">Loved building it with you.</p>
+          <span className="card-chat-author">SriVoraTech</span>
+        </div>
+      </div>
+
+      {/* Founder Footer Row */}
+      <div className="work-card-footer">
+        <div className="card-founder-avatar" style={{ background: work.gradient }}>
+          {work.clientName ? work.clientName.charAt(0) : 'B'}
+        </div>
+        <div className="card-founder-info">
+          <h4 className="card-founder-name">{work.clientName || 'Badisa Srikanth'}</h4>
+          <span className="card-founder-role">{work.clientRole || 'Founder & CEO'}</span>
+        </div>
+        <span className="card-view-details-link">
+          View <ArrowUpRight size={14} />
+        </span>
       </div>
 
       <div className={`work-card-overlay ${isHovered ? 'work-card-overlay--visible' : ''}`}>
         <span className="work-view-label">
           View Solution Details <ArrowUpRight size={16} />
         </span>
-      </div>
-
-      <div className="work-card-info">
-        <h3 className="work-card-title">{work.title}</h3>
-        <span className="work-card-category">{work.category}</span>
+        {work.liveUrl && (
+          <a
+            href={work.liveUrl}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="work-direct-live-btn"
+            onClick={(e) => e.stopPropagation()}
+          >
+            Launch Live Site <ExternalLink size={14} />
+          </a>
+        )}
       </div>
     </div>
   )
@@ -478,12 +801,26 @@ function ProjectDetailPage({ project, onClose, onSelectProject, allProjects }) {
         <div className="project-hero">
           <div className="project-hero-left">
             <div className="project-breadcrumb">
-              <span className="breadcrumb-link" onClick={onClose}>Products</span>
+              <span className="breadcrumb-link" onClick={onClose}>Our Work</span>
               <ChevronRight size={14} />
               <span className="breadcrumb-current">{project.id.toUpperCase()}</span>
             </div>
             <h1 className="project-hero-title">{project.headline}</h1>
-            <p className="project-hero-subtitle">Solution Overview by Founder:</p>
+            
+            {project.liveUrl && (
+              <div style={{ marginTop: '14px', marginBottom: '16px' }}>
+                <a
+                  href={project.liveUrl}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="hero-live-demo-btn"
+                >
+                  <Globe size={16} /> Launch Live Application ({project.liveUrl.replace('https://', '')}) <ExternalLink size={16} />
+                </a>
+              </div>
+            )}
+
+            <p className="project-hero-subtitle">A conversation with:</p>
             <div className="project-client-row">
               <div className="project-client-avatar" style={{ background: project.gradient }}>
                 {project.clientName.charAt(0)}
@@ -495,12 +832,18 @@ function ProjectDetailPage({ project, onClose, onSelectProject, allProjects }) {
             </div>
           </div>
           <div className="project-hero-right">
-            <div className="project-hero-banner" style={{ background: project.gradient }}>
-              <div className="hero-banner-content">
-                <span className="hero-banner-badge">{project.industry}</span>
-                <h3 className="hero-banner-title">{project.title.split(' - ')[0]}</h3>
-                <p className="hero-banner-sub">{project.category}</p>
-              </div>
+            <div className="project-hero-banner-frame" style={{ borderRadius: '20px', overflow: 'hidden', border: '1px solid rgba(0,0,0,0.1)', boxShadow: '0 12px 32px rgba(0,0,0,0.15)' }}>
+              {project.showcaseImg ? (
+                <img src={project.showcaseImg} alt={project.title} style={{ width: '100%', height: '280px', objectFit: 'cover', objectPosition: 'top center', display: 'block' }} />
+              ) : (
+                <div className="project-hero-banner" style={{ background: project.gradient }}>
+                  <div className="hero-banner-content">
+                    <span className="hero-banner-badge">{project.industry}</span>
+                    <h3 className="hero-banner-title">{project.title.split(' - ')[0]}</h3>
+                    <p className="hero-banner-sub">{project.category}</p>
+                  </div>
+                </div>
+              )}
             </div>
           </div>
         </div>
@@ -511,20 +854,56 @@ function ProjectDetailPage({ project, onClose, onSelectProject, allProjects }) {
           <aside className="project-sidebar-left">
             <div className="sidebar-section">
               <span className="sidebar-label">ABOUT</span>
-              <h4 className="sidebar-company">{project.id.toUpperCase()} <Link2 size={14} /></h4>
+              <h4 className="sidebar-company">
+                {project.id.toUpperCase()}{' '}
+                {project.liveUrl ? (
+                  <a
+                    href={project.liveUrl}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    style={{ color: '#0067f4', display: 'inline-flex', alignItems: 'center' }}
+                    title="Visit Live Application"
+                  >
+                    <ExternalLink size={14} />
+                  </a>
+                ) : (
+                  <Link2 size={14} />
+                )}
+              </h4>
               <p className="sidebar-desc">{project.about}</p>
+              {project.liveUrl && (
+                <div style={{ marginTop: '10px' }}>
+                  <a
+                    href={project.liveUrl}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="sidebar-live-link"
+                  >
+                    <Globe size={13} /> {project.liveUrl.replace('https://', '')}
+                  </a>
+                </div>
+              )}
             </div>
             <div className="sidebar-section">
-              <span className="sidebar-label">LOCATION</span>
+              <span className="sidebar-label">HQ</span>
               <p className="sidebar-value"><MapPin size={14} /> {project.hq}</p>
             </div>
             <div className="sidebar-section">
-              <span className="sidebar-label">CATEGORY</span>
+              <span className="sidebar-label">INDUSTRY</span>
               <p className="sidebar-value"><Building2 size={14} /> {project.industry}</p>
             </div>
             <div className="sidebar-section">
-              <span className="sidebar-label">TARGET USERS</span>
+              <span className="sidebar-label">COMPANY SIZE</span>
               <p className="sidebar-value"><Users size={14} /> {project.companySize}</p>
+            </div>
+
+            <div className="sidebar-section">
+              <span className="sidebar-label">SERVICES OFFERED</span>
+              <ul className="sidebar-services-list">
+                {project.servicesOffered.map((svc, i) => (
+                  <li key={i}>{svc}</li>
+                ))}
+              </ul>
             </div>
           </aside>
 
@@ -532,25 +911,41 @@ function ProjectDetailPage({ project, onClose, onSelectProject, allProjects }) {
           <main className="project-content">
             <blockquote className="project-hero-quote">
               <Quote size={24} className="quote-icon" style={{ color: project.color }} />
-              {project.heroQuote}
+              "{project.title.split(' - ')[0]} Brought to Life by SriVoraTech"
             </blockquote>
 
             <div className="content-divider" />
 
-            <h2 className="content-heading">The Industry Problem</h2>
+            <h2 className="content-heading">The Challenge</h2>
             <p className="content-text">{project.challenge}</p>
 
-            <h2 className="content-heading">SriVoraTech Solution Architecture</h2>
+            <blockquote className="project-closing-quote" style={{ color: project.color, margin: '20px 0' }}>
+              <Quote size={20} style={{ opacity: 0.5 }} />
+              "We had almost given up on building our dream enterprise portal until SriVoraTech took over."
+              <cite>— {project.clientName}, {project.clientRole}</cite>
+            </blockquote>
+
+            <h2 className="content-heading">Enter SriVoraTech: Turning Vision into Reality</h2>
             <p className="content-text">{project.solution}</p>
 
-            <h3 className="content-subheading">Engineering Approach</h3>
+            <h3 className="content-subheading">Our Approach</h3>
             <ul className="content-list">
               {project.approach.map((item, i) => (
                 <li key={i}>{item}</li>
               ))}
             </ul>
 
-            <h2 className="content-heading">Key Product Features</h2>
+            {/* Approach Section Image */}
+            {project.adminImg && (
+              <div className="project-section-image-box" style={{ margin: '28px 0', borderRadius: '16px', overflow: 'hidden', border: '1px solid rgba(0,0,0,0.1)', boxShadow: '0 8px 24px rgba(0,0,0,0.08)' }}>
+                <img src={project.adminImg} alt={`${project.title} Admin Dashboard`} style={{ width: '100%', height: 'auto', display: 'block', objectFit: 'cover' }} />
+                <span className="image-caption-tag" style={{ display: 'block', padding: '8px 16px', background: '#0f172a', color: '#94a3b8', fontSize: '12px', fontWeight: '600' }}>
+                  Student Dashboard — Live UI
+                </span>
+              </div>
+            )}
+
+            <h2 className="content-heading">Key Features at a Glance</h2>
             <ul className="content-list content-list--features">
               {project.features.map((feat, i) => (
                 <li key={i}>
@@ -560,42 +955,39 @@ function ProjectDetailPage({ project, onClose, onSelectProject, allProjects }) {
               ))}
             </ul>
 
-            <h2 className="content-heading">Verified Business Results</h2>
-            <ul className="content-list">
-              {project.resultsList.map((result, i) => (
-                <li key={i}>{result}</li>
-              ))}
-            </ul>
-
-            {/* Closing Founder Quote */}
-            <blockquote className="project-closing-quote" style={{ color: project.color }}>
-              <Quote size={20} style={{ opacity: 0.5 }} />
-              {project.closingQuote}
-              <cite>— {project.clientName}, {project.clientRole}</cite>
-            </blockquote>
-
-            {/* Tech Stack */}
-            <div className="project-tech-section">
-              <h3 className="content-subheading">Technologies Powered By</h3>
-              <div className="project-tech-tags">
-                {project.technologies.map(tech => (
-                  <span key={tech} className="project-tech-tag">{tech}</span>
-                ))}
-              </div>
-            </div>
-
-            {/* Interactive Prototype Frame Preview */}
-            <div className="interactive-prototype-container" style={{ borderColor: `${project.color}40` }}>
+            {/* Interactive Prototype & Live Frame */}
+            <div className="interactive-prototype-container" style={{ borderColor: `${project.color}40`, margin: '32px 0' }}>
               <div className="device-top-bar">
                 <div className="device-dots">
                   <span className="dot red" />
                   <span className="dot yellow" />
                   <span className="dot green" />
                 </div>
-                <div className="device-title-bar">{project.title} — Interactive Prototype</div>
-                <div className="device-status-badge" style={{ background: `${project.color}20`, color: project.color }}>
-                  ● Live Simulation
+                <div className="device-title-bar">
+                  {project.liveUrl ? (
+                    <a
+                      href={project.liveUrl}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      style={{ color: 'inherit', textDecoration: 'underline' }}
+                    >
+                      {project.liveUrl}
+                    </a>
+                  ) : (
+                    `${project.title} — Live Interactive Prototype`
+                  )}
                 </div>
+                {project.liveUrl && (
+                  <a
+                    href={project.liveUrl}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="device-status-badge"
+                    style={{ background: `${project.color}20`, color: project.color, textDecoration: 'none', cursor: 'pointer' }}
+                  >
+                    ● Open Live Application ↗
+                  </a>
+                )}
               </div>
               <div className="device-screen-content">
                 <div className="proto-metrics-header">
@@ -613,20 +1005,62 @@ function ProjectDetailPage({ project, onClose, onSelectProject, allProjects }) {
                   </div>
                 </div>
 
-                <div className="proto-mock-card" style={{ background: `linear-gradient(135deg, ${project.color}15, rgba(255,255,255,0.8))` }}>
-                  <h4>{project.headline}</h4>
-                  <p>{project.about}</p>
-                  <div className="proto-features-chips">
-                    {project.features.slice(0, 3).map((f, idx) => (
-                      <span key={idx} className="proto-chip">✓ {f}</span>
-                    ))}
+                {project.showcaseImg && (
+                  <div className="proto-showcase-img-container" style={{ margin: '16px 0', borderRadius: '12px', overflow: 'hidden', border: '1px solid rgba(0,0,0,0.1)', boxShadow: '0 8px 24px rgba(0,0,0,0.12)' }}>
+                    <img src={project.showcaseImg} alt={`${project.title} UI Showcase`} style={{ width: '100%', height: 'auto', display: 'block', objectFit: 'cover' }} />
                   </div>
+                )}
+              </div>
+            </div>
+
+            <h2 className="content-heading">Results: Why SriVoraTech is the Best</h2>
+            <ul className="content-list">
+              {project.resultsList.map((result, i) => (
+                <li key={i}>{result}</li>
+              ))}
+            </ul>
+
+            <blockquote className="project-closing-quote" style={{ color: project.color }}>
+              <Quote size={20} style={{ opacity: 0.5 }} />
+              {project.closingQuote}
+              <cite>— {project.clientName}, {project.clientRole}</cite>
+            </blockquote>
+
+            {/* Gallery Section — Slideshow + See All Pics */}
+            {project.galleryImgs && project.galleryImgs.length > 0 && (
+              <div className="project-gallery-section" style={{ margin: '40px 0' }}>
+                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '16px' }}>
+                  <h2 className="content-heading" style={{ margin: 0 }}>Gallery: See the Experience</h2>
                 </div>
+                <div style={{ borderRadius: '16px', overflow: 'hidden', border: '1px solid rgba(0,0,0,0.1)', boxShadow: '0 8px 24px rgba(0,0,0,0.08)' }}>
+                  <ImageSlideshow images={project.galleryImgs} interval={4000} height="420px" showControls={true} showThumbnails={true} />
+                </div>
+                <GalleryLightbox images={project.galleryImgs} color={project.color} />
+              </div>
+            )}
+            {/* Tech Stack */}
+            <div className="project-tech-section">
+              <h3 className="content-subheading">Technologies Powered By</h3>
+              <div className="project-tech-tags">
+                {project.technologies.map(tech => (
+                  <span key={tech} className="project-tech-tag">{tech}</span>
+                ))}
               </div>
             </div>
 
             {/* CTA */}
-            <div className="project-cta-section">
+            <div className="project-cta-section" style={{ display: 'flex', gap: '16px', flexWrap: 'wrap', justifyContent: 'center', marginTop: '40px' }}>
+              {project.liveUrl && (
+                <a
+                  href={project.liveUrl}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="project-cta-btn project-cta-btn--live"
+                  style={{ background: project.gradient || '#0067f4' }}
+                >
+                  <Globe size={18} /> Launch Live Application <ExternalLink size={18} />
+                </a>
+              )}
               <a href="#contact" className="project-cta-btn" onClick={onClose}>
                 Request Demo or Custom Build <ArrowUpRight size={18} />
               </a>
@@ -654,12 +1088,26 @@ function ProjectDetailPage({ project, onClose, onSelectProject, allProjects }) {
               <div
                 key={p.id}
                 className="suggestion-card"
-                onClick={() => onSelectProject(p)}
+                onClick={() => {
+                  onSelectProject(p)
+                  if (pageRef.current) {
+                    pageRef.current.scrollTo({ top: 0, behavior: 'smooth' })
+                  }
+                }}
                 role="button"
                 tabIndex={0}
               >
-                <div className="suggestion-card-image" style={{ background: p.gradient }}>
-                  <span className="suggestion-badge">{p.category}</span>
+                <div className="suggestion-card-image" style={{ background: p.gradient, position: 'relative', overflow: 'hidden', minHeight: '140px' }}>
+                  {p.showcaseImg && (
+                    <img
+                      src={p.showcaseImg}
+                      alt={p.title}
+                      style={{ width: '100%', height: '100%', objectFit: 'cover', objectPosition: 'top center', position: 'absolute', inset: 0 }}
+                    />
+                  )}
+                  <span className="suggestion-badge" style={{ position: 'relative', zIndex: 2, background: 'rgba(15, 23, 42, 0.75)', backdropFilter: 'blur(8px)' }}>
+                    {p.category}
+                  </span>
                 </div>
                 <div className="suggestion-card-info">
                   <h4>{p.title}</h4>
