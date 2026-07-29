@@ -30,6 +30,7 @@
 - **Full Name**: Badisa Srikanth (Srikanth Badisa)
 - **Title**: Founder & CEO
 - **Email**: srikanthbsqy@gmail.com
+- **Profile Page**: https://srivoratech.in/founder
 - **LinkedIn**: https://www.linkedin.com/in/srikanthbadisa/
 - **GitHub**: https://github.com/Rajupeace
 - **Photo**: https://srivoratech.in/badisa_srikanth.jpg

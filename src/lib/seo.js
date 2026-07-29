@@ -153,6 +153,14 @@ export const PAGE_SEO_DATA = {
     ogType: 'website',
     ogImage: 'https://srivoratech.in/og-image.png'
   },
+  '/founder': {
+    title: 'Founder of SriVoraTech | Badisa Srikanth',
+    description: 'Official biography, vision, and leadership profile of Badisa Srikanth, Founder & CEO of SriVoraTech. Leading custom software development, AI solutions, web & mobile engineering, and cloud platforms.',
+    keywords: 'Founder of SriVoraTech, Badisa Srikanth, Srikanth Badisa, SriVoraTech CEO, SriVoraTech Founder, Software Development Company, AI Solutions Company, Web Design & Development, Mobile App Development, Cloud Solutions, Digital Transformation',
+    canonical: 'https://srivoratech.in/founder',
+    ogType: 'profile',
+    ogImage: 'https://srivoratech.in/badisa_srikanth.jpg'
+  },
   '/seo-dashboard': {
     title: 'Live Technical SEO Audit & Diagnostics Dashboard | SriVoraTech',
     description: 'Interactive SEO audit dashboard monitoring Core Web Vitals, ALT tag compliance, broken links, schema validity, search console index status, and 100/100 Lighthouse score.',
@@ -318,6 +326,172 @@ export function generateFAQSchema(faqs) {
       }
     }))
   }
+}
+
+// Generate complete Founder Page JSON-LD Schemas (Organization, Person, ProfilePage, AboutPage, Breadcrumb, FAQ)
+export function generateFounderPageSchemas() {
+  const founderPersonSchema = {
+    '@context': 'https://schema.org',
+    '@type': 'Person',
+    '@id': 'https://srivoratech.in/#badisa-srikanth',
+    name: 'Badisa Srikanth',
+    alternateName: [
+      'Srikanth Badisa',
+      'Badisa Srikanth Founder',
+      'Srikanth Badisa Founder',
+      'Badisa Srikanth CEO',
+      'Srikanth Badisa CEO',
+      'Badisa Srikanth SriVoraTech',
+      'Srikanth Badisa SriVoraTech',
+      'Founder of SriVoraTech',
+      'CEO of SriVoraTech'
+    ],
+    givenName: 'Srikanth',
+    familyName: 'Badisa',
+    jobTitle: 'Founder & Chief Executive Officer (CEO)',
+    description: 'Badisa Srikanth is the Founder and CEO of SriVoraTech. He founded the company to help startups, businesses, and enterprises build modern digital products through AI, custom software, cloud technologies, web applications, and mobile applications. His focus is on innovation, scalable technology, and delivering high-quality software solutions.',
+    image: {
+      '@type': 'ImageObject',
+      '@id': 'https://srivoratech.in/badisa_srikanth.jpg#image',
+      url: 'https://srivoratech.in/badisa_srikanth.jpg',
+      contentUrl: 'https://srivoratech.in/badisa_srikanth.jpg',
+      caption: 'Badisa Srikanth (Srikanth Badisa) - Founder & CEO of SriVoraTech',
+      name: 'Badisa Srikanth Founder Photo',
+      width: 1024,
+      height: 1024
+    },
+    url: 'https://srivoratech.in/founder',
+    email: 'srikanthbsqy@gmail.com',
+    nationality: {
+      '@type': 'Country',
+      name: 'India'
+    },
+    knowsAbout: [
+      'Artificial Intelligence',
+      'Software Engineering',
+      'Web Development',
+      'Mobile App Development',
+      'Cloud Computing',
+      'UI/UX Design',
+      'Business Automation',
+      'Digital Transformation'
+    ],
+    worksFor: {
+      '@type': 'Organization',
+      name: 'SriVoraTech',
+      url: 'https://srivoratech.in',
+      '@id': 'https://srivoratech.in/#organization'
+    },
+    sameAs: [
+      'https://www.linkedin.com/in/srikanthbadisa/',
+      'https://github.com/Rajupeace',
+      'https://x.com/srivorateclrqn',
+      'https://srivoratech.in/founder'
+    ]
+  }
+
+  const organizationSchema = {
+    '@context': 'https://schema.org',
+    '@type': 'Organization',
+    '@id': 'https://srivoratech.in/#organization',
+    name: 'SriVoraTech',
+    alternateName: ['Sri Vora Tech', 'SriVoraTech Technologies', 'SriVoraTech IT Solutions'],
+    legalName: 'SriVoraTech Technologies',
+    url: 'https://srivoratech.in',
+    logo: {
+      '@type': 'ImageObject',
+      url: 'https://srivoratech.in/favicon.svg',
+      width: 512,
+      height: 512
+    },
+    image: 'https://srivoratech.in/badisa_srikanth.jpg',
+    description: 'SriVoraTech is a next-generation IT services startup delivering enterprise software development, AI-powered solutions, web & mobile app engineering, cloud architecture, cybersecurity, and digital transformation services for global businesses.',
+    slogan: 'Engineering High-Performance Digital Products',
+    foundingDate: '2024',
+    founder: founderPersonSchema,
+    sameAs: [
+      'https://www.facebook.com/p/SriVoratech-SriVoratech-61591870486562/',
+      'https://x.com/srivorateclrqn',
+      'https://www.instagram.com/srivora_tech',
+      'https://www.linkedin.com/in/srikanthbadisa/',
+      'https://github.com/Rajupeace/SriVoraTech',
+      'https://srivoratech.in'
+    ]
+  }
+
+  const profilePageSchema = {
+    '@context': 'https://schema.org',
+    '@type': 'ProfilePage',
+    '@id': 'https://srivoratech.in/founder#profilepage',
+    name: 'Founder of SriVoraTech | Badisa Srikanth',
+    url: 'https://srivoratech.in/founder',
+    dateCreated: '2024-01-01',
+    dateModified: '2026-07-29',
+    mainEntity: founderPersonSchema
+  }
+
+  const aboutPageSchema = {
+    '@context': 'https://schema.org',
+    '@type': 'AboutPage',
+    '@id': 'https://srivoratech.in/founder#aboutpage',
+    name: 'About Founder Badisa Srikanth — SriVoraTech Leadership',
+    url: 'https://srivoratech.in/founder',
+    description: 'Executive biography, technical background, vision, and leadership profile of Badisa Srikanth, Founder & CEO of SriVoraTech.',
+    publisher: {
+      '@id': 'https://srivoratech.in/#organization'
+    }
+  }
+
+  const breadcrumbSchema = {
+    '@context': 'https://schema.org',
+    '@type': 'BreadcrumbList',
+    itemListElement: [
+      { '@type': 'ListItem', position: 1, name: 'Home', item: 'https://srivoratech.in/' },
+      { '@type': 'ListItem', position: 2, name: 'About Us', item: 'https://srivoratech.in/about' },
+      { '@type': 'ListItem', position: 3, name: 'Founder Profile', item: 'https://srivoratech.in/founder' }
+    ]
+  }
+
+  const faqSchema = {
+    '@context': 'https://schema.org',
+    '@type': 'FAQPage',
+    mainEntity: [
+      {
+        '@type': 'Question',
+        name: 'Who is the founder of SriVoraTech?',
+        acceptedAnswer: {
+          '@type': 'Answer',
+          text: 'Badisa Srikanth is the Founder and Chief Executive Officer (CEO) of SriVoraTech.'
+        }
+      },
+      {
+        '@type': 'Question',
+        name: 'What is Badisa Srikanth\'s role at SriVoraTech?',
+        acceptedAnswer: {
+          '@type': 'Answer',
+          text: 'As Founder & CEO, Badisa Srikanth leads SriVoraTech\'s vision, product strategy, technical architecture, and global business growth.'
+        }
+      },
+      {
+        '@type': 'Question',
+        name: 'What are Badisa Srikanth\'s areas of expertise?',
+        acceptedAnswer: {
+          '@type': 'Answer',
+          text: 'Badisa Srikanth specializes in Artificial Intelligence, Software Engineering, Web Development, Mobile App Development, Cloud Computing, UI/UX Design, Business Automation, and Digital Transformation.'
+        }
+      },
+      {
+        '@type': 'Question',
+        name: 'What is Badisa Srikanth\'s vision for SriVoraTech?',
+        acceptedAnswer: {
+          '@type': 'Answer',
+          text: 'His vision is to build SriVoraTech into a globally trusted technology company delivering innovative digital solutions for businesses worldwide.'
+        }
+      }
+    ]
+  }
+
+  return [organizationSchema, founderPersonSchema, profilePageSchema, aboutPageSchema, breadcrumbSchema, faqSchema]
 }
 
 // Update DOM head tags for single page routing

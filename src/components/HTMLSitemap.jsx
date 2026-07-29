@@ -10,6 +10,7 @@ export default function HTMLSitemap({ onNavigate }) {
       links: [
         { name: 'Home Page', path: '/' },
         { name: 'About SriVoraTech', path: '/about' },
+        { name: 'Founder Profile (Badisa Srikanth)', path: '/founder' },
         { name: 'All Services', path: '/services' },
         { name: 'Case Studies & Works', path: '/case-studies' },
         { name: 'Pricing & Estimator', path: '/pricing' },

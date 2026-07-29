@@ -34,6 +34,7 @@ const BlogPost = lazy(() => import('./components/BlogPost'))
 const CaseStudiesPage = lazy(() => import('./components/CaseStudiesPage'))
 const PricingPage = lazy(() => import('./components/PricingPage'))
 const HTMLSitemap = lazy(() => import('./components/HTMLSitemap'))
+const FounderPage = lazy(() => import('./components/FounderPage'))
 
 export default function App() {
   const glowRef = useRef(null)
@@ -135,6 +136,10 @@ export default function App() {
 
     if (currentPath === '/about') {
       return <AboutPage onNavigate={navigate} />
+    }
+
+    if (currentPath === '/founder') {
+      return <FounderPage onNavigate={navigate} />
     }
 
     if (currentPath === '/pricing') {

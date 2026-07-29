@@ -3,21 +3,41 @@ import { Menu, X, ArrowRight, Zap, Sparkles } from 'lucide-react'
 import './Navbar.css'
 
 const navLinks = [
+  { label: 'About', href: '/about', isRoute: true },
+  { label: 'Founder', href: '/founder', isRoute: true },
   { label: 'Services', href: '#services' },
   { label: 'Estimator', href: '#estimator' },
   { label: 'Tech Stack', href: '#tech-stack' },
   { label: 'Our Work', href: '#our-works' },
   { label: 'Leadership', href: '#leadership' },
-  { label: 'Ratings', href: '#website-rating' },
-  { label: 'FAQs', href: '#faq' },
-  { label: 'Careers', href: '#careers' },
+  { label: 'Careers', href: '/careers', isRoute: true },
   { label: 'Contact', href: '#contact' },
 ]
 
-export default function Navbar() {
+export default function Navbar({ onNavigate }) {
   const [mobileOpen, setMobileOpen] = useState(false)
   const [scrolled, setScrolled] = useState(false)
   const [activeSection, setActiveSection] = useState('')
+
+  const handleLinkClick = (e, link) => {
+    if (link.isRoute) {
+      e.preventDefault()
+      if (onNavigate) {
+        onNavigate(link.href)
+      } else {
+        window.location.href = link.href
+      }
+      setMobileOpen(false)
+    } else if (window.location.pathname !== '/') {
+      e.preventDefault()
+      if (onNavigate) {
+        onNavigate(`/${link.href}`)
+      } else {
+        window.location.href = `/${link.href}`
+      }
+      setMobileOpen(false)
+    }
+  }
 
   useEffect(() => {
     const handleScroll = () => {
@@ -75,6 +95,7 @@ export default function Navbar() {
                   key={link.href}
                   className={`navbar-link ${isActive ? 'active' : ''}`}
                   href={link.href}
+                  onClick={(e) => handleLinkClick(e, link)}
                 >
                   {link.label}
                   {isActive && <span className="active-dot-indicator" />}
@@ -101,7 +122,7 @@ export default function Navbar() {
                 key={link.href}
                 className="navbar-mobile-link"
                 href={link.href}
-                onClick={() => setMobileOpen(false)}
+                onClick={(e) => handleLinkClick(e, link)}
               >
                 {link.label}
               </a>

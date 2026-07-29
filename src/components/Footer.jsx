@@ -4,12 +4,14 @@ import { ArrowRight, Zap, CheckCircle2, Mail, Shield, FileText, Scale, Copyright
 import './Footer.css'
 
 const companyLinks = [
+  { label: 'About Us', href: '/about', isRoute: true },
+  { label: 'Founder Profile', href: '/founder', isRoute: true },
   { label: 'Services', href: '#services' },
   { label: 'Project Estimator', href: '#estimator' },
   { label: 'Tech Stack', href: '#tech-stack' },
   { label: 'Our Work', href: '#our-works' },
   { label: 'FAQs', href: '#faq' },
-  { label: 'Careers', href: '#careers' },
+  { label: 'Careers', href: '/careers', isRoute: true },
   { label: 'Contact', href: '#contact' },
 ]
 
@@ -32,11 +34,29 @@ const socialLinks = [
   { label: 'LinkedIn', href: 'https://www.linkedin.com/in/srikanthbadisa/' },
 ]
 
-export default function Footer() {
+export default function Footer({ onNavigate }) {
   const [ref, isVisible] = useScrollAnimation()
   const [subscribed, setSubscribed] = useState(false)
   const [emailInput, setEmailInput] = useState('')
   const [activeLegal, setActiveLegal] = useState(null)
+
+  const handleLinkClick = (e, link) => {
+    if (link.isRoute) {
+      e.preventDefault()
+      if (onNavigate) {
+        onNavigate(link.href)
+      } else {
+        window.location.href = link.href
+      }
+    } else if (window.location.pathname !== '/') {
+      e.preventDefault()
+      if (onNavigate) {
+        onNavigate(`/${link.href}`)
+      } else {
+        window.location.href = `/${link.href}`
+      }
+    }
+  }
 
   const handleNewsletterSubmit = (e) => {
     e.preventDefault()
@@ -84,7 +104,7 @@ export default function Footer() {
             <h4 className="footer-heading">Navigation</h4>
             <div className="footer-link-list">
               {companyLinks.map((link) => (
-                <a key={link.href} className="footer-link" href={link.href}>
+                <a key={link.href} className="footer-link" href={link.href} onClick={(e) => handleLinkClick(e, link)}>
                   {link.label}
                 </a>
               ))}
