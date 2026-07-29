@@ -390,17 +390,42 @@
     <script type="application/ld+json">
     {
       "@context": "https://schema.org",
-      "@type": "ProfessionalService",
+      "@type": ["ProfessionalService", "LocalBusiness", "Corporation"],
       "name": "SriVoraTech IT Solutions",
-      "image": "https://srivoratech.in/og-image.png",
+      "alternateName": ["SriVoraTech", "Sri Vora Tech", "SriVoraTech Technologies"],
+      "image": "https://srivoratech.in/badisa_srikanth.jpg",
+      "logo": "https://srivoratech.in/favicon.svg",
       "@id": "https://srivoratech.in/#professional-service",
       "url": "https://srivoratech.in",
-      "priceRange": "$$",
+      "telephone": "+91-9182030946",
+      "email": "srikanth@srivoratech.in",
+      "priceRange": "$$$",
+      "currenciesAccepted": "INR, USD, EUR, GBP, AED",
+      "paymentAccepted": "Credit Card, Wire Transfer, UPI, PayPal, Net Banking",
       "address": {
         "@type": "PostalAddress",
+        "streetAddress": "SriVoraTech Tech Hub, HITEC City",
         "addressLocality": "Hyderabad",
         "addressRegion": "Telangana",
+        "postalCode": "500081",
         "addressCountry": "IN"
+      },
+      "geo": {
+        "@type": "GeoCoordinates",
+        "latitude": 17.4486,
+        "longitude": 78.3808
+      },
+      "hasMap": "https://maps.google.com/?q=SriVoraTech+Hyderabad",
+      "openingHoursSpecification": [
+        {
+          "@type": "OpeningHoursSpecification",
+          "dayOfWeek": ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"],
+          "opens": "09:00",
+          "closes": "20:00"
+        }
+      ],
+      "founder": {
+        "@id": "https://srivoratech.in/#badisa-srikanth"
       },
       "aggregateRating": {
         "@type": "AggregateRating",
