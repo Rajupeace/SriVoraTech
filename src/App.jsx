@@ -194,7 +194,7 @@ export default function App() {
   return (
     <div className="app">
       <SEO pathname={currentPath} />
-      <Analytics gaId="G-MEASUREMENT_ID" gtmId="GTM-TAG_ID" />
+      <Analytics gaId="G-HH0PJXC25F" gtmId="GTM-MNG59GDZ" />
 
       {/* Opening Splash Overlay */}
       {showSplash && currentPath === '/' && <WelcomeSplash onComplete={() => setShowSplash(false)} />}
