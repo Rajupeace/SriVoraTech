@@ -19,10 +19,17 @@ app.use(express.urlencoded({ extended: true }))
 app.use((req, res, next) => {
   res.setHeader(
     'Content-Security-Policy',
-    "default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://api.fontshare.com https://cdn.fontshare.com; font-src 'self' data: https://fonts.gstatic.com https://api.fontshare.com https://cdn.fontshare.com; img-src 'self' data: https: blob:; connect-src 'self' https:;"
+    "default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval' https://www.googletagmanager.com https://www.google-analytics.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://api.fontshare.com https://cdn.fontshare.com; font-src 'self' data: https://fonts.gstatic.com https://api.fontshare.com https://cdn.fontshare.com; img-src 'self' data: https: blob:; connect-src 'self' https: https://www.google-analytics.com;"
   )
+  res.setHeader('Strict-Transport-Security', 'max-age=31536000; includeSubDomains; preload')
+  res.setHeader('X-Content-Type-Options', 'nosniff')
+  res.setHeader('X-Frame-Options', 'SAMEORIGIN')
+  res.setHeader('Referrer-Policy', 'strict-origin-when-cross-origin')
+  res.setHeader('Permissions-Policy', 'camera=(), microphone=(), geolocation=()')
+  res.setHeader('Last-Modified', new Date().toUTCString())
   next()
 })
+
 
 // Create uploads directory if it doesn't exist
 const uploadsDir = path.join(process.cwd(), 'uploads')
@@ -811,9 +818,87 @@ app.get('/api/applications', (req, res) => {
   res.json(applications)
 })
 
+// SEO & Googlebot Search Engine Endpoints
+const publicDir = path.join(process.cwd(), 'public')
+
+app.get('/sitemap.xml', (req, res) => {
+  res.setHeader('Content-Type', 'application/xml; charset=utf-8')
+  res.setHeader('Last-Modified', new Date().toUTCString())
+  res.setHeader('Cache-Control', 'public, max-age=86400')
+  res.sendFile(path.join(publicDir, 'sitemap.xml'))
+})
+
+app.get('/sitemap_index.xml', (req, res) => {
+  res.setHeader('Content-Type', 'application/xml; charset=utf-8')
+  res.setHeader('Last-Modified', new Date().toUTCString())
+  res.setHeader('Cache-Control', 'public, max-age=86400')
+  res.sendFile(path.join(publicDir, 'sitemap_index.xml'))
+})
+
+app.get('/robots.txt', (req, res) => {
+  res.setHeader('Content-Type', 'text/plain; charset=utf-8')
+  res.setHeader('Last-Modified', new Date().toUTCString())
+  res.setHeader('Cache-Control', 'public, max-age=86400')
+  res.sendFile(path.join(publicDir, 'robots.txt'))
+})
+
+app.get('/llms.txt', (req, res) => {
+  res.setHeader('Content-Type', 'text/plain; charset=utf-8')
+  res.setHeader('Last-Modified', new Date().toUTCString())
+  res.setHeader('Cache-Control', 'public, max-age=86400')
+  res.sendFile(path.join(publicDir, 'llms.txt'))
+})
+
+app.get('/llms-full.txt', (req, res) => {
+  res.setHeader('Content-Type', 'text/plain; charset=utf-8')
+  res.setHeader('Last-Modified', new Date().toUTCString())
+  res.setHeader('Cache-Control', 'public, max-age=86400')
+  res.sendFile(path.join(publicDir, 'llms-full.txt'))
+})
+
+app.get('/badisa_srikanth.jpg', (req, res) => {
+  res.setHeader('Content-Type', 'image/jpeg')
+  res.setHeader('Last-Modified', new Date().toUTCString())
+  res.setHeader('Cache-Control', 'public, max-age=31536000, immutable')
+  res.sendFile(path.join(publicDir, 'badisa_srikanth.jpg'))
+})
+
+app.get('/googlec044c7d9ae43ea3b.html', (req, res) => {
+  res.setHeader('Content-Type', 'text/html; charset=utf-8')
+  res.setHeader('Last-Modified', new Date().toUTCString())
+  res.sendFile(path.join(publicDir, 'googlec044c7d9ae43ea3b.html'))
+})
+
+// Serve static assets from dist (compiled bundle) & public directories
+const distDir = path.join(process.cwd(), 'dist')
+
+if (fs.existsSync(distDir)) {
+  app.use(express.static(distDir))
+}
+app.use(express.static(publicDir))
+
 // Health check endpoint
 app.get('/api/health', (req, res) => {
-  res.json({ status: 'ok', message: 'Server is running' })
+  res.json({ status: 'ok', message: 'Server is running', serverTime: new Date().toISOString() })
+})
+
+// SPA Fallback Route for search bots and browser navigation
+app.get('*', (req, res, next) => {
+  if (req.path.startsWith('/api/')) return next()
+  
+  const distIndex = path.join(distDir, 'index.html')
+  const rootIndex = path.join(process.cwd(), 'index.html')
+  
+  res.setHeader('Content-Type', 'text/html; charset=utf-8')
+  res.setHeader('Last-Modified', new Date().toUTCString())
+  
+  if (fs.existsSync(distIndex)) {
+    return res.sendFile(distIndex)
+  }
+  if (fs.existsSync(rootIndex)) {
+    return res.sendFile(rootIndex)
+  }
+  next()
 })
 
 // Error handling middleware

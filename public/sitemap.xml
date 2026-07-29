@@ -1,74 +1,148 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
-        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-        xsi:schemaLocation="http://www.sitemaps.org/schemas/sitemap/0.9
-        http://www.sitemaps.org/schemas/sitemap/0.9/sitemap.xsd">
+        xmlns:image="http://www.google.com/schemas/sitemap-image/1.1"
+        xmlns:xhtml="http://www.w3.org/1999/xhtml">
 
-  <!-- Homepage -->
+  <!-- Core Pages -->
   <url>
     <loc>https://srivoratech.in/</loc>
     <lastmod>2026-07-29</lastmod>
-    <changefreq>weekly</changefreq>
+    <changefreq>daily</changefreq>
     <priority>1.0</priority>
+    <xhtml:link rel="alternate" hreflang="en-in" href="https://srivoratech.in/" />
+    <xhtml:link rel="alternate" hreflang="en-us" href="https://srivoratech.in/" />
+    <xhtml:link rel="alternate" hreflang="en-gb" href="https://srivoratech.in/" />
+    <xhtml:link rel="alternate" hreflang="en-ca" href="https://srivoratech.in/" />
+    <xhtml:link rel="alternate" hreflang="en-au" href="https://srivoratech.in/" />
+    <xhtml:link rel="alternate" hreflang="en-ae" href="https://srivoratech.in/" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://srivoratech.in/" />
+    <image:image>
+      <image:loc>https://srivoratech.in/badisa_srikanth.jpg</image:loc>
+      <image:title>SriVoraTech Founder &amp; CEO Badisa Srikanth</image:title>
+    </image:image>
   </url>
 
-  <!-- Services Section -->
   <url>
-    <loc>https://srivoratech.in/#services</loc>
+    <loc>https://srivoratech.in/about</loc>
     <lastmod>2026-07-29</lastmod>
-    <changefreq>monthly</changefreq>
+    <changefreq>weekly</changefreq>
     <priority>0.9</priority>
   </url>
 
-  <!-- Leadership / Founders -->
   <url>
-    <loc>https://srivoratech.in/#leadership</loc>
+    <loc>https://srivoratech.in/services</loc>
     <lastmod>2026-07-29</lastmod>
-    <changefreq>monthly</changefreq>
+    <changefreq>weekly</changefreq>
+    <priority>0.95</priority>
+  </url>
+
+  <!-- Individual Service Pages -->
+  <url>
+    <loc>https://srivoratech.in/services/web-development</loc>
+    <lastmod>2026-07-29</lastmod>
+    <changefreq>weekly</changefreq>
     <priority>0.9</priority>
   </url>
 
-  <!-- Our Work Showcase -->
   <url>
-    <loc>https://srivoratech.in/#our-works</loc>
+    <loc>https://srivoratech.in/services/mobile-app-development</loc>
+    <lastmod>2026-07-29</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.9</priority>
+  </url>
+
+  <url>
+    <loc>https://srivoratech.in/services/ai-development</loc>
+    <lastmod>2026-07-29</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.95</priority>
+  </url>
+
+  <url>
+    <loc>https://srivoratech.in/services/custom-software</loc>
+    <lastmod>2026-07-29</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.9</priority>
+  </url>
+
+  <url>
+    <loc>https://srivoratech.in/services/cloud-services</loc>
+    <lastmod>2026-07-29</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.85</priority>
+  </url>
+
+  <url>
+    <loc>https://srivoratech.in/services/ui-ux-design</loc>
+    <lastmod>2026-07-29</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.85</priority>
+  </url>
+
+  <url>
+    <loc>https://srivoratech.in/services/seo-services</loc>
+    <lastmod>2026-07-29</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.9</priority>
+  </url>
+
+  <!-- Case Studies & Portfolio -->
+  <url>
+    <loc>https://srivoratech.in/case-studies</loc>
+    <lastmod>2026-07-29</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.85</priority>
+  </url>
+
+  <!-- Pricing Page -->
+  <url>
+    <loc>https://srivoratech.in/pricing</loc>
+    <lastmod>2026-07-29</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.85</priority>
+  </url>
+
+  <!-- Careers -->
+  <url>
+    <loc>https://srivoratech.in/careers</loc>
     <lastmod>2026-07-29</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
 
-  <!-- Tech Stack -->
+  <!-- Blog Hub -->
   <url>
-    <loc>https://srivoratech.in/#tech-stack</loc>
+    <loc>https://srivoratech.in/blog</loc>
+    <lastmod>2026-07-29</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>0.9</priority>
+  </url>
+
+  <!-- Contact Us -->
+  <url>
+    <loc>https://srivoratech.in/contact</loc>
     <lastmod>2026-07-29</lastmod>
     <changefreq>monthly</changefreq>
+    <priority>0.85</priority>
+  </url>
+
+  <!-- Built-in SEO Audit Dashboard -->
+  <url>
+    <loc>https://srivoratech.in/seo-dashboard</loc>
+    <lastmod>2026-07-29</lastmod>
+    <changefreq>weekly</changefreq>
     <priority>0.7</priority>
   </url>
 
-  <!-- Ratings -->
+  <!-- HTML Sitemap -->
   <url>
-    <loc>https://srivoratech.in/#ratings</loc>
+    <loc>https://srivoratech.in/sitemap</loc>
     <lastmod>2026-07-29</lastmod>
-    <changefreq>monthly</changefreq>
+    <changefreq>weekly</changefreq>
     <priority>0.7</priority>
   </url>
 
-  <!-- Project Cost Estimator -->
-  <url>
-    <loc>https://srivoratech.in/#estimator</loc>
-    <lastmod>2026-07-29</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.7</priority>
-  </url>
-
-  <!-- Contact -->
-  <url>
-    <loc>https://srivoratech.in/#contact</loc>
-    <lastmod>2026-07-29</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.8</priority>
-  </url>
-
-  <!-- LLMs Information File -->
+  <!-- LLM Context Files -->
   <url>
     <loc>https://srivoratech.in/llms.txt</loc>
     <lastmod>2026-07-29</lastmod>
@@ -76,19 +150,10 @@
     <priority>0.6</priority>
   </url>
 
-  <!-- LLMs Full Information File -->
   <url>
     <loc>https://srivoratech.in/llms-full.txt</loc>
     <lastmod>2026-07-29</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.6</priority>
-  </url>
-
-  <!-- Founder Photo -->
-  <url>
-    <loc>https://srivoratech.in/badisa_srikanth.jpg</loc>
-    <lastmod>2026-07-29</lastmod>
-    <changefreq>yearly</changefreq>
-    <priority>0.5</priority>
   </url>
 </urlset>

@@ -1,6 +1,7 @@
 # SriVoraTech — Detailed Company Information
 
 > Full-text version of llms.txt for comprehensive AI/LLM training data.
+> **Last Updated**: July 29, 2026
 
 ## About SriVoraTech
 

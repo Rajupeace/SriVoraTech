@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef } from 'react'
+import { useState, useEffect, useRef, lazy, Suspense } from 'react'
 import Navbar from './components/Navbar'
 import Hero from './components/Hero'
 import ProjectCards from './components/ProjectCards'
@@ -20,26 +20,48 @@ import PreFooterCTA from './components/PreFooterCTA'
 import Footer from './components/Footer'
 import FloatingActions from './components/FloatingActions'
 import AIChatWidget from './components/AIChatWidget'
-import CareersPage from './components/CareersPage'
 import WelcomeSplash from './components/WelcomeSplash'
+import SEO from './components/SEO'
+import Analytics from './components/Analytics'
+
+// Lazy-loaded routes for code-splitting and performance
+const CareersPage = lazy(() => import('./components/CareersPage'))
+const SEODashboard = lazy(() => import('./components/SEODashboard'))
+const AboutPage = lazy(() => import('./components/AboutPage'))
+const ServiceDetailPage = lazy(() => import('./components/ServiceDetailPage'))
+const BlogHub = lazy(() => import('./components/BlogHub'))
+const BlogPost = lazy(() => import('./components/BlogPost'))
+const CaseStudiesPage = lazy(() => import('./components/CaseStudiesPage'))
+const PricingPage = lazy(() => import('./components/PricingPage'))
+const HTMLSitemap = lazy(() => import('./components/HTMLSitemap'))
 
 export default function App() {
   const glowRef = useRef(null)
-  const [showCareers, setShowCareers] = useState(false)
+  const [currentPath, setCurrentPath] = useState(window.location.pathname)
+  const [currentHash, setCurrentHash] = useState(window.location.hash)
   const [showSplash, setShowSplash] = useState(true)
+  const [selectedPostSlug, setSelectedPostSlug] = useState(null)
+
+  const navigate = (path) => {
+    let target = path.startsWith('/') ? path : `/${path}`
+    window.history.pushState({}, '', target)
+    setCurrentPath(target)
+    setSelectedPostSlug(null)
+    window.scrollTo({ top: 0, behavior: 'smooth' })
+  }
 
   useEffect(() => {
-    const handleHashChange = () => {
-      if (window.location.hash === '#careers') {
-        setShowCareers(true)
-      } else {
-        setShowCareers(false)
-      }
+    const handlePopState = () => {
+      setCurrentPath(window.location.pathname)
+      setCurrentHash(window.location.hash)
     }
 
-    handleHashChange()
-    window.addEventListener('hashchange', handleHashChange)
-    return () => window.removeEventListener('hashchange', handleHashChange)
+    window.addEventListener('popstate', handlePopState)
+    window.addEventListener('hashchange', handlePopState)
+    return () => {
+      window.removeEventListener('popstate', handlePopState)
+      window.removeEventListener('hashchange', handlePopState)
+    }
   }, [])
 
   useEffect(() => {
@@ -56,7 +78,6 @@ export default function App() {
         })
       }
 
-      // Interactive card mouse-follow spotlight & 3D tilt
       const card = e.target.closest(
         '.challenge-card, .service-card, .why-card, .leader-card, .team-discipline-card, .work-card, .achievement-card, .onboarding-step, .faq-item, .project-card, .spotlight-card, .estimator-card, .rating-card'
       )
@@ -102,25 +123,47 @@ export default function App() {
     }
   }, [])
 
-  if (showCareers) {
+  // Render Sub-pages cleanly
+  const renderContent = () => {
+    if (currentPath === '/careers' || currentHash === '#careers') {
+      return <CareersPage onBack={() => navigate('/')} />
+    }
+
+    if (currentPath === '/seo-dashboard') {
+      return <SEODashboard />
+    }
+
+    if (currentPath === '/about') {
+      return <AboutPage onNavigate={navigate} />
+    }
+
+    if (currentPath === '/pricing') {
+      return <PricingPage />
+    }
+
+    if (currentPath === '/case-studies') {
+      return <CaseStudiesPage />
+    }
+
+    if (currentPath === '/sitemap') {
+      return <HTMLSitemap onNavigate={navigate} />
+    }
+
+    if (currentPath.startsWith('/services/')) {
+      const slug = currentPath.replace('/services/', '')
+      return <ServiceDetailPage serviceSlug={slug} onNavigate={navigate} />
+    }
+
+    if (currentPath === '/blog' || currentPath.startsWith('/blog/')) {
+      if (selectedPostSlug || currentPath.length > 6) {
+        const slug = selectedPostSlug || currentPath.replace('/blog/', '')
+        return <BlogPost postSlug={slug} onBack={() => navigate('/blog')} />
+      }
+      return <BlogHub onSelectPost={(slug) => navigate(`/blog/${slug}`)} onNavigate={navigate} />
+    }
+
+    // Default Homepage view
     return (
-      <CareersPage
-        onBack={() => {
-          window.location.hash = ''
-          setShowCareers(false)
-        }}
-      />
-    )
-  }
-
-  return (
-    <div className="app">
-      {/* 3D Cinematic Opening Splash Overlay */}
-      {showSplash && <WelcomeSplash onComplete={() => setShowSplash(false)} />}
-
-      {/* Mouse-follow cursor glow */}
-      <div ref={glowRef} className="cursor-glow" />
-      <Navbar onOpenCareers={() => setShowCareers(true)} />
       <main>
         <Hero />
         <TrustTicker />
@@ -130,7 +173,7 @@ export default function App() {
         <WhyChoose />
         <Leadership />
         <OnboardingSteps />
-        <Services />
+        <Services onNavigate={navigate} />
         <ProjectEstimator />
         <TechStack />
         <WorkShowcase />
@@ -140,7 +183,31 @@ export default function App() {
         <Contact />
         <PreFooterCTA />
       </main>
-      <Footer onOpenCareers={() => setShowCareers(true)} />
+    )
+  }
+
+  return (
+    <div className="app">
+      <SEO pathname={currentPath} />
+      <Analytics gaId="G-MEASUREMENT_ID" gtmId="GTM-TAG_ID" />
+
+      {/* Opening Splash Overlay */}
+      {showSplash && currentPath === '/' && <WelcomeSplash onComplete={() => setShowSplash(false)} />}
+
+      {/* Mouse-follow cursor glow */}
+      <div ref={glowRef} className="cursor-glow" />
+
+      <Navbar onNavigate={navigate} onOpenCareers={() => navigate('/careers')} />
+
+      <Suspense fallback={
+        <div style={{ minHeight: '60vh', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#10b981' }}>
+          Loading SriVoraTech...
+        </div>
+      }>
+        {renderContent()}
+      </Suspense>
+
+      <Footer onNavigate={navigate} onOpenCareers={() => navigate('/careers')} />
       <FloatingActions />
       <AIChatWidget />
     </div>

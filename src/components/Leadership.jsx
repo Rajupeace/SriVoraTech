@@ -161,7 +161,7 @@ export default function Leadership() {
                   <div className="leader-left-profile">
                     <div className="leader-avatar-wrapper">
                       {leader.photo ? (
-                        <img src={leader.photo} alt={leader.name} itemProp="image" className="leader-avatar-img circular-pic" />
+                        <img src={leader.photo} alt={`${leader.name} - ${leader.role} of SriVoraTech`} title={`${leader.name} (${leader.role})`} itemProp="image" className="leader-avatar-img circular-pic" />
                       ) : (
                         <div className="leader-avatar-circle circular-pic" style={{ background: leader.color }}>
                           <span>{leader.initials}</span>

@@ -1,6 +1,7 @@
 # SriVoraTech — Company Information for AI & LLM Systems
 
 > This file provides structured information about SriVoraTech for large language models (LLMs), AI assistants, and search engines.
+> **Last Updated**: July 29, 2026
 
 ## Company Overview
 

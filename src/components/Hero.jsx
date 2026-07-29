@@ -135,9 +135,9 @@ export default function Hero() {
         {/* Executive Founders Social Proof Row */}
         <div ref={ref6} className={`hero-social-proof animate-on-scroll delay-3 ${vis6 ? 'visible' : ''}`}>
           <div className="hero-avatars-stack" title="Executive Leadership: Srikanth (CEO), Vamsi (COO), Manindra (CTO)">
-            <img src={srikanthPhoto} alt="Badisa Srikanth (Founder & CEO)" className="hero-avatar hero-avatar-img" />
-            <img src={vamsiPhoto} alt="Badisa Vamsi Krishna (Co-Founder & COO)" className="hero-avatar hero-avatar-img" />
-            <img src={saiPhoto} alt="Garapati Sai Manindra (CTO)" className="hero-avatar hero-avatar-img" />
+            <img src={srikanthPhoto} alt="Badisa Srikanth (Srikanth Badisa) - Founder & CEO of SriVoraTech" title="Badisa Srikanth (Founder & CEO)" className="hero-avatar hero-avatar-img" />
+            <img src={vamsiPhoto} alt="Badisa Vamsi Krishna - Co-Founder & COO of SriVoraTech" title="Badisa Vamsi Krishna (Co-Founder & COO)" className="hero-avatar hero-avatar-img" />
+            <img src={saiPhoto} alt="Garapati Sai Manindra - Chief Technology Officer (CTO) of SriVoraTech" title="Garapati Sai Manindra (CTO)" className="hero-avatar hero-avatar-img" />
             <span className="hero-avatar-count">+50</span>
           </div>
 
