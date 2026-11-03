@@ -1,3 +1,4 @@
+import os from 'os'
 import fs from 'fs'
 import path from 'path'
 
@@ -16,7 +17,15 @@ export default async function handler(req, res) {
   }
 
   try {
-    const body = req.body || {}
+    let body = req.body || {}
+    if (typeof body === 'string') {
+      try {
+        body = JSON.parse(body)
+      } catch (e) {
+        body = {}
+      }
+    }
+
     const name = (body.name || body.fullName || '').trim()
     const email = (body.email || '').trim()
     const phone = (body.phone || '').trim()
@@ -45,15 +54,20 @@ export default async function handler(req, res) {
 
     // Write to tmp store for serverless resilience
     try {
-      const tmpPath = path.join('/tmp', 'contact_enquiries.json')
+      const tmpDir = os.tmpdir()
+      const tmpPath = path.join(tmpDir, 'contact_enquiries.json')
       let list = []
       if (fs.existsSync(tmpPath)) {
-        list = JSON.parse(fs.readFileSync(tmpPath, 'utf8'))
+        try {
+          list = JSON.parse(fs.readFileSync(tmpPath, 'utf8'))
+        } catch (err) {
+          list = []
+        }
       }
       list.push(enquiry)
       fs.writeFileSync(tmpPath, JSON.stringify(list, null, 2))
     } catch (e) {
-      // non-fatal in serverless
+      // Non-fatal fallback in serverless
     }
 
     return res.status(200).json({
@@ -65,8 +79,8 @@ export default async function handler(req, res) {
     console.error('API Contact Error:', error)
     return res.status(500).json({
       success: false,
-      message: 'Internal server error processing enquiry'
+      message: 'Internal server error processing enquiry',
+      error: error.message
     })
   }
 }
-
