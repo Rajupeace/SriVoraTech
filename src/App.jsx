@@ -11,7 +11,6 @@ import Services from './components/Services'
 import ProjectEstimator from './components/ProjectEstimator'
 import TechStack from './components/TechStack'
 import WorkShowcase from './components/WorkShowcase'
-import TrustTicker from './components/TrustTicker'
 import Achievements from './components/Achievements'
 import FAQ from './components/FAQ'
 import WebsiteRating from './components/WebsiteRating'
@@ -35,6 +34,9 @@ const CaseStudiesPage = lazy(() => import('./components/CaseStudiesPage'))
 const PricingPage = lazy(() => import('./components/PricingPage'))
 const HTMLSitemap = lazy(() => import('./components/HTMLSitemap'))
 const FounderPage = lazy(() => import('./components/FounderPage'))
+const PrivacyPolicyPage = lazy(() => import('./components/PrivacyPolicyPage'))
+const TermsPage = lazy(() => import('./components/TermsPage'))
+const ClientPortalPage = lazy(() => import('./components/ClientPortalPage'))
 
 export default function App() {
   const glowRef = useRef(null)
@@ -44,6 +46,20 @@ export default function App() {
   const [selectedPostSlug, setSelectedPostSlug] = useState(null)
 
   const navigate = (path) => {
+    if (path.startsWith('/#') || (path.startsWith('#') && currentPath !== '/')) {
+      const hash = path.replace('/', '')
+      window.history.pushState({}, '', `/${hash}`)
+      setCurrentPath('/')
+      setCurrentHash(hash)
+      setSelectedPostSlug(null)
+      setTimeout(() => {
+        const el = document.getElementById(hash.replace('#', ''))
+        if (el) el.scrollIntoView({ behavior: 'smooth' })
+        else window.scrollTo({ top: 0, behavior: 'smooth' })
+      }, 50)
+      return
+    }
+
     let target = path.startsWith('/') ? path : `/${path}`
     window.history.pushState({}, '', target)
     setCurrentPath(target)
@@ -128,6 +144,18 @@ export default function App() {
   const renderContent = () => {
     if (currentPath === '/careers' || currentHash === '#careers') {
       return <CareersPage onBack={() => navigate('/')} />
+    }
+
+    if (currentPath === '/privacy') {
+      return <PrivacyPolicyPage onBack={() => navigate('/')} onNavigate={navigate} />
+    }
+
+    if (currentPath === '/terms') {
+      return <TermsPage onBack={() => navigate('/')} onNavigate={navigate} />
+    }
+
+    if (currentPath === '/client-portal' || currentPath === '/tracker') {
+      return <ClientPortalPage onBack={() => navigate('/')} onNavigate={navigate} />
     }
 
     if (currentPath === '/seo-dashboard') {

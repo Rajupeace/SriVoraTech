@@ -1,10 +1,10 @@
 import { useScrollAnimation } from '../hooks/useScrollAnimation'
-import { ArrowRight, Sparkles, Shield, Rocket, Flame } from 'lucide-react'
+import { ArrowRight, Sparkles, Shield, Rocket, CheckCircle2 } from 'lucide-react'
 import './PreFooterCTA.css'
 
 const marqueeItems = [
-  'React.js 18',
-  'Next.js 14',
+  'React 19',
+  'Next.js 15',
   'TypeScript',
   'Tailwind CSS',
   'Node.js',
@@ -29,16 +29,16 @@ export default function PreFooterCTA() {
 
           <div className="cta-content-inner">
             <div className="cta-status-pill">
-              <Flame size={14} className="flame-icon" />
-              <span>Only 2 Sprint Slots Open for Q3 2026</span>
+              <Sparkles size={14} className="flame-icon" />
+              <span>Now Scheduling Discovery Sprints</span>
             </div>
 
             <h2 className="pre-footer-title">
-              Let's Turn Your Vision into a <span className="gradient-text">Market Leader</span>
+              Let's Turn Your Vision into a <span className="gradient-text">High-Performance Product</span>
             </h2>
 
             <p className="pre-footer-subtitle">
-              Book a 30-minute discovery session with our lead architects to walk through your product roadmap, design system, and timeline.
+              Book a 30-minute discovery session with our core architects to walk through your technical requirements, architecture design, and sprint roadmap.
             </p>
 
             <div className="cta-actions-row">
@@ -53,9 +53,9 @@ export default function PreFooterCTA() {
             </div>
 
             <div className="cta-trust-list">
-              <span><Rocket size={14} /> 2-Week MVP Delivery</span>
+              <span><Rocket size={14} /> 2–4 Wks Rapid MVP Sprint</span>
               <span><Shield size={14} /> 100% IP Code Ownership</span>
-              <span>⚡ Fixed-Price Guarantee</span>
+              <span><CheckCircle2 size={14} /> Transparent Milestones</span>
             </div>
           </div>
         </div>

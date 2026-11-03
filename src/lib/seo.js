@@ -14,8 +14,8 @@ export const DEFAULT_SEO = {
   defaultKeywords: 'SriVoraTech, srivoratech.in, Badisa Srikanth, Srikanth Badisa, Badisa Srikanth CEO, Website Development Company, Web Design Company, Software Development Company, AI Development Company, Custom Software Development, React Development, Next.js Development, Node.js Development, Python Development, Mobile App Development, Enterprise Software, CRM Development, ERP Development, Ecommerce Development, SEO Services, Cloud Solutions, AI Automation',
   defaultOgImage: 'https://srivoratech.in/og-image.png',
   defaultLogo: 'https://srivoratech.in/favicon.svg',
-  contactEmail: 'contact@srivoratech.in',
-  contactPhone: '+91-9000000000',
+  contactEmail: 'srivoratech9@gmail.com',
+  contactPhone: '+91 9182030946',
   address: {
     streetAddress: 'SriVoraTech Tech Hub, HITEC City',
     addressLocality: 'Hyderabad',
@@ -150,6 +150,31 @@ export const PAGE_SEO_DATA = {
     description: 'Get in touch with SriVoraTech team led by CEO Badisa Srikanth. Request a quick project quote, schedule an AI audit, or discuss your digital product.',
     keywords: 'Contact SriVoraTech, Hire Software Developers, Hire AI Engineers, Software Development Consultation',
     canonical: 'https://srivoratech.in/contact',
+    ogType: 'website',
+    ogImage: 'https://srivoratech.in/og-image.png'
+  },
+
+  '/privacy': {
+    title: 'Privacy Policy | SriVoraTech Technologies',
+    description: 'Official Privacy Policy of SriVoraTech Technologies. Explains how client data, project confidentiality, security, and IP transfer are managed.',
+    keywords: 'SriVoraTech Privacy Policy, Data Protection, Client Confidentiality, NDA',
+    canonical: 'https://srivoratech.in/privacy',
+    ogType: 'website',
+    ogImage: 'https://srivoratech.in/og-image.png'
+  },
+  '/terms': {
+    title: 'Terms of Service | SriVoraTech Technologies',
+    description: 'Official Terms of Service and Software Development Agreement conditions for SriVoraTech Technologies.',
+    keywords: 'SriVoraTech Terms of Service, Master Service Agreement, IP Handover, Sprint Contract',
+    canonical: 'https://srivoratech.in/terms',
+    ogType: 'website',
+    ogImage: 'https://srivoratech.in/og-image.png'
+  },
+  '/client-portal': {
+    title: 'Client Portal & Project Milestone Tracker | SriVoraTech',
+    description: 'Track active project sprint milestones, inspect architectural deliverables, and download verified artifacts on SriVoraTech client portal.',
+    keywords: 'SriVoraTech Client Portal, Project Tracker, Sprint Milestones, Architecture Artifacts',
+    canonical: 'https://srivoratech.in/client-portal',
     ogType: 'website',
     ogImage: 'https://srivoratech.in/og-image.png'
   },

@@ -27,7 +27,7 @@ function calculateMetrics(reviewsList = []) {
   const totalCount = approved.length
   const sum = approved.reduce((acc, curr) => acc + (parseInt(curr.star, 10) || 5), 0)
   const calculatedAvg = totalCount > 0 ? parseFloat((sum / totalCount).toFixed(1)) : 5.0
-  const averageRating = calculatedAvg < 4.8 ? 5.0 : calculatedAvg
+  const averageRating = calculatedAvg > 0 ? calculatedAvg : 5.0
 
   const counts = { 5: 0, 4: 0, 3: 0, 2: 0, 1: 0 }
   approved.forEach(r => {
@@ -103,19 +103,6 @@ const DEFAULT_APPROVED_REVIEWS = [
     profileImage: '',
     isFounder: true,
     helpfulCount: 9
-  },
-  {
-    id: 4,
-    name: 'Fintech Enterprise Client',
-    email: 'client@fintech.co',
-    star: 5,
-    comment: 'SriVoraTech delivered our MVP in 3 weeks flat. Outstanding engineering quality, automated CI/CD, and 99.9% uptime guaranteed!',
-    date: 'Jul 22, 2026',
-    status: 'Approved',
-    timestamp: 1784707200000,
-    company: 'Fintech Solutions',
-    profileImage: '',
-    helpfulCount: 5
   }
 ]
 

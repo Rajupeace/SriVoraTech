@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react'
 import { useScrollAnimation } from '../hooks/useScrollAnimation'
-import { ArrowRight, Zap, MousePointer2, Figma, Shield, Clock, Rocket, Sparkles, Cpu, Globe, Palette, Users, Briefcase, CheckCircle2, ShieldCheck, Activity, Terminal } from 'lucide-react'
+import { ArrowRight, Zap, MousePointer2, Figma, Clock, Rocket, Sparkles, Palette, ShieldCheck } from 'lucide-react'
 import { subscribeToRatings } from '../services/ratingsService'
 import HeroCanvas from './HeroCanvas'
 import srikanthPhoto from '../assets/badisa_srikanth.jpg'
@@ -24,18 +24,14 @@ export default function Hero() {
   const [ref6, vis6] = useScrollAnimation()
 
   const [colorMode, setColorMode] = useState('sapphire')
-  const [activeHeroTab, setActiveHeroTab] = useState('ai')
-  const [ratingStats, setRatingStats] = useState({ averageRating: 5.0, totalCount: 15 })
-
-  const [animatedTeamCount, setAnimatedTeamCount] = useState(10)
-  const [animatedClientsCount, setAnimatedClientsCount] = useState(50)
+  const [ratingStats, setRatingStats] = useState({ averageRating: 5.0, totalCount: 4 })
 
   useEffect(() => {
     const unsubscribe = subscribeToRatings((metrics) => {
       if (metrics) {
         setRatingStats({
           averageRating: metrics.averageRating || 5.0,
-          totalCount: metrics.totalCount || 15
+          totalCount: metrics.totalCount || 4
         })
       }
     })
@@ -107,14 +103,14 @@ export default function Hero() {
         </h1>
 
         <p ref={ref4} className={`hero-subtitle animate-on-scroll delay-1 ${vis4 ? 'visible' : ''}`}>
-          SriVoraTech empowers startups and enterprise leaders with tailored software architecture, cloud platforms, custom AI agents, and mobile apps engineered for sub-second speed, 99.9% uptime, and maximum security.
+          SriVoraTech empowers startups and business leaders with custom software engineering, scalable cloud platforms, intelligent AI agents, and mobile applications built with clean code and high performance.
         </p>
 
         {/* Trust metrics pills */}
         <div className="hero-trust-badges">
-          <span className="trust-pill"><Rocket size={14} /> 2-4 Wks MVP Accelerator</span>
+          <span className="trust-pill"><Rocket size={14} /> 2-4 Wks Rapid MVP Sprint</span>
           <span className="trust-pill"><ShieldCheck size={14} /> 100% IP & Source Ownership</span>
-          <span className="trust-pill"><Clock size={14} /> 99.9% Uptime Guarantee</span>
+          <span className="trust-pill"><Clock size={14} /> High-Availability Cloud Target</span>
           <span className="trust-pill"><Zap size={14} /> Sub-100ms API Latency</span>
         </div>
 
@@ -138,7 +134,7 @@ export default function Hero() {
             <img src={srikanthPhoto} alt="Badisa Srikanth (Srikanth Badisa) - Founder & CEO of SriVoraTech" title="Badisa Srikanth (Founder & CEO)" className="hero-avatar hero-avatar-img" />
             <img src={vamsiPhoto} alt="Badisa Vamsi Krishna - Co-Founder & COO of SriVoraTech" title="Badisa Vamsi Krishna (Co-Founder & COO)" className="hero-avatar hero-avatar-img" />
             <img src={saiPhoto} alt="Garapati Sai Manindra - Chief Technology Officer (CTO) of SriVoraTech" title="Garapati Sai Manindra (CTO)" className="hero-avatar hero-avatar-img" />
-            <span className="hero-avatar-count">+50</span>
+            <span className="hero-avatar-count" title="Executive Team">Exec</span>
           </div>
 
           <a href="#website-rating" className="hero-rating" title="View Approved Client Ratings">
@@ -149,7 +145,9 @@ export default function Hero() {
                 </svg>
               ))}
             </div>
-            <span className="hero-review-text">Rated 5.0/5 (50+ Verified Enterprise Reviews)</span>
+            <span className="hero-review-text">
+              Rated {ratingStats.averageRating ? Number(ratingStats.averageRating).toFixed(1) : '5.0'}/5 ({ratingStats.totalCount || 4} Verified Ratings)
+            </span>
           </a>
         </div>
       </div>

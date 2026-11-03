@@ -369,6 +369,78 @@ app.post('/api/apply/experienced', upload.single('resume'), async (req, res) => 
 })
 
 // Serve uploaded files statically
+
+// Contact & Project Enquiry endpoint
+const contactEnquiriesPath = path.join(uploadsDir, 'contact_enquiries.json')
+
+app.post('/api/contact', upload.none(), async (req, res) => {
+  try {
+    const { name, fullName, email, phone, company, budget, message, whySriVoraTech } = req.body
+    const clientName = (name || fullName || '').trim()
+    const clientEmail = (email || '').trim()
+    const clientPhone = (phone || '').trim()
+    const clientCompany = (company || '').trim()
+    const clientBudget = (budget || '').trim()
+    const clientMessage = (message || whySriVoraTech || '').trim()
+
+    if (!clientName || !clientEmail) {
+      return res.status(400).json({
+        success: false,
+        message: 'Name and email are required fields.'
+      })
+    }
+
+    const enquiry = {
+      id: Date.now(),
+      type: 'Contact',
+      name: clientName,
+      email: clientEmail,
+      phone: clientPhone,
+      company: clientCompany,
+      budget: clientBudget,
+      message: clientMessage,
+      submittedAt: new Date().toISOString()
+    }
+
+    try {
+      let list = []
+      if (fs.existsSync(contactEnquiriesPath)) {
+        list = JSON.parse(fs.readFileSync(contactEnquiriesPath, 'utf8'))
+      }
+      list.push(enquiry)
+      fs.writeFileSync(contactEnquiriesPath, JSON.stringify(list, null, 2))
+    } catch (fsErr) {
+      console.error('Error saving contact enquiry locally:', fsErr)
+    }
+
+    await addRowToSheet({
+      'Application ID': enquiry.id,
+      'Type': 'Contact Enquiry',
+      'Full Name': enquiry.name,
+      'Email': enquiry.email,
+      'Phone': enquiry.phone,
+      'College / Company': enquiry.company,
+      'Degree / Designation': enquiry.budget,
+      'Why SriVoraTech': enquiry.message,
+      'Submitted At': enquiry.submittedAt
+    })
+
+    console.log('New contact enquiry processed:', enquiry.name, enquiry.email)
+
+    res.status(200).json({
+      success: true,
+      message: 'Enquiry received successfully! Our team will contact you within 24 hours.',
+      enquiryId: enquiry.id
+    })
+  } catch (error) {
+    console.error('Error processing contact enquiry:', error)
+    res.status(500).json({
+      success: false,
+      message: 'Error processing enquiry. Please try again.'
+    })
+  }
+})
+
 app.use('/uploads', express.static(uploadsDir))
 
 // ── Database Setup for Reviews ──

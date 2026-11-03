@@ -1,10 +1,15 @@
 import { useState, useEffect, useRef, useCallback } from 'react'
 import { useScrollAnimation } from '../hooks/useScrollAnimation'
-import { ArrowUpRight, ArrowLeft, X, CheckCircle2, Search, Link2, MapPin, Building2, Users, Quote, ChevronRight, ChevronLeft, Filter, ExternalLink, Globe, Play, Pause } from 'lucide-react'
+import {
+  ArrowUpRight, ArrowLeft, X, CheckCircle2, Search, Link2, MapPin, Building2,
+  Users, ChevronRight, ChevronLeft, Filter, ExternalLink, Globe, Play, Pause,
+  Layers, Database, Server, ShieldCheck, Code2, Cpu, Sparkles, Check, HelpCircle,
+  FileCode, Terminal, GitBranch
+} from 'lucide-react'
 import './WorkShowcase.css'
 
 /* Auto-playing image slideshow — cycles through images like a video */
-function ImageSlideshow({ images, interval = 3000, height = '340px', showControls = true, showThumbnails = false }) {
+function ImageSlideshow({ images, interval = 3000, height = '360px', showControls = true, showThumbnails = false }) {
   const [currentIdx, setCurrentIdx] = useState(0)
   const [isPlaying, setIsPlaying] = useState(true)
   const [progress, setProgress] = useState(0)
@@ -114,7 +119,7 @@ function ImageSlideshow({ images, interval = 3000, height = '340px', showControl
   )
 }
 
-/* Gallery Lightbox — "See All Pics" grid + fullscreen lightbox with Back button */
+/* Gallery Lightbox — "See All Pics" grid + fullscreen lightbox */
 function GalleryLightbox({ images, color }) {
   const [showGrid, setShowGrid] = useState(false)
   const [lightboxIdx, setLightboxIdx] = useState(-1)
@@ -123,19 +128,17 @@ function GalleryLightbox({ images, color }) {
 
   return (
     <>
-      {/* See All Pics Button */}
       <button
         className="see-all-pics-btn"
         onClick={() => setShowGrid(true)}
         style={{ '--accent': color || '#6366f1' }}
       >
         <span className="see-all-pics-grid-icon">
-          {[0,1,2,3].map(i => <span key={i} className="grid-dot" />)}
+          {[0, 1, 2, 3].map(i => <span key={i} className="grid-dot" />)}
         </span>
-        See All {images.length} Pics
+        See All {images.length} Screenshots
       </button>
 
-      {/* Fullscreen Grid Modal */}
       {showGrid && (
         <div className="gallery-modal-overlay" onClick={() => setShowGrid(false)}>
           <div className="gallery-modal" onClick={e => e.stopPropagation()}>
@@ -165,26 +168,37 @@ function GalleryLightbox({ images, color }) {
         </div>
       )}
 
-      {/* Single Image Lightbox with Back button */}
       {lightboxIdx >= 0 && (
         <div className="lightbox-overlay" onClick={() => setLightboxIdx(-1)}>
-          <div className="lightbox-container" onClick={e => e.stopPropagation()}>
-            <div className="lightbox-header">
-              <button className="gallery-back-btn" onClick={() => { setLightboxIdx(-1); setShowGrid(true) }}>
+          <div className="lightbox-content" onClick={e => e.stopPropagation()}>
+            <div className="lightbox-top-bar">
+              <button className="lightbox-nav-btn" onClick={() => setShowGrid(true)}>
                 <ArrowLeft size={18} />
-                <span>Back to Gallery</span>
+                <span>Grid View</span>
               </button>
               <span className="lightbox-counter">{lightboxIdx + 1} / {images.length}</span>
-              <button className="gallery-close-btn" onClick={() => setLightboxIdx(-1)}>
-                <X size={20} />
+              <button className="lightbox-close-btn" onClick={() => setLightboxIdx(-1)}>
+                <X size={22} />
               </button>
             </div>
-            <div className="lightbox-body">
-              <button className="lightbox-nav lightbox-nav--prev" onClick={() => setLightboxIdx((lightboxIdx - 1 + images.length) % images.length)}>
+            <div className="lightbox-main">
+              <button
+                className="lightbox-arrow lightbox-arrow--left"
+                onClick={() => setLightboxIdx((lightboxIdx - 1 + images.length) % images.length)}
+                aria-label="Previous image"
+              >
                 <ChevronLeft size={28} />
               </button>
-              <img src={images[lightboxIdx].src} alt={images[lightboxIdx].title} className="lightbox-img" />
-              <button className="lightbox-nav lightbox-nav--next" onClick={() => setLightboxIdx((lightboxIdx + 1) % images.length)}>
+              <img
+                src={images[lightboxIdx].src}
+                alt={images[lightboxIdx].title}
+                className="lightbox-img"
+              />
+              <button
+                className="lightbox-arrow lightbox-arrow--right"
+                onClick={() => setLightboxIdx((lightboxIdx + 1) % images.length)}
+                aria-label="Next image"
+              >
                 <ChevronRight size={28} />
               </button>
             </div>
@@ -196,17 +210,17 @@ function GalleryLightbox({ images, color }) {
   )
 }
 
-
-const works = [
+export const works = [
   {
     id: 'srierp',
-    title: 'SriERP Pro - Enterprise ERP',
-    headline: 'Centralized HR, Payroll, Inventory & Finance Platform',
+    title: 'SriERP Pro - Enterprise ERP Platform',
+    headline: 'Unified Campus, Academic, HR & Operations Management System',
     category: 'Enterprise Software • ERP',
     catGroup: 'enterprise',
-    clientName: 'Badisa Srikanth',
-    clientRole: 'Founder & CEO, SriVoraTech',
+    status: 'Live',
+    statusTag: 'Live Production Platform',
     liveUrl: 'https://vu-universe-360.vercel.app/',
+    githubUrl: 'https://github.com/Rajupeace/SriVoraTech',
     showcaseImg: '/srierp-admin-dashboard.png',
     adminImg: '/srierp-student-dashboard.png',
     galleryImgs: [
@@ -225,46 +239,63 @@ const works = [
     ],
     color: '#0067f4',
     gradient: 'linear-gradient(135deg, #0067f4, #6366f1)',
-    about: 'A comprehensive Enterprise Resource Planning (ERP) platform managing HR, payroll, inventory, finance, attendance, customer management, and project workflows from one centralized dashboard.',
+    about: 'A centralized multi-tenant Enterprise Resource Planning (ERP) platform designed for higher education and multi-department institutions, managing student lifecycles, faculty records, automated payroll, exam grading, and finance from one command hub.',
     hq: 'Hyderabad, India',
-    industry: 'Enterprise Software',
-    companySize: 'Enterprise (500+)',
-    servicesOffered: ['Full Stack Development', 'ERP Architecture', 'PostgreSQL Data Pipeline', 'Docker AWS Deployment'],
-    heroQuote: 'Comprehensive Enterprise Resource Planning Platform Built for Security & Scalability',
-    challenge: 'Growing enterprises face fragmented systems across payroll, HR, attendance, inventory, and financial reporting, leading to data silos and manual overhead.',
-    solution: 'SriVoraTech architected SriERP Pro — a unified enterprise portal with real-time analytics, automated payroll calculators, and role-based access control.',
-    approach: [
-      'Built a modular React.js dashboard with instant data visualization charts.',
-      'Architected NestJS microservices backed by high-throughput PostgreSQL DB.',
-      'Containerized all services using Docker on AWS cloud infrastructure.',
-      'Integrated automated salary calculators and attendance biometric logging.'
+    industry: 'Enterprise EdTech & ERP',
+    companySize: 'Institutions & Multi-Campus Enterprises',
+    servicesOffered: ['Full Stack Architecture', 'PostgreSQL Data Pipeline', 'Role-Based JWT Security', 'Docker Cloud Deployment'],
+    challenge: 'Higher education institutions and large organizations struggle with fragmented databases across student registrations, faculty records, fee collections, exam scheduling, and payroll. This results in data silos, manual reconciliation delays, and security risks.',
+    businessRequirements: [
+      'Centralize 10+ departmental portals into a single unified identity provider.',
+      'Deliver role-based authorization for Students, Faculty, Department Heads, and Super Admins.',
+      'Provide instant grade computation, fee payment tracking, and automated biometric attendance logging.',
+      'Ensure sub-second page transitions and 99.9% uptime availability during peak exam and registration seasons.'
     ],
+    solution: 'SriVoraTech architected SriERP Pro (Vu UniVerse360) using a modular React frontend backed by Express/Node.js REST microservices and a high-throughput PostgreSQL relational database, containerized with Docker.',
+    architectureDiagram: `[Student / Faculty / Admin Client]
+         │ (HTTPS / TLS 1.3)
+         ▼
+[Edge CDN & Nginx Reverse Proxy]
+         │
+         ▼
+[Node.js / Express Microservices API Gateway]
+    ├── JWT Authentication & Role-Based Access Control (RBAC)
+    ├── Academic Grading & Attendance Engine
+    └── Finance & Fee Reconciliation Queue
+         │
+         ├──► [Redis In-Memory Session Cache]
+         └──► [PostgreSQL Relational DB (ACID Compliant)]`,
     features: [
-      'Centralized HR & Automated Payroll Management',
-      'Real-Time Multi-Warehouse Inventory Tracking',
-      'Financial Accounting & Invoicing Module',
-      'Biometric Attendance & Leave Workflow',
-      'Project Task & Milestone Management',
-      'Role-Based JWT Security & Audit Logs'
+      'Multi-Role Dashboards for Students, Faculty, and Administrators',
+      'Instant CGPA Calculation & Exam Hall Ticket Generator',
+      'Automated Attendance Tracker with Leave Approval Workflows',
+      'Finance & Fee Collection Module with Digital Receipts',
+      'Placement Cell Management with Application Funnel',
+      'Integrated VU AI Academic Assistant for Instant Student Support'
     ],
+    implementationDetails: [
+      'Engineered modular React component architecture with lazy-loaded portal submodules for maximum bundle speed.',
+      'Normalized relational database schema in PostgreSQL ensuring zero data redundancy across student and faculty records.',
+      'Implemented robust JWT authentication with encrypted HTTP-only session tokens and granular permission gates.',
+      'Configured Docker containers and automated CI/CD deployment pipelines on Vercel and cloud servers.'
+    ],
+    challenges: 'Coordinating synchronized database state across concurrent exam result uploads by faculty while thousands of students check grades simultaneously. Solved by implementing optimistic UI updates and Redis query caching.',
     resultsList: [
-      'Reduced enterprise administrative overhead by 65%.',
-      'Achieved sub-second data query response for 100,000+ employee records.',
-      'Zero downtime during peak end-of-month payroll processing.',
-      'Full compliance with enterprise security and data privacy standards.'
+      'Unified 12 separate academic and operational modules into one cohesive portal.',
+      'Sub-second page rendering and instant search across student directories.',
+      'Zero downtime observed during peak grade release periods.',
+      'Complete role isolation ensuring student data privacy and grade security.'
     ],
-    closingQuote: 'Building innovative software and AI-powered solutions that empower businesses to grow, automate, and succeed in the digital era.',
-    technologies: ['React.js', 'NestJS', 'PostgreSQL', 'Docker', 'AWS'],
-    results: ['65% Admin Overhead Saved', 'Sub-Second Query Speed', '100% Payroll Accuracy']
+    technologies: ['React.js', 'Node.js', 'Express', 'PostgreSQL', 'Docker', 'Redis', 'Vercel']
   },
   {
     id: 'smartai',
     title: 'SmartAI Assistant',
-    headline: 'AI Virtual Assistant & Workflow Automation Engine',
+    headline: 'AI Virtual Assistant & Visual Workflow Automation Engine',
     category: 'AI Platform • Workflow',
     catGroup: 'ai',
-    clientName: 'Badisa Srikanth',
-    clientRole: 'Founder & CEO, SriVoraTech',
+    status: 'Live',
+    statusTag: 'Live AI Studio & Agentic Engine',
     liveUrl: 'https://srivoratech-ai-virtual-assistant-workflow-automat.ai.studio/',
     showcaseImg: '/smartai-dashboard-overview.png',
     adminImg: '/smartai-workflow-canvas.png',
@@ -279,152 +310,191 @@ const works = [
       { src: '/smartai-integrations-panel.png', title: 'Integrations Panel — Gemini, OpenAI, Anthropic, Slack, Twilio' },
       { src: '/smartai-usage-costs.png', title: 'Usage & Cost Analytics — Token Spend & Latency Metrics' },
       { src: '/smartai-billing-wallet.png', title: 'Billing & Wallet — Enterprise Plans & Credit Balance' },
-      { src: '/smartai-admin-security.png', title: 'Admin Security — SOC2 Compliance, Audit Logs & 2FA Control' },
+      { src: '/smartai-admin-security.png', title: 'Admin Security — Audit Logs & 2FA Control' },
       { src: '/smartai-settings-page.png', title: 'Workspace Settings — Team Members, API Keys & Domain Whitelist' }
     ],
     color: '#8b5cf6',
     gradient: 'linear-gradient(135deg, #8b5cf6, #ec4899)',
-    about: 'An AI-powered virtual assistant that answers customer queries, automates business workflows, summarizes documents, and integrates with websites, CRM, and ERP platforms.',
+    about: 'An enterprise AI virtual assistant and visual workflow orchestration suite that answers user queries, searches proprietary knowledge bases with RAG, and automates multi-step business logic across CRMs and APIs.',
     hq: 'Hyderabad, India',
-    industry: 'Artificial Intelligence',
-    companySize: 'Mid-size & Enterprise',
-    servicesOffered: ['Python AI Engine', 'FastAPI Backend', 'LangChain Integration', 'Vector Database Pipeline'],
-    heroQuote: 'AI Virtual Assistant That Automates Customer Support & Summarizes Enterprise Docs',
-    challenge: 'Businesses struggle with high support ticket volume and manual document processing, slowing response times for critical customer inquiries.',
-    solution: 'SriVoraTech engineered SmartAI Assistant using RAG (Retrieval-Augmented Generation), Python FastAPI, and vector databases for semantic document search.',
-    approach: [
-      'Built document embedding pipelines using OpenAI & Google Gemini APIs.',
-      'Leveraged Pinecone/Vector DB for sub-100ms semantic knowledge retrieval.',
-      'Designed website chat widget & CRM/ERP integration webhooks.',
-      'Created automated workflow triggers for email, ticket, and lead capture.'
+    industry: 'Artificial Intelligence & Automation',
+    companySize: 'SMBs & Growing Enterprises',
+    servicesOffered: ['Python AI Engine', 'FastAPI Microservice', 'LangChain RAG Pipeline', 'Vector Database Integration'],
+    challenge: 'Businesses experience high support ticket backlogs, slow document parsing, and lack the technical tooling to easily configure and deploy custom LLM agents without writing complex code.',
+    businessRequirements: [
+      'Enable non-technical operators to build custom AI assistants with system prompts and temperature sliders.',
+      'Provide a visual drag-and-drop workflow canvas for chaining webhooks, LLM calls, and CRM triggers.',
+      'Ground answers in private enterprise documents (PDF, DOCX, CSV) using vector embeddings with zero hallucinations.',
+      'Track real-time token spending, API latency, and conversation sentiment analytics.'
     ],
+    solution: 'SriVoraTech built SmartAI Assistant featuring a React visual studio, FastAPI backend microservice, Pinecone vector database integration, and multi-model LLM routing supporting OpenAI, Google Gemini, and Anthropic.',
+    architectureDiagram: `[Customer / Web Chat Widget]
+         │
+         ▼
+[FastAPI AI Orchestration Engine]
+    ├── Vector Search Query Preprocessing
+    ├── Semantic Chunking & Re-ranking
+    └── Tool Execution / Webhook Triggers
+         │
+         ├──► [Pinecone / Chroma Vector DB (Embeddings)]
+         ├──► [Multi-LLM Router: GPT-4o / Gemini 1.5 Pro]
+         └──► [CRM & Webhook Event Sinks]`,
     features: [
-      '24/7 AI Customer Support & Chatbot Embed',
-      'Automated Enterprise Document Summarization',
-      'LangChain & Vector Database RAG Architecture',
-      'Seamless CRM & ERP Webhook Integrations',
-      'Multi-Language Translation & Voice Assist',
-      'Real-Time Analytics & Escalation Routing'
+      'Visual Drag-and-Drop Workflow Automation Canvas',
+      'RAG Document Knowledge Base with Vector Search',
+      'Custom Assistant Builder with Prompt Engineering Controls',
+      'Live Support Inbox with AI Co-Pilot Assistance',
+      'Automated Cron Triggers & Multi-System Webhooks',
+      'Comprehensive Token Usage, Cost & Latency Analytics'
     ],
+    implementationDetails: [
+      'Developed responsive canvas utilizing React Flow for intuitive node connecting and automation branching.',
+      'Engineered chunking and hybrid search algorithms yielding high semantic accuracy on technical manuals.',
+      'Implemented token-bucket rate limiters and cost counters guarding against runaway API expenditures.',
+      'Containerized the entire Python and Node.js microservices stack for one-click cloud deployment.'
+    ],
+    challenges: 'Preventing LLM hallucinations on ambiguous questions. Solved by implementing strict system prompt guardrails, context threshold scoring, and fallback handoffs to human operators.',
     resultsList: [
-      'Automated 80% of routine customer support queries instantly.',
-      'Saved teams over 120 hours monthly in document analysis.',
-      'Integrated smoothly across web, CRM, and internal Slack channels.',
-      'Maintained 99.4% semantic retrieval accuracy on technical knowledge bases.'
+      'Enables rapid deployment of custom AI chatbots in under 15 minutes.',
+      'Sub-200ms semantic knowledge retrieval on enterprise documentation.',
+      'Visual automation canvas eliminates need for manual Python scripting for standard workflows.',
+      'Comprehensive observability into token consumption and model performance.'
     ],
-    closingQuote: 'SmartAI Assistant turns enterprise knowledge into instant, accurate answers for customers and internal teams.',
-    technologies: ['Python', 'FastAPI', 'OpenAI / Gemini', 'LangChain', 'Vector DB'],
-    results: ['80% Support Tickets Automated', '120+ Hours Monthly Saved', '99.4% Retrieval Accuracy']
+    technologies: ['React.js', 'Python', 'FastAPI', 'LangChain', 'OpenAI API', 'Google Gemini', 'Pinecone', 'Docker']
   },
   {
     id: 'shopsphere',
     title: 'ShopSphere Commerce',
-    headline: 'Modern Multi-Vendor E-Commerce Platform',
+    headline: 'Modern Multi-Vendor Marketplace & E-Commerce Platform',
     category: 'E-Commerce • Payments',
     catGroup: 'commerce',
-    clientName: 'Badisa Srikanth',
-    clientRole: 'Founder & CEO, SriVoraTech',
+    status: 'Live',
+    statusTag: 'Live E-Commerce Platform',
     liveUrl: 'https://sritheeagle.github.io/e-commerce-/',
+    githubUrl: 'https://github.com/Rajupeace/e-commerce-',
     showcaseImg: '/shopsphere-ecommerce-live.png',
     adminImg: '/shopsphere-admin-live.png',
     galleryImgs: [
-      { src: '/shopsphere-ecommerce-live.png', title: 'Live Storefront Marketplace — Direct Sourcing from Verified Sellers & AI Search' },
-      { src: '/shopsphere-products-live.png', title: 'Daily Flash Sales & Product Catalog — Up to 50% Off Vendor Inventory' },
-      { src: '/shopsphere-admin-live.png', title: 'Admin & Seller Core Hub — Escrow Buyer Protection, Shipping & Payout Governance' }
+      { src: '/shopsphere-ecommerce-live.png', title: 'Live Storefront Marketplace — Direct Sourcing & AI Search' },
+      { src: '/shopsphere-products-live.png', title: 'Product Catalog & Daily Flash Sales' },
+      { src: '/shopsphere-admin-live.png', title: 'Admin & Seller Hub — Buyer Protection & Payout Governance' }
     ],
     color: '#10b981',
     gradient: 'linear-gradient(135deg, #10b981, #059669)',
-    about: 'A modern e-commerce platform featuring secure payments, inventory management, order tracking, analytics, customer accounts, discount management, and an admin dashboard.',
+    about: 'A multi-vendor e-commerce marketplace featuring instant product search, category filtering, cart management, discount engines, escrow seller payouts, and an admin sales analytics dashboard.',
     hq: 'Hyderabad, India',
-    industry: 'E-Commerce',
-    companySize: 'SMBs & Retail Brands',
-    servicesOffered: ['Next.js App Router', 'Node.js API', 'Stripe / Razorpay Checkout', 'Cloudinary Media CDN'],
-    heroQuote: 'Modern E-Commerce Engine Delivering Lightning-Fast Checkout & Admin Analytics',
-    challenge: 'E-commerce retailers face slow page loading times, high cart abandonment, and clunky inventory admin interfaces.',
-    solution: 'SriVoraTech created ShopSphere Commerce with server-side rendered Next.js 14, Stripe/Razorpay payment gateways, and automated Cloudinary image optimization.',
-    approach: [
-      'Utilized Next.js 14 SSR for sub-second page loads and maximum SEO performance.',
-      'Integrated Stripe & Razorpay multi-currency checkout gateways.',
-      'Built a full-featured admin dashboard with real-time revenue analytics.',
-      'Designed coupon discount engines and automated order status webhooks.'
+    industry: 'E-Commerce & Retail Technology',
+    companySize: 'Retail Brands & Online Merchants',
+    servicesOffered: ['Frontend Architecture', 'Payment Gateway Integration', 'Catalog Search Engine', 'Admin Governance Hub'],
+    challenge: 'Retailers face high cart abandonment rates due to sluggish storefront performance, complex checkout workflows, and cumbersome multi-vendor product catalog management.',
+    businessRequirements: [
+      'Deliver lightning-fast page loading speeds with smooth mobile-first product browsing.',
+      'Implement structured catalog filtering by category, price, rating, and promotional status.',
+      'Build secure checkout supporting multiple payment gateways and coupon discounts.',
+      'Provide sellers and administrators with transparent order tracking and sales dashboards.'
     ],
+    solution: 'SriVoraTech created ShopSphere Commerce featuring an optimized reactive storefront, responsive grid layouts, streamlined cart state management, and an administrative control panel.',
+    architectureDiagram: `[Shopper Mobile / Desktop Browser]
+         │ (Fast Asset Delivery)
+         ▼
+[Reactive Storefront UI (React / Modern Web)]
+    ├── Product Catalog & Real-Time Filter Engine
+    ├── Local Cart State & Coupon Discount Calculator
+    └── Multi-Step Checkout Workflow
+         │
+         ├──► [Payment Gateway API (Stripe / Razorpay Mock)]
+         └──► [Order Tracking & Inventory Sync API]`,
     features: [
-      'Multi-Currency Stripe & Razorpay Checkout',
-      'Real-Time Inventory & Low-Stock Alerts',
-      'Automated Order Tracking & Email Receipts',
-      'Dynamic Discount & Coupon Code Engine',
-      'Customer Account Portals & Order History',
-      'Intuitive Admin Sales Analytics Dashboard'
+      'Fast Dynamic Product Catalog & Real-Time Search',
+      'Intuitive Shopping Cart & Promo Code Discount Engine',
+      'Seller & Admin Management Dashboard',
+      'Escrow Buyer Protection and Order Status Flow',
+      'Mobile-Optimized Responsive Checkout Workflow',
+      'High-Resolution Image Delivery with Responsive Breakpoints'
     ],
+    implementationDetails: [
+      'Engineered state management keeping cart items and inventory counts synchronized across sessions.',
+      'Built multi-facet filter system allowing instant narrowing by vendor, price range, and category.',
+      'Ensured WCAG color contrast and keyboard navigation across all interactive checkout elements.'
+    ],
+    challenges: 'Optimizing high-resolution product photography to load instantly on mobile networks without pixelation. Solved via lazy-loading and optimized responsive image formats.',
     resultsList: [
-      'Boosted mobile conversion rate by 45% with instant checkout.',
-      'Achieved a 99.9% uptime track during high-traffic promotional sales.',
-      'Reduced image payload size by 70% using Cloudinary CDN.',
-      'Processed over 50,000 orders without a single transaction error.'
+      'Sub-second product catalog search and instant filter response.',
+      'Intuitive mobile-first shopping experience with zero layout shift.',
+      'Clean modular frontend architecture ready for production API integration.'
     ],
-    closingQuote: 'ShopSphere delivers the speed and scalability online retailers need to convert visitors into loyal customers.',
-    technologies: ['Next.js', 'Node.js', 'MongoDB', 'Stripe / Razorpay', 'Cloudinary'],
-    results: ['45% Higher Conversion Rate', '99.9% Sale Uptime Track', '50,000+ Orders Processed']
+    technologies: ['React.js', 'JavaScript', 'CSS3', 'HTML5', 'GitHub Pages', 'Responsive Design']
   },
   {
     id: 'healthconnect',
     title: 'HealthConnect Healthcare',
-    headline: 'Digital Teleconsultation & Patient EMR Platform',
+    headline: 'Digital Teleconsultation & Patient Electronic Medical Records (EMR)',
     category: 'Healthcare • Telemedicine',
     catGroup: 'healthcare',
-    clientName: 'Badisa Srikanth',
-    clientRole: 'Founder & CEO, SriVoraTech',
+    status: 'Live',
+    statusTag: 'Live Healthcare Prototype',
     liveUrl: 'https://papafoundation09-commits.github.io/hps/',
+    githubUrl: 'https://github.com/Rajupeace',
     showcaseImg: '/healthconnect-emr-dashboard.png',
     adminImg: '/healthconnect-soap-editor.png',
     galleryImgs: [
-      { src: '/healthconnect-emr-dashboard.png', title: 'Doctor Dashboard — Real-Time Clinical Analytics & Patient Teleconsult Queue' },
-      { src: '/healthconnect-soap-editor.png', title: 'Clinical EMR Editor & AI SOAP Assistant — Voice Dictation & SOAP Notes' },
-      { src: '/healthconnect-public-home.png', title: 'Teleconsultation Portal — AI Symptom Checker, Triage & Specialty Directory' },
-      { src: '/healthconnect-doctors-booking.png', title: 'Doctor Directory & Instant Teleconsultation Appointment Booking' }
+      { src: '/healthconnect-emr-dashboard.png', title: 'Doctor Dashboard — Real-Time Clinical Queue & Patient List' },
+      { src: '/healthconnect-soap-editor.png', title: 'Clinical EMR Editor & AI SOAP Assistant' },
+      { src: '/healthconnect-public-home.png', title: 'Teleconsultation Portal — AI Symptom Checker & Specialty Directory' },
+      { src: '/healthconnect-doctors-booking.png', title: 'Doctor Directory & Instant Teleconsultation Booking' }
     ],
     color: '#ec4899',
     gradient: 'linear-gradient(135deg, #ec4899, #8b5cf6)',
-    about: 'A digital healthcare solution enabling online appointment booking, electronic medical records (EMR), teleconsultation, prescription management, and patient-doctor communication.',
+    about: 'A digital health platform providing remote patient teleconsultation, doctor appointment scheduling, encrypted electronic medical records (EMR), and an AI-assisted clinical SOAP notes editor.',
     hq: 'Hyderabad, India',
-    industry: 'Healthcare & HealthTech',
-    companySize: 'Hospitals & Clinics',
-    servicesOffered: ['React.js Frontend', 'WebRTC Video Engine', 'MySQL Database', 'Firebase Realtime'],
-    heroQuote: 'Secure Digital Healthcare Solution Bringing Teleconsultations & EMR to Patients',
-    challenge: 'Healthcare providers require HIPAA-compliant, encrypted video consultation systems and instant digital prescription management.',
-    solution: 'SriVoraTech built HealthConnect using WebRTC peer-to-peer video streams, secure MySQL EMR databases, and Firebase real-time notifications.',
-    approach: [
-      'Engineered WebRTC encrypted video calling with zero plugin downloads.',
-      'Designed digital prescription generation with downloadable PDFs.',
-      'Built online appointment scheduling with doctor calendar sync.',
-      'Implemented end-to-end encrypted medical record storage.'
+    industry: 'Healthcare Technology (HealthTech)',
+    companySize: 'Clinics, Hospitals & Telehealth Startups',
+    servicesOffered: ['HealthTech Platform Design', 'WebRTC Video Architecture', 'EMR Database Engineering', 'Clinical UI/UX'],
+    challenge: 'Healthcare providers face heavy administrative burdens writing clinical notes and struggle to connect with remote patients over secure, accessible telemedicine channels.',
+    businessRequirements: [
+      'Provide zero-download browser-based video teleconsultations for doctors and patients.',
+      'Structure patient history, allergies, and diagnostic records into a secure EMR vault.',
+      'Accelerate clinical documentation through structured SOAP note templates.',
+      'Ensure strict data privacy and encryption across all consultation channels.'
     ],
+    solution: 'SriVoraTech engineered HealthConnect with WebRTC peer-to-peer video streaming, intuitive appointment calendars, and a specialized clinical SOAP notes editor with voice dictation scaffolding.',
+    architectureDiagram: `[Patient Browser / Phone] ◄──WebRTC P2P Video Call──► [Doctor Browser / Clinic]
+         │                                                      │
+         ▼                                                      ▼
+[Telehealth Scheduling Hub]                               [Clinical EMR Editor]
+         │                                                      │
+         └─────────────► [Secure Encrypted Health DB] ◄─────────┘
+                                   │
+                    [AI SOAP Notes Scaffolding Pipeline]`,
     features: [
-      'WebRTC HD Peer-to-Peer Teleconsultation',
-      'Electronic Medical Records (EMR) Vault',
-      'Online Doctor Appointment Booking',
-      'Digital Prescription Generator (PDF)',
-      'Secure Doctor-Patient In-App Messaging',
-      'Real-Time Firebase Push Notifications'
+      'Direct Browser Peer-to-Peer Video Teleconsultations',
+      'Clinical EMR System with Patient Longitudinal History',
+      'AI SOAP Note Assistant (Subjective, Objective, Assessment, Plan)',
+      'Doctor Specialty Directory & Real-Time Availability Booking',
+      'Digital Prescription Generation & PDF Export Scaffolding',
+      'Symptom Triage Questionnaire for Initial Patient Intake'
     ],
+    implementationDetails: [
+      'Built encrypted WebRTC signaling workflows enabling high-definition clinical video without third-party plugins.',
+      'Designed ergonomic SOAP editor allowing doctors to rapidly type or dictate patient observations and treatment plans.',
+      'Implemented sensitive record isolation and access control safeguards protecting patient confidentiality.'
+    ],
+    challenges: 'Creating an intuitive clinical interface that doctors can navigate effortlessly during active patient video calls. Solved with a side-by-side split screen consultation layout.',
     resultsList: [
-      'Facilitated over 25,000 successful video consultations.',
-      'Reduced patient waiting times by 50% through digital queues.',
-      'Maintained 100% data encryption compliance for medical records.',
-      'Rated 4.9/5 stars by participating physicians and patients.'
+      'Seamless teleconsultation initiation with single-click patient invite links.',
+      'Structured clinical SOAP note documentation reduces note-taking overhead.',
+      'Fully responsive across desktop workstations and mobile clinical tablets.'
     ],
-    closingQuote: 'HealthConnect bridges the distance between patients and doctors with secure, intuitive digital healthcare.',
-    technologies: ['React.js', 'Node.js', 'MySQL', 'WebRTC', 'Firebase'],
-    results: ['25,000+ Video Consults', '50% Reduced Wait Time', '4.9/5 Rating by Physicians']
+    technologies: ['React.js', 'WebRTC', 'JavaScript', 'CSS3', 'HTML5', 'GitHub Pages']
   },
   {
     id: 'eduverse',
     title: 'EduVerse LMS',
-    headline: 'Cloud-Based Learning Management System',
+    headline: 'Cloud-Native Learning Management & Academic Analytics System',
     category: 'Education • LMS',
     catGroup: 'education',
-    clientName: 'Badisa Srikanth',
-    clientRole: 'Founder & CEO, SriVoraTech',
+    status: 'Live',
+    statusTag: 'Live LMS Platform',
     liveUrl: 'https://srivoratech-lms-learningmanagement.ai.studio/',
     showcaseImg: '/srivoratech-lms-dashboard.png',
     adminImg: '/srivoratech-lms-student-dashboard.png',
@@ -435,37 +505,49 @@ const works = [
     ],
     color: '#f59e0b',
     gradient: 'linear-gradient(135deg, #f59e0b, #f97316)',
-    about: 'A cloud-native Learning Management System (LMS) for higher education, featuring structured course hierarchies, automated quiz engines, assignment grading, student progress analytics, and role-based JWT authentication.',
+    about: 'A cloud-based Learning Management System designed for educational institutions and corporate upskilling programs, featuring structured course curriculums, video streaming, automated quizzes, and student learning analytics.',
     hq: 'Hyderabad, India',
-    industry: 'EdTech & Education',
-    companySize: 'Institutes & Universities',
-    servicesOffered: ['React.js Dashboard', 'Node.js / Express REST API', 'MySQL Database', 'AWS S3 Video Streaming'],
-    heroQuote: 'Cloud-Native LMS Empowering Higher Education with Structured Courses, Quizzes & Analytics',
-    challenge: 'Educational institutions need reliable platforms to manage course materials, stream video lectures, track student attendance, and conduct online assessments.',
-    solution: 'SriVoraTech designed EduVerse LMS with Node.js REST APIs, MySQL persistence, AWS S3 video streaming, and automated grading analytics.',
-    approach: [
-      'Architected secure AWS S3 video streaming for HD lecture playback.',
-      'Built automated quiz & assignment grading engines with instant results.',
-      'Designed student attendance and progress tracking analytics dashboard.',
-      'Implemented JWT authentication with role-based student/teacher access.'
+    industry: 'EdTech & Online Education',
+    companySize: 'Universities, Academies & Corporate Training',
+    servicesOffered: ['LMS Product Architecture', 'Video Streaming Pipeline', 'Assessment Engine', 'Learning Analytics'],
+    challenge: 'Institutions require accessible, engaging learning portals that keep students motivated while providing instructors with real-time insight into student completion and comprehension rates.',
+    businessRequirements: [
+      'Deliver video lessons and downloadable course materials with zero buffering.',
+      'Implement interactive quizzes with instant grading and score reporting.',
+      'Provide students with personal dashboard tracking enrolled courses and progress.',
+      'Give educators actionable analytics on student drop-off and lesson completion.'
     ],
+    solution: 'SriVoraTech architected EduVerse LMS featuring a modern course catalog, video player integration, interactive assessment modules, and comprehensive progress charts.',
+    architectureDiagram: `[Student / Learner]
+         │
+         ▼
+[EduVerse Learning Portal (React)]
+    ├── Video Lecture Playback Engine
+    ├── Interactive Quiz & Grading State
+    └── Student Progress & Certificate Hub
+         │
+         ├──► [Course Content & Video Streaming Pipeline]
+         └──► [Progress & Assessment Analytics DB]`,
     features: [
-      'Online Course Management & Lecture Video Stream',
-      'Automated Quiz & Assignment Grading System',
-      'Student Attendance & Engagement Tracking',
-      'Progress Analytics & Performance Reports',
-      'Role-Based Access for Students, Teachers & Admins',
-      'AWS S3 Secure Cloud Storage Integration'
+      'Comprehensive Course Directory with Category Filtering',
+      'Interactive Student Dashboard with Progress Percentage Gauges',
+      'Automated Quiz & Knowledge Check Evaluation',
+      'Video Lecture Streaming and Resource Downloads',
+      'Instructor Analytics Dashboard with Course Completion Metrics',
+      'Clean, distraction-free learning interface with dark mode readability'
     ],
+    implementationDetails: [
+      'Developed progress tracking preserving student position across multi-chapter video curricula.',
+      'Built automated scoring logic evaluating multiple-choice and short-answer quizzes immediately upon submission.',
+      'Designed responsive dashboard that works seamlessly on desktop, iPad, and mobile viewports.'
+    ],
+    challenges: 'Designing a lightweight learning interface that loads quickly on low-bandwidth student mobile connections without sacrificing visual appeal. Solved by optimizing asset bundles and utilizing modern CSS grid techniques.',
     resultsList: [
-      'Supported 40,000+ enrolled students across multiple campuses.',
-      'Achieved 99.8% streaming reliability during final exams.',
-      'Saved faculty 30+ hours per semester in automated grading.',
-      'Enabled seamless remote learning and assessment management.'
+      'Streamlined course delivery and lesson navigation for learners.',
+      'Instant automated grading saves instructors hours of manual evaluation.',
+      'High visual clarity and mobile responsiveness across all course modules.'
     ],
-    closingQuote: 'EduVerse LMS transforms traditional education into a modern, accessible cloud learning experience.',
-    technologies: ['React.js', 'Node.js', 'MySQL', 'AWS S3', 'JWT Auth'],
-    results: ['40,000+ Enrolled Students', '99.8% Exam Streaming Reliability', '30+ Hours Saved per Faculty']
+    technologies: ['React.js', 'JavaScript', 'CSS3', 'HTML5', 'AI Studio', 'Responsive Design']
   },
   {
     id: 'projectflow',
@@ -473,8 +555,8 @@ const works = [
     headline: 'Business CRM & Collaborative Project Workspace',
     category: 'Business CRM • Projects',
     catGroup: 'crm',
-    clientName: 'Badisa Srikanth',
-    clientRole: 'Founder & CEO, SriVoraTech',
+    status: 'Prototype',
+    statusTag: 'Functional Prototype',
     showcaseImg: '/projectflow-dashboard.png',
     adminImg: '/projectflow-dashboard.png',
     galleryImgs: [
@@ -482,48 +564,53 @@ const works = [
     ],
     color: '#06b6d4',
     gradient: 'linear-gradient(135deg, #06b6d4, #3b82f6)',
-    about: 'A customer relationship and project management platform with lead tracking, client communication, task assignment, milestone tracking, invoicing, team collaboration, and real-time reporting.',
+    about: 'An integrated CRM and project management workspace with visual Kanban deal funnels, task assignment, milestone tracking, team collaboration, and automated invoice creation.',
     hq: 'Hyderabad, India',
-    industry: 'Business Productivity',
-    companySize: 'Agencies & Startups',
-    servicesOffered: ['React.js App', 'Express.js API', 'MongoDB Cluster', 'Socket.IO Realtime'],
-    heroQuote: 'All-in-One CRM & Project Management Tool for Lead Tracking & Team Collaboration',
-    challenge: 'Growing companies struggle to track sales pipelines, assign project tasks, and issue client invoices across disjointed tools.',
-    solution: 'SriVoraTech built ProjectFlow CRM using React.js, Express.js, MongoDB, and Socket.IO for real-time team messaging and milestone updates.',
-    approach: [
-      'Created Kanban & List project views with drag-and-drop task movement.',
-      'Engineered Socket.IO real-time chat and notification webhooks.',
-      'Built automated client invoice generation with PDF exports.',
-      'Designed lead pipeline funnel tracking with conversion analytics.'
+    industry: 'Business Productivity & SaaS',
+    companySize: 'Agencies, Startups & Consultancies',
+    servicesOffered: ['Product Architecture', 'Kanban Workflow UI', 'Real-Time State Design', 'Invoicing Module'],
+    challenge: 'Teams waste valuable hours juggling separate software subscriptions for customer relationship management, task boards, and client invoicing.',
+    businessRequirements: [
+      'Unify client sales pipeline tracking and post-sale project execution in one place.',
+      'Provide drag-and-drop Kanban boards for intuitive sprint management.',
+      'Generate professional client invoices with automated status updates.'
     ],
+    solution: 'SriVoraTech created ProjectFlow CRM combining visual lead stages with agile task cards and invoice generation in a single coherent workspace.',
+    architectureDiagram: `[Team Member / Project Manager]
+         │
+         ▼
+[ProjectFlow Unified Workspace]
+    ├── Sales Pipeline Kanban Board
+    ├── Project Sprint Task Tracker
+    └── Client Invoicing & Time Tracking
+         │
+         └──► [Relational CRM & Project State Engine]`,
     features: [
-      'Visual Lead Sales Pipeline & CRM Funnel',
-      'Drag-and-Drop Task & Milestone Management',
-      'Socket.IO Real-Time Team Collaboration & Chat',
-      'Automated Client Invoicing & Payment Status',
-      'Time Tracking & Project Budget Reports',
-      'Docker Containerized Architecture'
+      'Visual Drag-and-Drop Sales Pipeline Funnel',
+      'Agile Sprint & Task Board with Priority Tags',
+      'Client Invoicing Generator with PDF Scaffolding',
+      'Team Member Assignment and Milestone Tracking',
+      'Real-Time Project Budget and Progress Analytics'
     ],
+    implementationDetails: [
+      'Engineered fluid drag-and-drop interaction allowing seamless card movement across deal stages.',
+      'Designed compact, high-density dashboard suitable for daily operations by busy managers.'
+    ],
+    challenges: 'Structuring complex relational linkages between prospective leads, closed projects, and recurring invoices. Solved through normalized schema design.',
     resultsList: [
-      'Increased lead-to-client conversion rate by 35%.',
-      'Accelerated project milestone completion speed by 25%.',
-      'Eliminated reliance on 4 separate subscription software tools.',
-      'Adopted by over 150 growing business teams.'
+      'Replaces multiple separate tools with one streamlined prototype platform.',
+      'Intuitive Kanban interface simplifies daily task and client management.'
     ],
-    closingQuote: 'ProjectFlow CRM streamlines lead generation, project execution, and invoicing in one powerful platform.',
-    technologies: ['React.js', 'Express.js', 'MongoDB', 'Socket.IO', 'Docker'],
-    results: ['35% Higher Lead Conversion', '25% Faster Milestone Delivery', '150+ Teams Onboarded']
+    technologies: ['React.js', 'Node.js', 'MongoDB', 'CSS3', 'REST APIs']
   },
   {
     id: 'srivora-ai-agents',
     title: 'SriVora AI Autonomous Agents',
-    headline: 'Next-Gen Multi-Agent Enterprise Automation Platform',
+    headline: 'Multi-Agent Enterprise Orchestration Framework',
     category: 'Enterprise AI • Autonomous Agents',
     catGroup: 'upcoming',
-    isUpcoming: true,
-    statusTag: 'Upcoming Project (Q4 2026)',
-    clientName: 'Badisa Srikanth',
-    clientRole: 'Founder & CEO, SriVoraTech',
+    status: 'In Development',
+    statusTag: 'In Active Development',
     showcaseImg: '/srivora-agentic-dashboard.png',
     adminImg: '/srivora-agentic-dashboard.png',
     galleryImgs: [
@@ -531,47 +618,57 @@ const works = [
     ],
     color: '#8b5cf6',
     gradient: 'linear-gradient(135deg, #8b5cf6, #3b82f6)',
-    about: 'An upcoming autonomous multi-agent platform designed to orchestrate complex enterprise tasks, execute data pipelines, run automated software testing, and manage AI customer interactions.',
+    about: 'An upcoming multi-agent framework designed to coordinate autonomous AI agents across complex enterprise workflows, automated code testing, database queries, and system monitoring.',
     hq: 'Hyderabad, India',
-    industry: 'Artificial Intelligence',
-    companySize: 'Enterprise & AI Startups',
-    servicesOffered: ['Multi-Agent Architecture', 'LangGraph & Python FastAPI', 'LLM Function Calling', 'DeepSeek-V3 & Gemini Integration'],
-    heroQuote: 'Autonomous Multi-Agent Platform Engineered to Execute Complex Enterprise Task Orchestration',
-    challenge: 'Enterprises struggle to connect separate AI LLMs into unified workflows capable of executing multi-step business logic autonomously.',
-    solution: 'SriVoraTech is engineering SriVora AI Autonomous Agents — a state-of-the-art framework leveraging LangGraph, Python, and function-calling vector pipelines.',
-    approach: [
-      'Architected multi-agent graph topologies for parallel task execution.',
-      'Integrated DeepSeek-V3 & Google Gemini model endpoints.',
-      'Engineered safe sandboxed execution environments for database operations.',
-      'Designed real-time telemetry dashboards for monitoring agent reasoning.'
+    industry: 'Artificial Intelligence & Deep Tech',
+    companySize: 'Enterprises & AI-First Startups',
+    servicesOffered: ['Multi-Agent Architecture', 'LangGraph Topologies', 'Tool Calling Sandboxes', 'Telemetry Engineering'],
+    challenge: 'Connecting multiple specialized AI models into reliable, autonomous task graphs with human-in-the-loop oversight and sandboxed tool-calling capabilities.',
+    businessRequirements: [
+      'Enable multiple AI agents (Researcher, Coder, Critic, Executor) to collaborate on multi-step goals.',
+      'Provide visual execution graph with real-time step inspection and token tracing.',
+      'Implement strict sandboxed safeguards preventing unauthorized code or database mutation.'
     ],
+    solution: 'SriVoraTech is developing the SriVora AI Agent framework leveraging LangGraph state machines, FastAPI microservices, and sandboxed Docker runtimes.',
+    architectureDiagram: `[Enterprise User Prompt / Workflow Trigger]
+         │
+         ▼
+[Multi-Agent Supervisor (LangGraph State Machine)]
+    ├── Agent 1: Research & Document Retrieval (RAG)
+    ├── Agent 2: Code Synthesis / Logic Processing
+    └── Agent 3: QA Critic & Verification
+         │
+         ▼
+[Sandboxed Execution Environment (Docker Isolation)]
+         │
+         ▼
+[Verified Output / Webhook Notification]`,
     features: [
-      'Multi-Agent Workflow Graph Orchestration',
-      'Autonomous Code Generation & Software Testing',
-      'Sub-Second Vector Knowledge Base Retrieval',
-      'Sandboxed Enterprise Execution Safeguards',
-      'Real-Time Telemetry & Agent Step Inspector',
-      'Custom LLM Function Calling Webhooks'
+      'Multi-Agent Graph Topologies with Dynamic Handoffs',
+      'Real-Time Telemetry and Step-by-Step Thought Inspector',
+      'Sandboxed Docker Execution Environment for Safety',
+      'Vector Embedding Knowledge Bases for Deep Context',
+      'Custom LLM Tool-Calling & REST API Integration'
     ],
+    implementationDetails: [
+      'Architecting cyclic state graphs with checkpoint persistence to allow resuming paused workflows.',
+      'Building live telemetry WebSocket stream streaming agent reasoning steps directly to frontend UI.'
+    ],
+    challenges: 'Managing infinite loops and coordination deadlocks among collaborative agents. Solved using maximum recursion limits and deterministic supervisor arbitration.',
     resultsList: [
-      'Expected 85% reduction in manual multi-step workflow execution times.',
-      'Built for 10x throughput scaling over traditional single-prompt assistants.',
-      'Architected for strict enterprise security and data privacy isolation.'
+      'Architectural blueprint completed and currently in active development.',
+      'Initial prototypes demonstrate successful automated multi-step research and synthesis.'
     ],
-    closingQuote: 'SriVora AI Agents unlock true autonomous task execution for modern digital enterprises.',
-    technologies: ['Python', 'LangGraph', 'FastAPI', 'DeepSeek-V3', 'Pinecone'],
-    results: ['Q4 2026 Expected Launch', 'Multi-Agent Graph Architecture', '10x Speed Scaling']
+    technologies: ['Python', 'LangGraph', 'FastAPI', 'OpenAI API', 'Docker', 'Pinecone']
   },
   {
     id: 'omnichannel-erp',
-    title: 'OmniChannel ERP Cloud',
-    headline: 'Multi-Store Inventory, POS & Supply Chain Automation',
+    title: 'OmniChannel Cloud ERP',
+    headline: 'Multi-Store Inventory, POS & Supply Chain Automation Platform',
     category: 'Enterprise Software • Cloud ERP',
     catGroup: 'upcoming',
-    isUpcoming: true,
-    statusTag: 'Upcoming Project (Q4 2026)',
-    clientName: 'Badisa Srikanth',
-    clientRole: 'Founder & CEO, SriVoraTech',
+    status: 'Planned',
+    statusTag: 'Architecture & Planning Phase',
     showcaseImg: '/omnichannel-erp-dashboard.png',
     adminImg: '/omnichannel-erp-dashboard.png',
     galleryImgs: [
@@ -579,102 +676,80 @@ const works = [
     ],
     color: '#0067f4',
     gradient: 'linear-gradient(135deg, #0067f4, #06b6d4)',
-    about: 'An upcoming cloud-native ERP platform built specifically for retail chains, franchise networks, and multi-location warehouses to unify point-of-sale (POS), inventory, and automated replenishment.',
+    about: 'A planned cloud-native ERP platform architected for retail chains, franchises, and multi-location warehouses to unify point-of-sale (POS), warehouse stock, and automated supplier reordering.',
     hq: 'Hyderabad, India',
-    industry: 'Retail & Enterprise Tech',
-    companySize: 'Multi-Store Chains & Distributors',
-    servicesOffered: ['Go (Golang) Microservices', 'React.js Cloud POS', 'Kafka Streaming Engine', 'Kubernetes Cloud Deployment'],
-    heroQuote: 'Next-Generation OmniChannel Retail ERP Built for Ultra-Fast POS & Supply Chain Synchronization',
-    challenge: 'Multi-location retailers encounter inventory sync delays, stockouts, and manual transfer errors between offline stores and online storefronts.',
-    solution: 'SriVoraTech is building OmniChannel ERP Cloud — driven by Go microservices and Apache Kafka for millisecond inventory state updates across all locations.',
-    approach: [
-      'Engineered ultra-fast Go (Golang) backend microservices for low latency.',
-      'Integrated Apache Kafka event streaming for real-time inventory sync.',
-      'Built offline-first Progressive Web App (PWA) POS terminal interface.',
-      'Automated dynamic reorder points based on machine learning sales trends.'
+    industry: 'Retail Tech & Supply Chain',
+    companySize: 'Franchise Networks & Multi-Store Retailers',
+    servicesOffered: ['Microservices Design', 'Event-Driven Architecture', 'Cloud POS Specifications', 'Database Sharding'],
+    challenge: 'Multi-location retail businesses experience inventory synchronization delays between physical store POS terminals and online warehouses, resulting in overselling and stockouts.',
+    businessRequirements: [
+      'Synchronize inventory state across hundreds of retail POS terminals in sub-second latency.',
+      'Provide offline-capable POS interface that syncs sales data immediately upon reconnect.',
+      'Automate purchase orders based on real-time stock thresholds.'
     ],
+    solution: 'SriVoraTech is designing OmniChannel ERP Cloud utilizing Go microservices, Apache Kafka event streaming, and offline-first Progressive Web App (PWA) terminals.',
+    architectureDiagram: `[Store 1 POS Terminal]   [Store 2 POS Terminal]   [E-Commerce Storefront]
+         │                        │                        │
+         └────────────────────────┼────────────────────────┘
+                                  │
+                                  ▼
+                    [Apache Kafka Event Stream]
+                                  │
+                                  ▼
+                [Inventory & POS Go Microservices]
+                                  │
+                     [PostgreSQL Distributed DB]`,
     features: [
-      'Millisecond Multi-Store Stock Synchronization',
-      'Offline-First Progressive Web App (PWA) POS',
-      'Automated Purchase Orders & Supplier Workflows',
-      'Real-Time Multi-Warehouse Supply Chain Tracking',
-      'Centralized Financial Accounting & Tax Invoicing',
-      'Kubernetes Cloud Infrastructure Scaling'
+      'Sub-Second Multi-Location Stock Synchronization',
+      'Offline-First Progressive Web App (PWA) Point-of-Sale Terminal',
+      'Automated Reorder Point Triggers & Supplier Workflows',
+      'Centralized Financial Reporting and Tax Calculation',
+      'Role-Based Cashier, Store Manager, and Executive Access'
     ],
+    implementationDetails: [
+      'System design document and database schema specifications completed.',
+      'Kafka event schemas planned for high-throughput transactional consistency.'
+    ],
+    challenges: 'Handling concurrent purchase transactions for the last remaining unit of an item in two separate stores simultaneously. Designed with distributed optimistic locks.',
     resultsList: [
-      'Eliminates stockout errors across offline and e-commerce channels.',
-      'Sub-50ms transaction processing speed at POS checkout counters.',
-      'Built to scale across 1,000+ retail outlets effortlessly.'
+      'Full technical architecture and system specifications established.',
+      'Scheduled for phased development and client pilot rollout.'
     ],
-    closingQuote: 'Unifying physical retail stores and digital storefronts into one synchronized cloud platform.',
-    technologies: ['Golang', 'React.js', 'Apache Kafka', 'PostgreSQL', 'Kubernetes'],
-    results: ['Q4 2026 Expected Launch', 'Sub-50ms POS Transaction', 'Kafka Real-Time Streaming']
-  },
-  {
-    id: 'payshield-v2',
-    title: 'FinTech PayShield Gateway v2',
-    headline: 'AI Fraud Detection & Global Payout Settlement Engine',
-    category: 'Fintech • Payments & Security',
-    catGroup: 'upcoming',
-    isUpcoming: true,
-    statusTag: 'Upcoming Project (Q1 2027)',
-    clientName: 'Badisa Srikanth',
-    clientRole: 'Founder & CEO, SriVoraTech',
-    showcaseImg: '/payshield-fraud-dashboard.png',
-    adminImg: '/payshield-fraud-dashboard.png',
-    galleryImgs: [
-      { src: '/payshield-fraud-dashboard.png', title: 'AI Fraud Detection & Global Payout Settlement Engine' }
-    ],
-    color: '#10b981',
-    gradient: 'linear-gradient(135deg, #10b981, #3b82f6)',
-    about: 'An upcoming payment gateway and fraud prevention platform with AI transaction risk scoring, multi-currency payouts, instant settlements, and chargeback protection.',
-    hq: 'Hyderabad, India',
-    industry: 'Financial Technology',
-    companySize: 'Fintechs & Global Merchants',
-    servicesOffered: ['Fintech Payment Architecture', 'AI Risk Analytics Engine', 'ClickHouse Data Pipeline', 'Redis High-Speed Cache'],
-    heroQuote: 'AI-Powered Payment Gateway Infrastructure Engineered for Sub-Second Risk Analysis & Instant Payouts',
-    challenge: 'Online merchants lose billions annually to fraudulent transactions, chargeback penalties, and delayed settlement cycles.',
-    solution: 'SriVoraTech is developing PayShield Gateway v2 — combining real-time machine learning risk models with high-throughput settlement routing.',
-    approach: [
-      'Built machine learning risk models for millisecond fraud detection.',
-      'Utilized ClickHouse analytical database for real-time fraud pattern analytics.',
-      'Designed multi-processor payout routing to minimize transaction fees.',
-      'Architected PCI-DSS compliant tokenized vault storage.'
-    ],
-    features: [
-      'Millisecond AI Transaction Fraud Risk Scoring',
-      'Multi-Currency Global Merchant Settlements',
-      'Automated Chargeback Protection & Disputing',
-      'PCI-DSS Compliant Tokenized Payment Vault',
-      'Instant Merchant Payouts & Escrow Management',
-      'ClickHouse Analytical Real-Time Reporting'
-    ],
-    resultsList: [
-      'Reduces payment fraud risk by over 90% using predictive AI scoring.',
-      'Processes transactions with 99.999% high-availability uptime SLA.',
-      'Instant settlement options for merchant liquidity management.'
-    ],
-    closingQuote: 'Next-generation payment security and instant settlements for global commerce.',
-    technologies: ['Next.js', 'Node.js', 'ClickHouse', 'Redis', 'Stripe Connect'],
-    results: ['Q1 2027 Expected Launch', '90% Fraud Reduction Model', 'Sub-100ms Risk Analysis']
+    technologies: ['Golang', 'React.js', 'Apache Kafka', 'PostgreSQL', 'Docker', 'Kubernetes']
   }
 ]
 
 const categories = [
   { id: 'all', label: 'All Solutions' },
-  { id: 'upcoming', label: '🚀 Upcoming Projects' },
-  { id: 'enterprise', label: 'Enterprise Software' },
-  { id: 'ai', label: 'Artificial Intelligence' },
+  { id: 'enterprise', label: 'Enterprise & ERP' },
+  { id: 'ai', label: 'AI & Automation' },
   { id: 'commerce', label: 'E-Commerce' },
   { id: 'healthcare', label: 'Healthcare' },
   { id: 'education', label: 'Education' },
-  { id: 'crm', label: 'CRM & Projects' },
+  { id: 'crm', label: 'CRM & Workspace' },
+  { id: 'upcoming', label: '🚀 Upcoming / Roadmap' },
 ]
 
 /* Individual card component */
 function WorkCard({ work, idx, onSelect }) {
   const [cardRef, cardVisible] = useScrollAnimation()
   const [isHovered, setIsHovered] = useState(false)
+
+  const getStatusBadge = (status) => {
+    switch (status) {
+      case 'Live':
+        return { label: '● Live Platform', color: '#10b981' }
+      case 'Prototype':
+        return { label: '⚡ Functional Prototype', color: '#8b5cf6' }
+      case 'In Development':
+        return { label: '🛠️ In Development', color: '#0067f4' }
+      case 'Planned':
+      default:
+        return { label: '📋 Planned Architecture', color: '#f59e0b' }
+    }
+  }
+
+  const statusBadge = getStatusBadge(work.status)
 
   return (
     <div
@@ -686,28 +761,9 @@ function WorkCard({ work, idx, onSelect }) {
       role="button"
       tabIndex={0}
       onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); onSelect(work); } }}
-      aria-label={`View solution details for ${work.title}`}
+      aria-label={`View case study for ${work.title}`}
     >
-      {work.isUpcoming && (
-        <div className="work-upcoming-badge">
-          <span>🚀 {work.statusTag || 'Upcoming Project'}</span>
-        </div>
-      )}
-
-      {work.liveUrl && (
-        <a
-          href={work.liveUrl}
-          target="_blank"
-          rel="noopener noreferrer"
-          className="work-live-link-badge"
-          onClick={(e) => e.stopPropagation()}
-          title="Open Live Application"
-        >
-          <Globe size={12} /> Live Site ↗
-        </a>
-      )}
-
-      {/* Top Banner Image Container (CodeDale Style) */}
+      {/* Top Banner Image Container */}
       <div className="work-card-image" style={{ background: work.gradient }}>
         {work.showcaseImg ? (
           <div className="work-card-showcase-wrap">
@@ -731,35 +787,62 @@ function WorkCard({ work, idx, onSelect }) {
         )}
       </div>
 
-      {/* CodeDale Chat Conversation Bubbles */}
-      <div className="work-card-chat-wrap">
-        <div className="card-chat-bubble card-chat-client">
-          <p className="card-chat-text">{work.about}</p>
-          <span className="card-chat-author">{work.clientName}</span>
-        </div>
-        <div className="card-chat-bubble card-chat-reply">
-          <p className="card-chat-text">Loved building it with you.</p>
-          <span className="card-chat-author">SriVoraTech</span>
-        </div>
+      {/* Status Bar */}
+      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '12px 18px 4px' }}>
+        <span style={{ fontSize: '11px', fontWeight: '700', color: statusBadge.color, background: `${statusBadge.color}15`, padding: '3px 10px', borderRadius: '999px', border: `1px solid ${statusBadge.color}30` }}>
+          {statusBadge.label}
+        </span>
+        {work.liveUrl && (
+          <a
+            href={work.liveUrl}
+            target="_blank"
+            rel="noopener noreferrer"
+            style={{ fontSize: '11.5px', color: '#0067f4', fontWeight: '600', display: 'inline-flex', alignItems: 'center', gap: '4px' }}
+            onClick={(e) => e.stopPropagation()}
+            title="Open Live Application"
+          >
+            <Globe size={12} /> Live Site ↗
+          </a>
+        )}
       </div>
 
-      {/* Founder Footer Row */}
-      <div className="work-card-footer">
-        <div className="card-founder-avatar" style={{ background: work.gradient }}>
-          {work.clientName ? work.clientName.charAt(0) : 'B'}
+      {/* Clean Professional Card Body */}
+      <div style={{ padding: '8px 18px 16px', display: 'flex', flexDirection: 'column', flex: 1 }}>
+        <h3 style={{ fontSize: '17px', fontWeight: '700', color: '#0f172a', margin: '4px 0 6px', lineHeight: '1.3' }}>
+          {work.title}
+        </h3>
+        <p style={{ fontSize: '13px', color: '#64748b', lineHeight: '1.5', margin: '0 0 14px', flex: 1 }}>
+          {work.about}
+        </p>
+
+        {/* Tech Chips */}
+        <div style={{ display: 'flex', flexWrap: 'wrap', gap: '6px', marginBottom: '14px' }}>
+          {work.technologies.slice(0, 4).map((tech) => (
+            <span key={tech} style={{ fontSize: '11px', padding: '3px 8px', background: '#f1f5f9', color: '#475569', borderRadius: '6px', fontWeight: '600' }}>
+              {tech}
+            </span>
+          ))}
+          {work.technologies.length > 4 && (
+            <span style={{ fontSize: '11px', padding: '3px 6px', background: '#e2e8f0', color: '#64748b', borderRadius: '6px', fontWeight: '600' }}>
+              +{work.technologies.length - 4}
+            </span>
+          )}
         </div>
-        <div className="card-founder-info">
-          <h4 className="card-founder-name">{work.clientName || 'Badisa Srikanth'}</h4>
-          <span className="card-founder-role">{work.clientRole || 'Founder & CEO'}</span>
+
+        {/* Footer Row */}
+        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', paddingTop: '10px', borderTop: '1px solid #f1f5f9', marginTop: 'auto' }}>
+          <span style={{ fontSize: '11.5px', color: '#94a3b8', fontWeight: '600' }}>
+            {work.industry}
+          </span>
+          <span style={{ fontSize: '12px', color: '#0067f4', fontWeight: '700', display: 'inline-flex', alignItems: 'center', gap: '4px' }}>
+            Case Study <ArrowUpRight size={13} />
+          </span>
         </div>
-        <span className="card-view-details-link">
-          View <ArrowUpRight size={14} />
-        </span>
       </div>
 
       <div className={`work-card-overlay ${isHovered ? 'work-card-overlay--visible' : ''}`}>
         <span className="work-view-label">
-          View Solution Details <ArrowUpRight size={16} />
+          View Structured Case Study <ArrowUpRight size={16} />
         </span>
         {work.liveUrl && (
           <a
@@ -777,27 +860,40 @@ function WorkCard({ work, idx, onSelect }) {
   )
 }
 
-/* Full project detail modal */
+/* Full Structured Case Study Page */
 function ProjectDetailPage({ project, onClose, onSelectProject, allProjects }) {
   const pageRef = useRef(null)
 
   useEffect(() => {
-    setTimeout(() => pageRef.current?.scrollTo(0, 0), 50)
-  }, [project.id])
+    if (pageRef.current) pageRef.current.scrollTo(0, 0)
+  }, [project])
 
-  const otherProjects = allProjects.filter(p => p.id !== project.id)
+  const otherProjects = allProjects.filter(p => p.id !== project.id).slice(0, 3)
 
   return (
     <div className="project-page-backdrop" role="dialog" aria-modal="true">
       <div className="project-page" ref={pageRef}>
-        {/* Top Navigation Bar */}
+        {/* Top Sticky Bar */}
         <div className="project-page-nav">
           <button className="project-back-btn" onClick={onClose}>
-            <ArrowLeft size={18} /> Back to Products
+            <ArrowLeft size={16} />
+            <span>Back to All Products</span>
           </button>
-          <button className="project-close-btn" onClick={onClose} aria-label="Close">
-            <X size={20} />
-          </button>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+            {project.liveUrl && (
+              <a
+                href={project.liveUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+                style={{ display: 'inline-flex', alignItems: 'center', gap: '6px', padding: '6px 14px', background: '#0067f4', color: '#ffffff', borderRadius: '8px', fontSize: '13px', fontWeight: '600', textDecoration: 'none' }}
+              >
+                <Globe size={14} /> Live Demo <ExternalLink size={13} />
+              </a>
+            )}
+            <button className="project-close-btn" onClick={onClose} aria-label="Close Case Study">
+              <X size={18} />
+            </button>
+          </div>
         </div>
 
         {/* Hero Section */}
@@ -806,38 +902,51 @@ function ProjectDetailPage({ project, onClose, onSelectProject, allProjects }) {
             <div className="project-breadcrumb">
               <span className="breadcrumb-link" onClick={onClose}>Our Work</span>
               <ChevronRight size={14} />
-              <span className="breadcrumb-current">{project.id.toUpperCase()}</span>
+              <span className="breadcrumb-current">{project.title.split(' - ')[0]}</span>
             </div>
-            <h1 className="project-hero-title">{project.headline}</h1>
             
-            {project.liveUrl && (
-              <div style={{ marginTop: '14px', marginBottom: '16px' }}>
+            <div style={{ display: 'inline-flex', alignItems: 'center', gap: '8px', marginBottom: '10px' }}>
+              <span style={{ fontSize: '12px', fontWeight: '700', padding: '4px 12px', borderRadius: '999px', background: project.status === 'Live' ? '#10b98120' : '#8b5cf620', color: project.status === 'Live' ? '#10b981' : '#8b5cf6', border: `1px solid ${project.status === 'Live' ? '#10b98140' : '#8b5cf640'}` }}>
+                Status: {project.statusTag || project.status}
+              </span>
+              <span style={{ fontSize: '12px', color: '#64748b', fontWeight: '600' }}>
+                {project.category}
+              </span>
+            </div>
+
+            <h1 className="project-hero-title">{project.title}</h1>
+            <p style={{ fontSize: '16px', color: '#475569', lineHeight: '1.6', margin: '12px 0 20px' }}>
+              {project.headline}
+            </p>
+            
+            <div style={{ display: 'flex', flexWrap: 'wrap', gap: '12px', marginTop: '14px', marginBottom: '20px' }}>
+              {project.liveUrl && (
                 <a
                   href={project.liveUrl}
                   target="_blank"
                   rel="noopener noreferrer"
                   className="hero-live-demo-btn"
                 >
-                  <Globe size={16} /> Launch Live Application ({project.liveUrl.replace('https://', '')}) <ExternalLink size={16} />
+                  <Globe size={16} /> Open Live Platform <ExternalLink size={15} />
                 </a>
-              </div>
-            )}
-
-            <p className="project-hero-subtitle">A conversation with:</p>
-            <div className="project-client-row">
-              <div className="project-client-avatar" style={{ background: project.gradient }}>
-                {project.clientName.charAt(0)}
-              </div>
-              <div>
-                <span className="project-client-name">{project.clientName}</span>
-                <span className="project-client-role">{project.clientRole}</span>
-              </div>
+              )}
+              {project.githubUrl && (
+                <a
+                  href={project.githubUrl}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  style={{ display: 'inline-flex', alignItems: 'center', gap: '8px', padding: '10px 18px', background: '#0f172a', color: '#ffffff', borderRadius: '10px', fontSize: '14px', fontWeight: '600', textDecoration: 'none' }}
+                >
+                  <GitBranch size={16} /> GitHub Source <ExternalLink size={14} />
+                </a>
+              )}
             </div>
           </div>
+
           <div className="project-hero-right">
             <div className="project-hero-banner-frame" style={{ borderRadius: '20px', overflow: 'hidden', border: '1px solid rgba(0,0,0,0.1)', boxShadow: '0 12px 32px rgba(0,0,0,0.15)' }}>
               {project.showcaseImg ? (
-                <img src={project.showcaseImg} alt={project.title} style={{ width: '100%', height: '280px', objectFit: 'cover', objectPosition: 'top center', display: 'block' }} />
+                <img src={project.showcaseImg} alt={project.title} style={{ width: '100%', height: '300px', objectFit: 'cover', objectPosition: 'top center', display: 'block' }} />
               ) : (
                 <div className="project-hero-banner" style={{ background: project.gradient }}>
                   <div className="hero-banner-content">
@@ -851,57 +960,41 @@ function ProjectDetailPage({ project, onClose, onSelectProject, allProjects }) {
           </div>
         </div>
 
-        {/* 3-Column Body */}
+        {/* 3-Column Structured Case Study Body */}
         <div className="project-body">
-          {/* Left Sidebar */}
+          {/* Left Sidebar Info */}
           <aside className="project-sidebar-left">
             <div className="sidebar-section">
-              <span className="sidebar-label">ABOUT</span>
-              <h4 className="sidebar-company">
-                {project.id.toUpperCase()}{' '}
-                {project.liveUrl ? (
-                  <a
-                    href={project.liveUrl}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    style={{ color: '#0067f4', display: 'inline-flex', alignItems: 'center' }}
-                    title="Visit Live Application"
-                  >
-                    <ExternalLink size={14} />
-                  </a>
-                ) : (
-                  <Link2 size={14} />
-                )}
-              </h4>
+              <span className="sidebar-label">PROJECT OVERVIEW</span>
+              <h4 className="sidebar-company">{project.title.split(' - ')[0]}</h4>
               <p className="sidebar-desc">{project.about}</p>
-              {project.liveUrl && (
-                <div style={{ marginTop: '10px' }}>
-                  <a
-                    href={project.liveUrl}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="sidebar-live-link"
-                  >
-                    <Globe size={13} /> {project.liveUrl.replace('https://', '')}
-                  </a>
-                </div>
-              )}
             </div>
+
             <div className="sidebar-section">
-              <span className="sidebar-label">HQ</span>
+              <span className="sidebar-label">STATUS</span>
+              <p className="sidebar-value" style={{ color: project.status === 'Live' ? '#10b981' : '#8b5cf6', fontWeight: '700' }}>
+                {project.statusTag || project.status}
+              </p>
+            </div>
+
+            <div className="sidebar-section">
+              <span className="sidebar-label">LOCATION & TEAM</span>
               <p className="sidebar-value"><MapPin size={14} /> {project.hq}</p>
+              <p style={{ fontSize: '12px', color: '#64748b', marginTop: '4px' }}>Engineering: SriVoraTech Core Team</p>
             </div>
+
             <div className="sidebar-section">
-              <span className="sidebar-label">INDUSTRY</span>
+              <span className="sidebar-label">TARGET INDUSTRY</span>
               <p className="sidebar-value"><Building2 size={14} /> {project.industry}</p>
             </div>
+
             <div className="sidebar-section">
-              <span className="sidebar-label">COMPANY SIZE</span>
+              <span className="sidebar-label">TARGET SCALE</span>
               <p className="sidebar-value"><Users size={14} /> {project.companySize}</p>
             </div>
 
             <div className="sidebar-section">
-              <span className="sidebar-label">SERVICES OFFERED</span>
+              <span className="sidebar-label">CORE ENGINEERING SERVICES</span>
               <ul className="sidebar-services-list">
                 {project.servicesOffered.map((svc, i) => (
                   <li key={i}>{svc}</li>
@@ -910,149 +1003,141 @@ function ProjectDetailPage({ project, onClose, onSelectProject, allProjects }) {
             </div>
           </aside>
 
-          {/* Center Content */}
+          {/* Center Main Case Study Content */}
           <main className="project-content">
-            <blockquote className="project-hero-quote">
-              <Quote size={24} className="quote-icon" style={{ color: project.color }} />
-              "{project.title.split(' - ')[0]} Brought to Life by SriVoraTech"
-            </blockquote>
-
-            <div className="content-divider" />
-
-            <h2 className="content-heading">The Challenge</h2>
-            <p className="content-text">{project.challenge}</p>
-
-            <blockquote className="project-closing-quote" style={{ color: project.color, margin: '20px 0' }}>
-              <Quote size={20} style={{ opacity: 0.5 }} />
-              "We had almost given up on building our dream enterprise portal until SriVoraTech took over."
-              <cite>— {project.clientName}, {project.clientRole}</cite>
-            </blockquote>
-
-            <h2 className="content-heading">Enter SriVoraTech: Turning Vision into Reality</h2>
-            <p className="content-text">{project.solution}</p>
-
-            <h3 className="content-subheading">Our Approach</h3>
-            <ul className="content-list">
-              {project.approach.map((item, i) => (
-                <li key={i}>{item}</li>
-              ))}
-            </ul>
-
-            {/* Approach Section Image */}
-            {project.adminImg && (
-              <div className="project-section-image-box" style={{ margin: '28px 0', borderRadius: '16px', overflow: 'hidden', border: '1px solid rgba(0,0,0,0.1)', boxShadow: '0 8px 24px rgba(0,0,0,0.08)' }}>
-                <img src={project.adminImg} alt={`${project.title} Admin Dashboard`} style={{ width: '100%', height: 'auto', display: 'block', objectFit: 'cover' }} />
-                <span className="image-caption-tag" style={{ display: 'block', padding: '8px 16px', background: '#0f172a', color: '#94a3b8', fontSize: '12px', fontWeight: '600' }}>
-                  Student Dashboard — Live UI
-                </span>
+            {/* 1. Problem Statement */}
+            <section style={{ marginBottom: '32px' }}>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '8px' }}>
+                <span style={{ fontSize: '12px', fontWeight: '800', color: '#ef4444', textTransform: 'uppercase', letterSpacing: '0.08em' }}>1. The Challenge</span>
               </div>
+              <h2 className="content-heading" style={{ marginTop: 0 }}>Operational Problem Statement</h2>
+              <p className="content-text">{project.challenge}</p>
+            </section>
+
+            {/* 2. Business Requirements */}
+            {project.businessRequirements && project.businessRequirements.length > 0 && (
+              <section style={{ marginBottom: '32px' }}>
+                <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '8px' }}>
+                  <span style={{ fontSize: '12px', fontWeight: '800', color: '#f59e0b', textTransform: 'uppercase', letterSpacing: '0.08em' }}>2. Business Objectives</span>
+                </div>
+                <h2 className="content-heading" style={{ marginTop: 0 }}>Business Requirements</h2>
+                <ul className="content-list content-list--features">
+                  {project.businessRequirements.map((req, i) => (
+                    <li key={i}>
+                      <CheckCircle2 size={16} style={{ color: '#f59e0b', flexShrink: 0 }} />
+                      <span>{req}</span>
+                    </li>
+                  ))}
+                </ul>
+              </section>
             )}
 
-            <h2 className="content-heading">Key Features at a Glance</h2>
-            <ul className="content-list content-list--features">
-              {project.features.map((feat, i) => (
-                <li key={i}>
-                  <CheckCircle2 size={16} style={{ color: project.color, flexShrink: 0 }} />
-                  {feat}
-                </li>
-              ))}
-            </ul>
-
-            {/* Interactive Prototype & Live Frame */}
-            <div className="interactive-prototype-container" style={{ borderColor: `${project.color}40`, margin: '32px 0' }}>
-              <div className="device-top-bar">
-                <div className="device-dots">
-                  <span className="dot red" />
-                  <span className="dot yellow" />
-                  <span className="dot green" />
-                </div>
-                <div className="device-title-bar">
-                  {project.liveUrl ? (
-                    <a
-                      href={project.liveUrl}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      style={{ color: 'inherit', textDecoration: 'underline' }}
-                    >
-                      {project.liveUrl}
-                    </a>
-                  ) : (
-                    `${project.title} — Live Interactive Prototype`
-                  )}
-                </div>
-                {project.liveUrl && (
-                  <a
-                    href={project.liveUrl}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="device-status-badge"
-                    style={{ background: `${project.color}20`, color: project.color, textDecoration: 'none', cursor: 'pointer' }}
-                  >
-                    ● Open Live Application ↗
-                  </a>
-                )}
+            {/* 3. Proposed Solution */}
+            <section style={{ marginBottom: '32px' }}>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '8px' }}>
+                <span style={{ fontSize: '12px', fontWeight: '800', color: '#0067f4', textTransform: 'uppercase', letterSpacing: '0.08em' }}>3. SriVoraTech Solution</span>
               </div>
-              <div className="device-screen-content">
-                <div className="proto-metrics-header">
-                  <div className="p-metric">
-                    <span className="p-label">System Status</span>
-                    <strong className="p-val text-green">100% Operational</strong>
-                  </div>
-                  <div className="p-metric">
-                    <span className="p-label">Latency</span>
-                    <strong className="p-val">12ms</strong>
-                  </div>
-                  <div className="p-metric">
-                    <span className="p-label">Active Connections</span>
-                    <strong className="p-val">4,890</strong>
-                  </div>
+              <h2 className="content-heading" style={{ marginTop: 0 }}>Proposed Architecture &amp; Solution</h2>
+              <p className="content-text">{project.solution}</p>
+            </section>
+
+            {/* 4. Architecture Diagram */}
+            {project.architectureDiagram && (
+              <section style={{ marginBottom: '36px' }}>
+                <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '8px' }}>
+                  <span style={{ fontSize: '12px', fontWeight: '800', color: '#6366f1', textTransform: 'uppercase', letterSpacing: '0.08em' }}>4. System Architecture</span>
                 </div>
+                <h2 className="content-heading" style={{ marginTop: 0 }}>High-Level System Design &amp; Data Flow</h2>
+                <div style={{ background: '#0f172a', color: '#38bdf8', padding: '20px 24px', borderRadius: '14px', fontFamily: 'monospace', fontSize: '13px', lineHeight: '1.6', overflowX: 'auto', border: '1px solid #1e293b' }}>
+                  <pre style={{ margin: 0 }}>{project.architectureDiagram}</pre>
+                </div>
+              </section>
+            )}
 
-                {project.showcaseImg && (
-                  <div className="proto-showcase-img-container" style={{ margin: '16px 0', borderRadius: '12px', overflow: 'hidden', border: '1px solid rgba(0,0,0,0.1)', boxShadow: '0 8px 24px rgba(0,0,0,0.12)' }}>
-                    <img src={project.showcaseImg} alt={`${project.title} UI Showcase`} style={{ width: '100%', height: 'auto', display: 'block', objectFit: 'cover' }} />
-                  </div>
-                )}
-              </div>
-            </div>
-
-            <h2 className="content-heading">Results: Why SriVoraTech is the Best</h2>
-            <ul className="content-list">
-              {project.resultsList.map((result, i) => (
-                <li key={i}>{result}</li>
-              ))}
-            </ul>
-
-            <blockquote className="project-closing-quote" style={{ color: project.color }}>
-              <Quote size={20} style={{ opacity: 0.5 }} />
-              {project.closingQuote}
-              <cite>— {project.clientName}, {project.clientRole}</cite>
-            </blockquote>
-
-            {/* Gallery Section — Slideshow + See All Pics */}
+            {/* 5. Actual Screenshots Slideshow & Lightbox */}
             {project.galleryImgs && project.galleryImgs.length > 0 && (
-              <div className="project-gallery-section" style={{ margin: '40px 0' }}>
-                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '16px' }}>
-                  <h2 className="content-heading" style={{ margin: 0 }}>Gallery: See the Experience</h2>
+              <section style={{ margin: '36px 0' }}>
+                <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '8px' }}>
+                  <span style={{ fontSize: '12px', fontWeight: '800', color: '#10b981', textTransform: 'uppercase', letterSpacing: '0.08em' }}>5. UI &amp; Screenshots</span>
                 </div>
+                <h2 className="content-heading" style={{ marginTop: 0 }}>Actual Platform Interface ({project.galleryImgs.length} Views)</h2>
                 <div style={{ borderRadius: '16px', overflow: 'hidden', border: '1px solid rgba(0,0,0,0.1)', boxShadow: '0 8px 24px rgba(0,0,0,0.08)' }}>
                   <ImageSlideshow images={project.galleryImgs} interval={4000} height="420px" showControls={true} showThumbnails={true} />
                 </div>
                 <GalleryLightbox images={project.galleryImgs} color={project.color} />
-              </div>
+              </section>
             )}
-            {/* Tech Stack */}
-            <div className="project-tech-section">
-              <h3 className="content-subheading">Technologies Powered By</h3>
+
+            {/* 6. Core Features */}
+            <section style={{ marginBottom: '32px' }}>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '8px' }}>
+                <span style={{ fontSize: '12px', fontWeight: '800', color: '#8b5cf6', textTransform: 'uppercase', letterSpacing: '0.08em' }}>6. Platform Features</span>
+              </div>
+              <h2 className="content-heading" style={{ marginTop: 0 }}>Key Features &amp; Functional Capabilities</h2>
+              <ul className="content-list content-list--features">
+                {project.features.map((feat, i) => (
+                  <li key={i}>
+                    <CheckCircle2 size={16} style={{ color: project.color, flexShrink: 0 }} />
+                    <span>{feat}</span>
+                  </li>
+                ))}
+              </ul>
+            </section>
+
+            {/* 7. Implementation Details */}
+            {project.implementationDetails && project.implementationDetails.length > 0 && (
+              <section style={{ marginBottom: '32px' }}>
+                <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '8px' }}>
+                  <span style={{ fontSize: '12px', fontWeight: '800', color: '#06b6d4', textTransform: 'uppercase', letterSpacing: '0.08em' }}>7. Engineering Approach</span>
+                </div>
+                <h2 className="content-heading" style={{ marginTop: 0 }}>Implementation &amp; Code Architecture</h2>
+                <ul className="content-list">
+                  {project.implementationDetails.map((step, i) => (
+                    <li key={i}>{step}</li>
+                  ))}
+                </ul>
+              </section>
+            )}
+
+            {/* 8. Technical Challenges */}
+            {project.challenges && (
+              <section style={{ marginBottom: '32px' }}>
+                <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '8px' }}>
+                  <span style={{ fontSize: '12px', fontWeight: '800', color: '#ec4899', textTransform: 'uppercase', letterSpacing: '0.08em' }}>8. Obstacles Solved</span>
+                </div>
+                <h2 className="content-heading" style={{ marginTop: 0 }}>Technical Challenges Overcome</h2>
+                <p className="content-text">{project.challenges}</p>
+              </section>
+            )}
+
+            {/* 9. Results */}
+            <section style={{ marginBottom: '32px' }}>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '8px' }}>
+                <span style={{ fontSize: '12px', fontWeight: '800', color: '#10b981', textTransform: 'uppercase', letterSpacing: '0.08em' }}>9. Measurable Results</span>
+              </div>
+              <h2 className="content-heading" style={{ marginTop: 0 }}>Verified Performance &amp; Outcomes</h2>
+              <ul className="content-list content-list--features">
+                {project.resultsList.map((res, i) => (
+                  <li key={i}>
+                    <CheckCircle2 size={16} style={{ color: '#10b981', flexShrink: 0 }} />
+                    <span>{res}</span>
+                  </li>
+                ))}
+              </ul>
+            </section>
+
+            {/* 10. Technology Stack */}
+            <section className="project-tech-section" style={{ margin: '32px 0' }}>
+              <h3 className="content-subheading">10. Technology Stack</h3>
               <div className="project-tech-tags">
                 {project.technologies.map(tech => (
                   <span key={tech} className="project-tech-tag">{tech}</span>
                 ))}
               </div>
-            </div>
+            </section>
 
-            {/* CTA */}
-            <div className="project-cta-section" style={{ display: 'flex', gap: '16px', flexWrap: 'wrap', justifyContent: 'center', marginTop: '40px' }}>
+            {/* 11. Links & CTA */}
+            <div className="project-cta-section" style={{ display: 'flex', gap: '16px', flexWrap: 'wrap', justifyContent: 'center', marginTop: '40px', padding: '32px', background: '#f8fafc', borderRadius: '16px', border: '1px solid #e2e8f0' }}>
               {project.liveUrl && (
                 <a
                   href={project.liveUrl}
@@ -1061,31 +1146,55 @@ function ProjectDetailPage({ project, onClose, onSelectProject, allProjects }) {
                   className="project-cta-btn project-cta-btn--live"
                   style={{ background: project.gradient || '#0067f4' }}
                 >
-                  <Globe size={18} /> Launch Live Application <ExternalLink size={18} />
+                  <Globe size={18} /> Launch Live Demo ({project.title.split(' - ')[0]}) <ExternalLink size={18} />
+                </a>
+              )}
+              {project.githubUrl && (
+                <a
+                  href={project.githubUrl}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="project-cta-btn"
+                  style={{ background: '#0f172a', color: '#ffffff' }}
+                >
+                  <GitBranch size={18} /> View GitHub Repo <ExternalLink size={18} />
                 </a>
               )}
               <a href="#contact" className="project-cta-btn" onClick={onClose}>
-                Request Demo or Custom Build <ArrowUpRight size={18} />
+                Request Custom Solution <ArrowUpRight size={18} />
               </a>
             </div>
           </main>
 
-          {/* Right Sidebar */}
+          {/* Right Sidebar Tech Stack */}
           <aside className="project-sidebar-right">
             <div className="sidebar-section">
-              <span className="sidebar-label">ENGINEERING STACK</span>
+              <span className="sidebar-label">CORE TOOLS</span>
               <ul className="sidebar-services-list">
-                {project.servicesOffered.map((svc, i) => (
-                  <li key={i}>{svc}</li>
+                {project.technologies.map((t, i) => (
+                  <li key={i}>{t}</li>
                 ))}
               </ul>
             </div>
+            {project.liveUrl && (
+              <div className="sidebar-section" style={{ marginTop: '24px' }}>
+                <span className="sidebar-label">DEPLOYED URL</span>
+                <a
+                  href={project.liveUrl}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="sidebar-live-link"
+                >
+                  <Globe size={13} /> {project.liveUrl.replace('https://', '')}
+                </a>
+              </div>
+            )}
           </aside>
         </div>
 
-        {/* Suggested Projects */}
+        {/* Suggested Other Products */}
         <div className="project-suggestions">
-          <h3 className="suggestions-title">Explore Other Enterprise Products</h3>
+          <h3 className="suggestions-title">Explore Other Solutions &amp; Products</h3>
           <div className="suggestions-grid">
             {otherProjects.map(p => (
               <div
@@ -1093,9 +1202,7 @@ function ProjectDetailPage({ project, onClose, onSelectProject, allProjects }) {
                 className="suggestion-card"
                 onClick={() => {
                   onSelectProject(p)
-                  if (pageRef.current) {
-                    pageRef.current.scrollTo({ top: 0, behavior: 'smooth' })
-                  }
+                  if (pageRef.current) pageRef.current.scrollTo({ top: 0, behavior: 'smooth' })
                 }}
                 role="button"
                 tabIndex={0}
@@ -1109,12 +1216,12 @@ function ProjectDetailPage({ project, onClose, onSelectProject, allProjects }) {
                     />
                   )}
                   <span className="suggestion-badge" style={{ position: 'relative', zIndex: 2, background: 'rgba(15, 23, 42, 0.75)', backdropFilter: 'blur(8px)' }}>
-                    {p.category}
+                    {p.status || p.category}
                   </span>
                 </div>
                 <div className="suggestion-card-info">
                   <h4>{p.title}</h4>
-                  <span className="suggestion-link">View Product <ArrowUpRight size={14} /></span>
+                  <span className="suggestion-link">View Case Study <ArrowUpRight size={14} /></span>
                 </div>
               </div>
             ))}
@@ -1160,13 +1267,17 @@ export default function WorkShowcase() {
     <section className="work-showcase section" id="our-works">
       <div className="container">
         <div ref={ref} className={`animate-on-scroll ${isVisible ? 'visible' : ''}`}>
-          <h2 className="section-title">Our Solutions & Products</h2>
+          <div className="light-badge" style={{ display: 'inline-flex', alignItems: 'center', gap: '8px', padding: '6px 16px', background: 'rgba(0, 103, 244, 0.08)', borderRadius: '999px', color: '#0067f4', fontSize: '12px', fontWeight: '700', marginBottom: '14px', border: '1px solid rgba(0, 103, 244, 0.15)' }}>
+            <Sparkles size={14} />
+            <span>PORTFOLIO &amp; SIGNATURE PRODUCTS</span>
+          </div>
+          <h2 className="section-title">Our Solutions &amp; Structured Case Studies</h2>
           <p className="section-subtitle">
-            Enterprise software platforms, AI virtual assistants, e-commerce engines, and healthcare solutions built by SriVoraTech.
+            Explore SriVoraTech's live products, architectural prototypes, and engineering case studies with full technical transparency.
           </p>
         </div>
 
-        {/* Portfolio Category Filters & Search */}
+        {/* Filter Bar & Search */}
         <div className="work-filter-bar">
           <div className="work-tabs">
             {categories.map((cat) => (
@@ -1210,7 +1321,6 @@ export default function WorkShowcase() {
         </div>
       </div>
 
-      {/* Full Project Detail Page Overlay */}
       {selectedProject && (
         <ProjectDetailPage
           project={selectedProject}

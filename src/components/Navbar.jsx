@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react'
-import { Menu, X, ArrowRight, Zap, Sparkles } from 'lucide-react'
+import { Menu, X, ArrowRight, Zap } from 'lucide-react'
 import './Navbar.css'
 
 const navLinks = [
@@ -9,6 +9,7 @@ const navLinks = [
   { label: 'Estimator', href: '#estimator' },
   { label: 'Tech Stack', href: '#tech-stack' },
   { label: 'Our Work', href: '#our-works' },
+  { label: 'Client Portal', href: '/client-portal', isRoute: true },
   { label: 'Leadership', href: '#leadership' },
   { label: 'Careers', href: '/careers', isRoute: true },
   { label: 'Contact', href: '#contact' },
@@ -39,12 +40,22 @@ export default function Navbar({ onNavigate }) {
     }
   }
 
+  const handleLogoClick = (e) => {
+    e.preventDefault()
+    if (onNavigate) {
+      onNavigate('/')
+    } else {
+      window.location.href = '/'
+    }
+    setMobileOpen(false)
+  }
+
   useEffect(() => {
     const handleScroll = () => {
       setScrolled(window.scrollY > 20)
 
       // Active section scroll spy
-      const sections = navLinks.map(link => link.href.substring(1))
+      const sections = navLinks.filter(l => !l.isRoute).map(link => link.href.substring(1))
       for (const sectionId of sections) {
         const element = document.getElementById(sectionId)
         if (element) {
@@ -64,7 +75,7 @@ export default function Navbar({ onNavigate }) {
   return (
     <div className={`navbar-wrapper ${scrolled ? 'scrolled' : ''}`}>
       {/* Desktop logo left */}
-      <a className="navbar-logo-left" href="#home">
+      <a className="navbar-logo-left" href="/" onClick={handleLogoClick}>
         <div className="logo-badge">
           <Zap size={16} className="logo-icon" />
         </div>
@@ -77,7 +88,7 @@ export default function Navbar({ onNavigate }) {
       <div className={`navbar-pill ${mobileOpen ? 'mobile-open' : ''}`}>
         <div className="navbar-pill-inner">
           {/* Mobile logo */}
-          <a className="navbar-logo-mobile" href="#home">
+          <a className="navbar-logo-mobile" href="/" onClick={handleLogoClick}>
             <div className="logo-badge-sm">
               <Zap size={14} className="logo-icon" />
             </div>
@@ -127,7 +138,13 @@ export default function Navbar({ onNavigate }) {
                 {link.label}
               </a>
             ))}
-            <a href="#contact" className="btn-primary mobile-cta" onClick={() => setMobileOpen(false)}>
+            <a href="#contact" className="btn-primary mobile-cta" onClick={(e) => {
+              setMobileOpen(false)
+              if (window.location.pathname !== '/') {
+                e.preventDefault()
+                onNavigate('/#contact')
+              }
+            }}>
               <span className="pulse-green-dot" /> Book a Discovery Call
               <span className="btn-icon">
                 <ArrowRight size={16} style={{ transform: 'rotate(-45deg)' }} />
@@ -139,7 +156,12 @@ export default function Navbar({ onNavigate }) {
 
       {/* Desktop CTA right */}
       <div className="navbar-cta-right">
-        <a href="#contact" className="btn-primary navbar-cta-btn">
+        <a href="#contact" className="btn-primary navbar-cta-btn" onClick={(e) => {
+          if (window.location.pathname !== '/') {
+            e.preventDefault()
+            onNavigate('/#contact')
+          }
+        }}>
           <span className="pulse-green-dot" /> Book a Call
           <span className="btn-icon">
             <ArrowRight size={16} style={{ transform: 'rotate(-45deg)' }} />

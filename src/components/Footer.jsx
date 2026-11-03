@@ -7,22 +7,24 @@ const companyLinks = [
   { label: 'About Us', href: '/about', isRoute: true },
   { label: 'Founder Profile', href: '/founder', isRoute: true },
   { label: 'Services', href: '#services' },
+  { label: 'Case Studies', href: '/case-studies', isRoute: true },
+  { label: 'Client Portal', href: '/client-portal', isRoute: true },
   { label: 'Project Estimator', href: '#estimator' },
   { label: 'Tech Stack', href: '#tech-stack' },
-  { label: 'Our Work', href: '#our-works' },
-  { label: 'FAQs', href: '#faq' },
   { label: 'Careers', href: '/careers', isRoute: true },
+  { label: 'Privacy Policy', href: '/privacy', isRoute: true },
+  { label: 'Terms of Service', href: '/terms', isRoute: true },
   { label: 'Contact', href: '#contact' },
 ]
 
 const servicesList = [
-  'Custom Software Development',
-  'Website Development',
-  'Mobile App Development',
-  'AI Chatbots & Automation',
-  'ERP & CRM Solutions',
-  'UI/UX Design',
-  'Cloud & DevOps Solutions',
+  'Full-Stack Software Development',
+  'Custom Web Applications',
+  'Cross-Platform Mobile Apps',
+  'Autonomous AI Agents & RAG',
+  'Enterprise ERP & CRM Systems',
+  'AWS Cloud Architecture & DevOps',
+  'Database Engineering & Security'
 ]
 
 const socialLinks = [
@@ -80,7 +82,15 @@ export default function Footer({ onNavigate }) {
       <div className="footer-grid container">
         {/* Column 1: Logo + tagline */}
         <div className="footer-col footer-brand">
-          <a className="footer-logo" href="#home">
+          <a
+            className="footer-logo"
+            href="/"
+            onClick={(e) => {
+              e.preventDefault()
+              if (onNavigate) onNavigate('/')
+              else window.location.href = '/'
+            }}
+          >
             <div className="logo-badge">
               <Zap size={16} />
             </div>
@@ -94,7 +104,7 @@ export default function Footer({ onNavigate }) {
           </p>
           <div className="footer-status-pill">
             <span className="pulse-ring" />
-            <span>Building Innovative Software • AI Solutions • Digital Experiences</span>
+            <span>Building Innovative Software • AI Solutions • Cloud Engineering</span>
           </div>
         </div>
 
@@ -111,7 +121,7 @@ export default function Footer({ onNavigate }) {
             </div>
           </div>
           <div>
-            <h4 className="footer-heading">Social Channels</h4>
+            <h4 className="footer-heading">Connect</h4>
             <div className="footer-link-list">
               {socialLinks.map((link) => (
                 <a key={link.label} className="footer-link footer-social-link" href={link.href} target="_blank" rel="noopener noreferrer">
@@ -127,7 +137,7 @@ export default function Footer({ onNavigate }) {
         <div className="footer-col footer-newsletter">
           <h4 className="footer-heading">Tech Insights Newsletter</h4>
           <p className="footer-newsletter-desc">
-            Subscribe for monthly engineering updates, tech stack teardowns, and design trends.
+            Subscribe for monthly engineering updates, architecture teardowns, and technology insights.
           </p>
           {subscribed ? (
             <div className="newsletter-success">
@@ -155,72 +165,24 @@ export default function Footer({ onNavigate }) {
 
       {/* ── Legal Sections ── */}
       <div className="footer-legal-sections container">
-        {/* Privacy Policy */}
-        <div className={`legal-accordion ${activeLegal === 'privacy' ? 'open' : ''}`}>
-          <button className="legal-accordion-btn" onClick={() => toggleLegal('privacy')}>
-            <span className="legal-icon-label">
-              <Shield size={16} /> Privacy Policy
-            </span>
-            <span className="legal-toggle">{activeLegal === 'privacy' ? '−' : '+'}</span>
-          </button>
-          {activeLegal === 'privacy' && (
-            <div className="legal-content">
-              <p className="legal-updated">Last Updated: July 2026</p>
-              <p>At SriVoraTech, we respect your privacy and are committed to protecting your personal information. Any information you share through our website, contact forms, or project inquiries is used solely to communicate with you, provide our services, and improve your experience. We do not sell or share your personal information with third parties except when required by law or necessary to deliver our services.</p>
-              <p>If you have any privacy-related questions, please contact us at:</p>
-              <p className="legal-email"><Mail size={14} /> srivoratech9@gmail.com</p>
-            </div>
-          )}
-        </div>
-
-        {/* Terms of Service */}
-        <div className={`legal-accordion ${activeLegal === 'terms' ? 'open' : ''}`}>
-          <button className="legal-accordion-btn" onClick={() => toggleLegal('terms')}>
-            <span className="legal-icon-label">
-              <FileText size={16} /> Terms of Service
-            </span>
-            <span className="legal-toggle">{activeLegal === 'terms' ? '−' : '+'}</span>
-          </button>
-          {activeLegal === 'terms' && (
-            <div className="legal-content">
-              <p>By accessing or using SriVoraTech's website and services, you agree to our Terms of Service.</p>
-              <p><strong>Our services include:</strong></p>
-              <ul className="legal-list">
-                {servicesList.map((s) => (
-                  <li key={s}>{s}</li>
-                ))}
-              </ul>
-              <p>Clients are responsible for providing accurate project requirements, timely approvals, and payments according to the agreed proposal. All custom software is developed under the agreed project scope and terms.</p>
-              <p className="legal-email"><Mail size={14} /> srivoratech9@gmail.com</p>
-            </div>
-          )}
-        </div>
-
-        {/* Security */}
+        {/* Security Summary */}
         <div className={`legal-accordion ${activeLegal === 'security' ? 'open' : ''}`}>
           <button className="legal-accordion-btn" onClick={() => toggleLegal('security')}>
             <span className="legal-icon-label">
-              <Shield size={16} /> Security
+              <Shield size={16} /> Engineering Security Standards
             </span>
             <span className="legal-toggle">{activeLegal === 'security' ? '−' : '+'}</span>
           </button>
           {activeLegal === 'security' && (
             <div className="legal-content">
-              <p>At SriVoraTech, security is integrated into every stage of our software development process.</p>
-              <p><strong>Our security practices include:</strong></p>
+              <p>At SriVoraTech, security is integrated into every stage of our software development lifecycle.</p>
               <ul className="legal-list">
-                <li>Secure Software Development</li>
-                <li>Data Encryption</li>
-                <li>Secure Authentication</li>
-                <li>Cloud Security Best Practices</li>
-                <li>Regular Security Updates</li>
-                <li>Code Reviews</li>
-                <li>Performance Monitoring</li>
-                <li>Secure API Integration</li>
-                <li>Role-Based Access Control</li>
-                <li>Backup & Recovery</li>
+                <li>OWASP Secure Coding Practices</li>
+                <li>TLS 1.3 Encryption in Transit &amp; AES-256 at Rest</li>
+                <li>Role-Based Access Control (RBAC) &amp; JWT Verification</li>
+                <li>Automated Dependency Scanning and Code Reviews</li>
+                <li>Zero-Trust Network Configurations on AWS / GCP</li>
               </ul>
-              <p>If you discover a security issue, please report it responsibly.</p>
               <p className="legal-email"><Mail size={14} /> srivoratech9@gmail.com</p>
             </div>
           )}
@@ -230,33 +192,15 @@ export default function Footer({ onNavigate }) {
         <div className={`legal-accordion ${activeLegal === 'copyright' ? 'open' : ''}`}>
           <button className="legal-accordion-btn" onClick={() => toggleLegal('copyright')}>
             <span className="legal-icon-label">
-              <Copyright size={16} /> Copyright & Intellectual Property
+              <Copyright size={16} /> Copyright &amp; Intellectual Property
             </span>
             <span className="legal-toggle">{activeLegal === 'copyright' ? '−' : '+'}</span>
           </button>
           {activeLegal === 'copyright' && (
             <div className="legal-content">
-              <p>© 2026 SriVoraTech. All Rights Reserved.</p>
-              <p>All content, source code, software, designs, graphics, logos, trademarks, documentation, and digital assets on this website are the intellectual property of SriVoraTech unless otherwise stated.</p>
-              <p>Unauthorized copying, reproduction, modification, distribution, reverse engineering, or commercial use of any content without prior written permission is strictly prohibited.</p>
-              <h5>🛡 Intellectual Property Notice</h5>
-              <p>All custom software, applications, AI solutions, websites, mobile apps, UI/UX designs, and proprietary technologies developed by SriVoraTech are protected under applicable intellectual property and copyright laws. Any unauthorized use, duplication, resale, or distribution of our proprietary work may result in legal action.</p>
-            </div>
-          )}
-        </div>
-
-        {/* Legal Notice */}
-        <div className={`legal-accordion ${activeLegal === 'legal' ? 'open' : ''}`}>
-          <button className="legal-accordion-btn" onClick={() => toggleLegal('legal')}>
-            <span className="legal-icon-label">
-              <Scale size={16} /> Legal Notice
-            </span>
-            <span className="legal-toggle">{activeLegal === 'legal' ? '−' : '+'}</span>
-          </button>
-          {activeLegal === 'legal' && (
-            <div className="legal-content">
-              <p>SriVoraTech reserves the right to modify, update, or discontinue any service or content on this website without prior notice.</p>
-              <p>While we strive to provide accurate information, we do not guarantee that all content is complete, current, or error-free.</p>
+              <p>© 2026 SriVoraTech Technologies. All Rights Reserved.</p>
+              <p>All content, source code, software, designs, graphics, logos, trademarks, and documentation on this website are the intellectual property of SriVoraTech unless otherwise stated.</p>
+              <p>Custom client software developed under formal contract includes full source code and IP rights transfer upon project completion.</p>
             </div>
           )}
         </div>
@@ -264,14 +208,29 @@ export default function Footer({ onNavigate }) {
 
       {/* Bottom bar */}
       <div className="footer-bottom container">
-        <p className="footer-copyright">© 2026 SriVoraTech. All Rights Reserved.</p>
+        <p className="footer-copyright">© 2026 SriVoraTech Technologies. All Rights Reserved.</p>
         <p className="footer-made-with">
-          Designed & Developed with <Heart size={13} className="heart-icon" /> by SriVoraTech
+          Designed &amp; Developed with <Heart size={13} className="heart-icon" /> by SriVoraTech
         </p>
         <div className="footer-legal">
-          <button className="footer-legal-link" onClick={() => toggleLegal('privacy')}>Privacy Policy</button>
-          <button className="footer-legal-link" onClick={() => toggleLegal('terms')}>Terms of Service</button>
-          <button className="footer-legal-link" onClick={() => toggleLegal('security')}>Security</button>
+          <button
+            className="footer-legal-link"
+            onClick={() => onNavigate ? onNavigate('/privacy') : window.location.href = '/privacy'}
+          >
+            Privacy Policy
+          </button>
+          <button
+            className="footer-legal-link"
+            onClick={() => onNavigate ? onNavigate('/terms') : window.location.href = '/terms'}
+          >
+            Terms of Service
+          </button>
+          <button
+            className="footer-legal-link"
+            onClick={() => onNavigate ? onNavigate('/client-portal') : window.location.href = '/client-portal'}
+          >
+            Client Portal
+          </button>
         </div>
       </div>
     </footer>
