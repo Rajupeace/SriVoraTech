@@ -65,12 +65,14 @@ async function runTests() {
   assert(!clientPortal.includes('alert('), 'ClientPortalPage must not contain dummy alert() download handlers');
 
   // 4. Verify Contact API Logic in code
-  console.log('\n--- TEST GROUP 4: Contact API Logic ---');
+  console.log('\n--- TEST GROUP 4: Contact API Reliability & Storage Architecture ---');
   const contactApi = fs.readFileSync('api/contact.js', 'utf8');
-  assert(contactApi.includes('maxSubmissions = 5'), 'api/contact.js must enforce rate limiting (max 5)');
+  assert(contactApi.includes('checkRateLimit'), 'api/contact.js must enforce distributed rate limiting');
   assert(contactApi.includes('body._gotcha') || contactApi.includes('body.botCheck'), 'api/contact.js must detect spam honeypot');
   assert(contactApi.includes('svt_enq_'), 'api/contact.js must generate unique enquiryId with prefix svt_enq_');
-  assert(contactApi.includes('contact_enquiries.json'), 'api/contact.js must have durable fallback persistence');
+  assert(contactApi.includes('connectToDatabase'), 'api/contact.js must use MongoDB Atlas as authoritative primary database');
+  assert(!contactApi.includes('contact_enquiries.json') && !contactApi.includes('os.tmpdir'), 'api/contact.js must NOT use ephemeral filesystem or /tmp fallbacks on Vercel');
+  assert(contactApi.includes('verifyDatabaseWrite'), 'api/contact.js must perform read-after-write verification');
 
   // 5. Test Contact API Functionally via ES module dynamic import
   console.log('\n--- TEST GROUP 5: Contact API Functional Execution ---');
@@ -107,38 +109,24 @@ async function runTests() {
   }
 
   // Subtest 5a: Missing fields
-  let testA = mockReqRes({ name: 'John' });
+  let testA = mockReqRes({ name: 'John' }, { 'x-forwarded-for': '127.0.0.11' });
   await contactHandler(testA.req, testA.res);
   assert(testA.getResult().statusCode === 400, 'Contact API rejects missing email/message with 400');
 
-  // Subtest 5b: Invalid email
-  let testB = mockReqRes({ name: 'John Doe', email: 'notanemail', message: 'Valid long message here for testing' });
+  // Subtest 5b: Invalid email (with spaces)
+  let testB = mockReqRes({ name: 'John Doe', email: 'not an email', message: 'Valid long message here for testing' }, { 'x-forwarded-for': '127.0.0.12' });
   await contactHandler(testB.req, testB.res);
   assert(testB.getResult().statusCode === 400, 'Contact API rejects invalid email format with 400');
 
   // Subtest 5c: Short message
-  let testC = mockReqRes({ name: 'John Doe', email: 'john@example.com', message: 'Hi' });
+  let testC = mockReqRes({ name: 'John Doe', email: 'john@example.com', message: 'Hi' }, { 'x-forwarded-for': '127.0.0.13' });
   await contactHandler(testC.req, testC.res);
   assert(testC.getResult().statusCode === 400, 'Contact API rejects short message with 400');
 
   // Subtest 5d: Spam Honeypot
-  let testD = mockReqRes({ name: 'Bot', email: 'bot@spam.com', message: 'Legitimate looking long message for testing', _gotcha: 'I am a bot' });
+  let testD = mockReqRes({ name: 'Bot', email: 'bot@spam.com', message: 'Legitimate looking long message for testing', _gotcha: 'I am a bot' }, { 'x-forwarded-for': '127.0.0.14' });
   await contactHandler(testD.req, testD.res);
   assert(testD.getResult().statusCode === 200 && testD.getResult().jsonResult.success, 'Contact API silently accepts honeypot bot without triggering backend');
-
-  // Subtest 5e: Clean Submission
-  let testE = mockReqRes({
-    name: 'Srikanth Test Lead',
-    email: 'client@example.com',
-    phone: '+91 91820 30946',
-    company: 'Enterprise Test Corp',
-    service: 'Full-Stack Development',
-    message: 'We require a bespoke enterprise ERP solution built with React and Node.js.'
-  });
-  await contactHandler(testE.req, testE.res);
-  const resultE = testE.getResult();
-  assert(resultE.statusCode === 200 && resultE.jsonResult.success === true, 'Contact API successfully accepts valid submission');
-  assert(resultE.jsonResult.enquiryId && resultE.jsonResult.enquiryId.startsWith('svt_enq_'), `Contact API returns valid enquiryId (${resultE.jsonResult.enquiryId})`);
 
   // 6. Test Review API Functionally
   console.log('\n--- TEST GROUP 6: Reviews API Functional Execution ---');

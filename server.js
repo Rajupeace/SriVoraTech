@@ -5,7 +5,9 @@ import fs from 'fs'
 import path from 'path'
 import { GoogleSpreadsheet } from 'google-spreadsheet'
 import dotenv from 'dotenv'
-import { connectToDatabase } from './api/mongodb.js'
+import { connectToDatabase, verifyDatabaseWrite } from './api/mongodb.js'
+import { checkRateLimit, hashClientIp } from './api/ratelimit.js'
+import { validateEmail } from './api/contact.js'
 
 dotenv.config()
 
@@ -393,59 +395,78 @@ function checkExpressContactRateLimit(ip) {
 }
 
 app.post('/api/contact', upload.none(), async (req, res) => {
-  const clientIp = req.ip || req.connection.remoteAddress || 'unknown'
-  if (checkExpressContactRateLimit(clientIp)) {
+  const clientIp = req.headers['x-forwarded-for']?.split(',')[0]?.trim() || req.ip || req.connection.remoteAddress || 'unknown'
+  
+  // Distributed rate limiting (5 requests per 10 minutes)
+  const rateLimit = await checkRateLimit(clientIp, { maxRequests: 5, windowSeconds: 600 })
+  if (!rateLimit.allowed) {
+    res.setHeader('Retry-After', rateLimit.ttl)
     return res.status(429).json({
       success: false,
-      message: 'Submission limit reached. Please wait a few minutes before submitting another enquiry.'
+      message: 'Submission limit reached. Please wait a few minutes before submitting another enquiry.',
+      retryAfter: rateLimit.ttl
     })
   }
 
   try {
-    const { name, fullName, email, phone, company, budget, message, whySriVoraTech, botCheck, _gotcha } = req.body || {}
+    const { name, fullName, email, phone, company, budget, message, whySriVoraTech, botCheck, _gotcha, isTest } = req.body || {}
 
-    // Spam honeypot
+    // Spam honeypot (silent rejection for bots)
     if (botCheck || _gotcha) {
       return res.status(200).json({ success: true, message: 'Enquiry received.' })
     }
 
-    const clientName = (name || fullName || '').trim()
-    const clientEmail = (email || '').trim().toLowerCase()
-    const clientPhone = (phone || '').trim()
-    const clientCompany = (company || '').trim()
-    const clientBudget = (budget || '').trim()
-    const clientMessage = (message || whySriVoraTech || '').trim()
+    const rawName = (name || fullName || '').trim()
+    const rawEmail = (email || '').trim()
+    const rawPhone = (phone || '').trim()
+    const rawCompany = (company || '').trim()
+    const rawBudget = (budget || '').trim()
+    const rawMessage = (message || whySriVoraTech || '').trim()
 
-    if (!clientName || clientName.length < 2) {
+    if (!rawName || rawName.length < 2) {
       return res.status(400).json({
         success: false,
         message: 'Name is required and must be at least 2 characters.'
       })
     }
-
-    const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/
-    if (!clientEmail || !emailRegex.test(clientEmail)) {
+    if (rawName.length > 100) {
       return res.status(400).json({
         success: false,
-        message: 'A valid email address is required.'
+        message: 'Name must not exceed 100 characters.'
       })
     }
 
-    if (clientPhone && !/^[+\d\s()-]{7,20}$/.test(clientPhone)) {
+    const emailResult = validateEmail(rawEmail)
+    if (!emailResult.valid) {
       return res.status(400).json({
         success: false,
-        message: 'Please provide a valid phone number.'
+        message: emailResult.error
       })
     }
+    const normalizedEmail = emailResult.normalized
 
-    if (!clientMessage || clientMessage.length < 10) {
+    if (rawPhone) {
+      if (rawPhone.length > 30) {
+        return res.status(400).json({
+          success: false,
+          message: 'Phone number must not exceed 30 characters.'
+        })
+      }
+      if (!/^[+\d\s().-]{7,30}$/.test(rawPhone)) {
+        return res.status(400).json({
+          success: false,
+          message: 'Please provide a valid contact phone number.'
+        })
+      }
+    }
+
+    if (!rawMessage || rawMessage.length < 10) {
       return res.status(400).json({
         success: false,
         message: 'Enquiry message must be at least 10 characters.'
       })
     }
-
-    if (clientMessage.length > 5000) {
+    if (rawMessage.length > 5000) {
       return res.status(400).json({
         success: false,
         message: 'Message exceeds the maximum allowed length of 5,000 characters.'
@@ -453,70 +474,76 @@ app.post('/api/contact', upload.none(), async (req, res) => {
     }
 
     const enquiryId = `svt_enq_${Date.now()}_${Math.random().toString(36).substring(2, 7)}`
+    const now = new Date()
+    const retentionExpiry = new Date(now.getTime() + (180 * 24 * 60 * 60 * 1000))
+
     const enquiry = {
       enquiryId,
-      id: Date.now(),
       type: 'Contact',
-      name: clientName,
-      email: clientEmail,
-      phone: clientPhone || null,
-      company: clientCompany || null,
-      budget: clientBudget || null,
-      message: clientMessage,
-      submittedAt: new Date().toISOString(),
-      ip: clientIp
+      name: rawName,
+      email: normalizedEmail,
+      phone: rawPhone || null,
+      company: rawCompany || null,
+      budget: rawBudget || null,
+      message: rawMessage,
+      submittedAt: now.toISOString(),
+      createdAt: now,
+      expiresAt: retentionExpiry,
+      ipToken: hashClientIp(clientIp),
+      isTest: Boolean(isTest) || undefined
     }
 
-    let persisted = false
-    try {
-      let list = []
-      if (fs.existsSync(contactEnquiriesPath)) {
-        list = JSON.parse(fs.readFileSync(contactEnquiriesPath, 'utf8'))
-      }
-      list.push(enquiry)
-      fs.writeFileSync(contactEnquiriesPath, JSON.stringify(list, null, 2))
-      persisted = true
-    } catch (fsErr) {
-      console.error('Error saving contact enquiry locally:', fsErr)
-    }
+    // Authoritative MongoDB Atlas Storage with Read-After-Write Verification
+    const { db, error: dbError } = await connectToDatabase()
 
-    // Google Sheets Backup
-    try {
-      await addRowToSheet({
-        'Application ID': enquiry.enquiryId,
-        'Type': 'Contact Enquiry',
-        'Full Name': enquiry.name,
-        'Email': enquiry.email,
-        'Phone': enquiry.phone,
-        'College / Company': enquiry.company,
-        'Degree / Designation': enquiry.budget,
-        'Why SriVoraTech': enquiry.message,
-        'Submitted At': enquiry.submittedAt
+    if (!db) {
+      console.error('[Contact API] MongoDB connection unavailable:', dbError)
+      return res.status(503).json({
+        success: false,
+        message: 'Our primary database service is temporarily unavailable. Please email contact@srivoratech.in directly.'
       })
-      persisted = true
-    } catch (sheetErr) {
-      console.warn('Google Sheets sync skipped:', sheetErr.message)
     }
 
-    if (!persisted) {
+    await db.collection('contact_enquiries').insertOne(enquiry)
+    const isCommitted = await verifyDatabaseWrite(db, 'contact_enquiries', { enquiryId })
+    if (!isCommitted) {
+      console.error('[Contact API] Read-after-write verification failed for:', enquiryId)
       return res.status(500).json({
         success: false,
-        message: 'Unable to durably save your enquiry at this moment. Please email contact@srivoratech.in directly.'
+        message: 'Failed to confirm enquiry persistence in database. Please contact us directly.'
       })
     }
 
-    console.log('New contact enquiry processed:', enquiry.name, enquiry.email)
+    // Privacy-compliant logging (never exposes customer personal info)
+    console.log(`[Contact API] Enquiry durably persisted: ${enquiryId} (domain: ${normalizedEmail.split('@')[1]})`)
+
+    // Optional Non-Blocking Google Sheets Forwarding
+    if (!isTest) {
+      addRowToSheet({
+        'Application ID': enquiryId,
+        'Type': 'Contact Enquiry',
+        'Full Name': rawName,
+        'Email': normalizedEmail,
+        'Phone': rawPhone || '',
+        'College / Company': rawCompany || '',
+        'Degree / Designation': rawBudget || '',
+        'Why SriVoraTech': rawMessage,
+        'Submitted At': enquiry.submittedAt
+      }).catch(err => {
+        console.warn('[Contact API] Secondary Google Sheets sync skipped:', err.message)
+      })
+    }
 
     res.status(200).json({
       success: true,
       message: 'Enquiry received successfully! Our team will contact you within 24 hours.',
-      enquiryId: enquiry.enquiryId
+      enquiryId
     })
   } catch (error) {
-    console.error('Error processing contact enquiry:', error)
+    console.error('[Contact API] Internal processing error:', error.message)
     res.status(500).json({
       success: false,
-      message: 'Error processing enquiry. Please try again or email contact@srivoratech.in directly.'
+      message: 'Server error processing contact enquiry.'
     })
   }
 })
@@ -526,22 +553,7 @@ app.use('/uploads', express.static(uploadsDir))
 // ── Database Setup for Reviews ──
 const reviewsDataPath = path.join(uploadsDir, 'reviews.json')
 
-const DEFAULT_REVIEWS = [
-  {
-    id: 1,
-    name: 'Badisa Srikanth (Founder & CEO)',
-    email: 'srikanth@srivoratech.in',
-    star: 5,
-    comment: 'Building innovative software and AI-powered solutions that empower businesses to grow, automate, and succeed in the digital era.',
-    date: 'Jul 20, 2026',
-    status: 'Approved',
-    timestamp: 1784534400000,
-    company: 'SriVoraTech',
-    profileImage: '',
-    isFounder: true,
-    helpfulCount: 0
-  }
-]
+const DEFAULT_REVIEWS = []
 
 // Initialize reviews file if it does not exist
 if (!fs.existsSync(reviewsDataPath)) {

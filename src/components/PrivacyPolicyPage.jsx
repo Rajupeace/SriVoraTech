@@ -56,13 +56,19 @@ export default function PrivacyPolicyPage({ onBack, onNavigate }) {
 
         <section>
           <h2 style={{ fontSize: '1.4rem', fontWeight: '700', color: '#38bdf8', marginBottom: '12px', display: 'flex', alignItems: 'center', gap: '10px' }}>
-            <Database size={20} /> 2. Processing &amp; Data Storage
+            <Database size={20} /> 2. Processing, Durable Storage &amp; Retention
           </h2>
           <p style={{ color: '#cbd5e1', lineHeight: '1.7', fontSize: '14.5px' }}>
-            Contact form submissions are processed through our authenticated backend API and stored in our database records to ensure reliable enquiry delivery. Enquiries are additionally mirrored to our internal Google Workspace spreadsheet for sales team assignment.
+            Contact form submissions are processed through our authenticated backend API and persisted authoritatively in our MongoDB Atlas cluster with TLS 1.3 encryption in transit and AES-256 encryption at rest. Inquiries are verified via immediate read-after-write confirmation prior to issuing delivery receipts.
           </p>
           <p style={{ color: '#cbd5e1', lineHeight: '1.7', fontSize: '14.5px', marginTop: '10px' }}>
-            <strong>We never sell, rent, or trade your personal or project data to third-party data brokers or marketing networks.</strong> All transmissions occur over encrypted TLS / HTTPS connections.
+            <strong>Abuse Prevention &amp; IP Protection:</strong> To safeguard our infrastructure against distributed spam attacks without compromising user privacy, client IP addresses are transformed into one-way cryptographic hash tokens used exclusively for rate limiting (maximum 5 submissions per 10 minutes). Raw IP addresses are never permanently retained or sold.
+          </p>
+          <p style={{ color: '#cbd5e1', lineHeight: '1.7', fontSize: '14.5px', marginTop: '10px' }}>
+            <strong>180-Day Data Retention Policy:</strong> Client inquiries are retained for a maximum of 180 days to facilitate active project scoping and technical consultations, after which records are automatically expunged via database TTL expiration indexes.
+          </p>
+          <p style={{ color: '#cbd5e1', lineHeight: '1.7', fontSize: '14.5px', marginTop: '10px' }}>
+            <strong>We never sell, rent, or trade your personal or project data to third-party data brokers or marketing networks.</strong> Application server logs strictly record event tracking IDs and domains without exposing personal contact details.
           </p>
         </section>
 
