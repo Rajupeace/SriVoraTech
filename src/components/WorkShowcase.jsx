@@ -249,7 +249,7 @@ export const works = [
       'Centralize 10+ departmental portals into a single unified identity provider.',
       'Deliver role-based authorization for Students, Faculty, Department Heads, and Super Admins.',
       'Provide instant grade computation, fee payment tracking, and automated biometric attendance logging.',
-      'Ensure sub-second page transitions and high system availability during peak exam and registration seasons.'
+      'Ensure responsive page transitions and high system availability during peak exam and registration seasons.'
     ],
     solution: 'SriVoraTech architected SriERP Pro (Vu UniVerse360) using a modular React frontend backed by Express/Node.js REST microservices and a high-throughput PostgreSQL relational database, containerized with Docker.',
     architectureDiagram: `[Student / Faculty / Admin Client]
@@ -282,7 +282,7 @@ export const works = [
     challenges: 'Coordinating synchronized database state across concurrent exam result uploads by faculty while thousands of students check grades simultaneously. Solved by implementing optimistic UI updates and Redis query caching.',
     resultsList: [
       'Unified 12 separate academic and operational modules into one cohesive portal.',
-      'Sub-second page rendering and instant search across student directories.',
+      'Fast page rendering and instant search across student directories.',
       'High system stability maintained during peak grade release periods.',
       'Complete role isolation ensuring student data privacy and grade security.'
     ],
@@ -419,7 +419,7 @@ export const works = [
     ],
     challenges: 'Optimizing high-resolution product photography to load instantly on mobile networks without pixelation. Solved via lazy-loading and optimized responsive image formats.',
     resultsList: [
-      'Sub-second product catalog search and instant filter response.',
+      'Fast product catalog search and responsive filter updates.',
       'Intuitive mobile-first shopping experience with zero layout shift.',
       'Clean modular frontend architecture ready for production API integration.'
     ],
@@ -683,7 +683,7 @@ export const works = [
     servicesOffered: ['Microservices Design', 'Event-Driven Architecture', 'Cloud POS Specifications', 'Database Sharding'],
     challenge: 'Multi-location retail businesses experience inventory synchronization delays between physical store POS terminals and online warehouses, resulting in overselling and stockouts.',
     businessRequirements: [
-      'Synchronize inventory state across hundreds of retail POS terminals in sub-second latency.',
+      'Synchronize inventory state across retail POS terminals with real-time event streaming.',
       'Provide offline-capable POS interface that syncs sales data immediately upon reconnect.',
       'Automate purchase orders based on real-time stock thresholds.'
     ],
@@ -700,7 +700,7 @@ export const works = [
                                   │
                      [PostgreSQL Distributed DB]`,
     features: [
-      'Sub-Second Multi-Location Stock Synchronization',
+      'Real-Time Multi-Location Stock Synchronization',
       'Offline-First Progressive Web App (PWA) Point-of-Sale Terminal',
       'Automated Reorder Point Triggers & Supplier Workflows',
       'Centralized Financial Reporting and Tax Calculation',
