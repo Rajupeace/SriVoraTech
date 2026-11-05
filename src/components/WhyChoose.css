@@ -75,7 +75,6 @@
   padding: 4px 10px;
   border-radius: var(--radius-full);
   border: 1px solid;
-  background: rgba(255, 255, 255, 0.8);
 }
 
 .why-card-body {
@@ -98,42 +97,31 @@
   line-height: 1.6;
 }
 
-/* Animated Progress Bar */
-.why-progress-section {
+.why-features-list {
   display: flex;
   flex-direction: column;
   gap: 6px;
+  padding: 10px 0;
+  border-top: 1px solid var(--color-gray-100);
+  border-bottom: 1px solid var(--color-gray-100);
 }
 
-.why-progress-bar {
-  width: 100%;
-  height: 5px;
-  background: var(--color-gray-100);
-  border-radius: var(--radius-full);
-  overflow: hidden;
+.why-feature-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 12.5px;
+  color: var(--color-gray-700);
+  font-weight: 500;
 }
 
-.why-progress-fill {
-  height: 100%;
-  width: 0%;
-  border-radius: var(--radius-full);
-  transition: width 1.2s cubic-bezier(0.22, 0.61, 0.36, 1);
-}
-
-.why-progress-label {
-  font-size: 11.5px;
-  font-weight: 700;
-  letter-spacing: 0.02em;
-}
-
-/* Expand hint */
 .why-expand-hint {
   display: flex;
   align-items: center;
   gap: 5px;
   font-size: 12px;
   font-weight: 700;
-  color: var(--color-gray-400);
+  color: var(--color-gray-500);
   transition: color 200ms ease;
 }
 
@@ -149,7 +137,6 @@
   transform: rotate(90deg);
 }
 
-/* Responsive */
 @media (max-width: 768px) {
   .why-grid {
     grid-template-columns: 1fr;

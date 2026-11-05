@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react'
 import { useScrollAnimation } from '../hooks/useScrollAnimation'
-import { ArrowRight, Zap, MousePointer2, Figma, Clock, Rocket, Sparkles, Palette, ShieldCheck } from 'lucide-react'
+import { ArrowRight, Zap, MousePointer2, Figma, Clock, Rocket, Sparkles, Palette, ShieldCheck, Star } from 'lucide-react'
 import { subscribeToRatings } from '../services/ratingsService'
 import HeroCanvas from './HeroCanvas'
 import srikanthPhoto from '../assets/badisa_srikanth.jpg'
@@ -24,14 +24,14 @@ export default function Hero() {
   const [ref6, vis6] = useScrollAnimation()
 
   const [colorMode, setColorMode] = useState('sapphire')
-  const [ratingStats, setRatingStats] = useState({ averageRating: 5.0, totalCount: 4 })
+  const [ratingStats, setRatingStats] = useState({ averageRating: null, totalCount: 0 })
 
   useEffect(() => {
     const unsubscribe = subscribeToRatings((metrics) => {
       if (metrics) {
         setRatingStats({
-          averageRating: metrics.averageRating || 5.0,
-          totalCount: metrics.totalCount || 4
+          averageRating: metrics.totalCount > 0 ? metrics.averageRating : null,
+          totalCount: metrics.totalCount || 0
         })
       }
     })
@@ -49,54 +49,42 @@ export default function Hero() {
       <div className="hero-orb-1" />
       <div className="hero-orb-2" />
 
-      {/* Dot pattern background overlay */}
-      <div className="hero-dots" />
+      <div className="hero-container container">
+        {/* Availability Badge & Theme Swatcher */}
+        <div ref={ref1} className={`hero-top-bar animate-on-scroll ${vis1 ? 'visible' : ''}`}>
+          <div className="hero-status-pill">
+            <span className="hero-status-dot" />
+            <span className="hero-status-text">Available for New Project Engagements</span>
+          </div>
 
-      {/* Announcement & Color Theme Switcher Bar */}
-      <div ref={ref1} className={`hero-top-bar-group animate-on-scroll ${vis1 ? 'visible' : ''}`}>
-        <a className="hero-badge" href="#our-works">
-          <span className="pulse-ring" />
-          <span className="hero-badge-text">⚡ SRIVORATECH AI VIRTUAL ASSISTANT & WORKFLOW AUTOMATION ENGINE</span>
-          <span className="hero-badge-arrow">
-            <ArrowRight size={14} />
-          </span>
-        </a>
-
-        {/* Color Theme Selector Pills */}
-        <div className="hero-theme-selector">
-          <Palette size={13} className="palette-icon" />
-          {colorThemes.map(t => (
-            <button
-              key={t.id}
-              className={`theme-dot ${colorMode === t.id ? 'active' : ''}`}
-              style={{ background: t.gradient }}
-              onClick={() => setColorMode(t.id)}
-              title={`Switch theme to ${t.label}`}
-              aria-label={`Switch theme to ${t.label}`}
-            />
-          ))}
+          <div className="hero-theme-swatches" title="Customize Accent Palette">
+            <Palette size={13} className="swatch-icon" />
+            {colorThemes.map((t) => (
+              <button
+                key={t.id}
+                onClick={() => setColorMode(t.id)}
+                className={`theme-dot ${colorMode === t.id ? 'active' : ''}`}
+                style={{ background: t.gradient }}
+                aria-label={`Select ${t.label} Theme`}
+              />
+            ))}
+          </div>
         </div>
-      </div>
 
-      {/* Center Hero Content */}
-      <div className="hero-center">
-        <h1 ref={ref2} className={`hero-title animate-on-scroll ${vis2 ? 'visible' : ''}`}>
-          <span className="hero-title-line">
-            Engineering High-Performance
-            <span className="hero-icon-badge rotate-12" title="UI/UX Design Systems">
-              <MousePointer2 size={18} />
+        {/* Hero Interactive Kinetic Typography */}
+        <div ref={ref2} className={`hero-title-wrapper animate-on-scroll delay-1 ${vis2 ? 'visible' : ''}`}>
+          <div className="hero-lead-row">
+            <span className="hero-subheading">NEXT-GEN SOFTWARE ENGINEERING & APPLIED AI</span>
+          </div>
+
+          <h1 className="hero-main-title">
+            <span className="hero-line">ARCHITECTING</span>
+            <span className="hero-line-gradient" style={{ backgroundImage: currentTheme.textGrad }}>
+              INTELLIGENT SYSTEMS
             </span>
-            <span className="hero-icon-badge rotate-neg-12" title="Figma Precision">
-              <Figma size={18} />
-            </span>
-          </span>
-          <span className="hero-title-line">
-            Custom Software &
-            <span className="hero-gradient-badge" style={{ backgroundImage: currentTheme.textGrad }}>
-              <Sparkles size={16} /> AI Automation
-            </span>
-          </span>
-        </h1>
+            <span className="hero-line">THAT SCALE GLOBALLY</span>
+          </h1>
+        </div>
 
         <h1 ref={ref3} className={`hero-title-mobile animate-on-scroll ${vis3 ? 'visible' : ''}`}>
           Engineering High-Performance Software & AI Automation
@@ -108,10 +96,10 @@ export default function Hero() {
 
         {/* Trust metrics pills */}
         <div className="hero-trust-badges">
-          <span className="trust-pill"><Rocket size={14} /> 2-4 Wks Rapid MVP Sprint</span>
+          <span className="trust-pill"><Rocket size={14} /> Agile 2–4 Wk Sprints</span>
           <span className="trust-pill"><ShieldCheck size={14} /> 100% IP & Source Ownership</span>
-          <span className="trust-pill"><Clock size={14} /> High-Availability Cloud Target</span>
-          <span className="trust-pill"><Zap size={14} /> Sub-100ms API Latency</span>
+          <span className="trust-pill"><Clock size={14} /> 99.9% Architecture Target</span>
+          <span className="trust-pill"><Zap size={14} /> High-Performance Cloud Architecture</span>
         </div>
 
         {/* Action Call to Action buttons */}
@@ -131,13 +119,13 @@ export default function Hero() {
         {/* Executive Founders Social Proof Row */}
         <div ref={ref6} className={`hero-social-proof animate-on-scroll delay-3 ${vis6 ? 'visible' : ''}`}>
           <div className="hero-avatars-stack" title="Executive Leadership: Srikanth (CEO), Vamsi (COO), Manindra (CTO)">
-            <img src={srikanthPhoto} alt="Badisa Srikanth (Srikanth Badisa) - Founder & CEO of SriVoraTech" title="Badisa Srikanth (Founder & CEO)" className="hero-avatar hero-avatar-img" />
+            <img src={srikanthPhoto} alt="Badisa Srikanth - Founder & CEO of SriVoraTech" title="Badisa Srikanth (Founder & CEO)" className="hero-avatar hero-avatar-img" />
             <img src={vamsiPhoto} alt="Badisa Vamsi Krishna - Co-Founder & COO of SriVoraTech" title="Badisa Vamsi Krishna (Co-Founder & COO)" className="hero-avatar hero-avatar-img" />
             <img src={saiPhoto} alt="Garapati Sai Manindra - Chief Technology Officer (CTO) of SriVoraTech" title="Garapati Sai Manindra (CTO)" className="hero-avatar hero-avatar-img" />
             <span className="hero-avatar-count" title="Executive Team">Exec</span>
           </div>
 
-          <a href="#website-rating" className="hero-rating" title="View Approved Client Ratings">
+          <a href="#website-rating" className="hero-rating" title="View Client Reviews & Feedback">
             <div className="hero-stars">
               {[...Array(5)].map((_, i) => (
                 <svg key={i} width="16" height="16" fill="#f59e0b" viewBox="0 0 20 20" className="hero-star" style={{ color: "#f59e0b" }}>
@@ -146,7 +134,11 @@ export default function Hero() {
               ))}
             </div>
             <span className="hero-review-text">
-              Rated {ratingStats.averageRating ? Number(ratingStats.averageRating).toFixed(1) : '5.0'}/5 ({ratingStats.totalCount || 4} Verified Ratings)
+              {ratingStats.totalCount > 0 ? (
+                `Rated ${ratingStats.averageRating ? Number(ratingStats.averageRating).toFixed(1) : ''}/5 (${ratingStats.totalCount} Client Reviews)`
+              ) : (
+                'Transparent Engineering & Client Partnership'
+              )}
             </span>
           </a>
         </div>

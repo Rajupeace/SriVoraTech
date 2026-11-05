@@ -1,45 +1,26 @@
 import { useState } from 'react'
 import { useScrollAnimation } from '../hooks/useScrollAnimation'
-import { ArrowRight, Zap, CheckCircle2, Mail, Shield, FileText, Scale, Copyright, Heart } from 'lucide-react'
+import { Mail, Phone, MapPin, Send, ArrowRight, Shield, FileText, Scale, ExternalLink, CheckCircle2, Sparkles, Linkedin, Info } from 'lucide-react'
+import { COMPANY_CONFIG } from '../config/company'
 import './Footer.css'
 
-const companyLinks = [
-  { label: 'About Us', href: '/about', isRoute: true },
-  { label: 'Founder Profile', href: '/founder', isRoute: true },
-  { label: 'Services', href: '#services' },
-  { label: 'Case Studies', href: '/case-studies', isRoute: true },
-  { label: 'Client Portal', href: '/client-portal', isRoute: true },
-  { label: 'Project Estimator', href: '#estimator' },
-  { label: 'Tech Stack', href: '#tech-stack' },
-  { label: 'Careers', href: '/careers', isRoute: true },
-  { label: 'Privacy Policy', href: '/privacy', isRoute: true },
-  { label: 'Terms of Service', href: '/terms', isRoute: true },
-  { label: 'Contact', href: '#contact' },
-]
-
-const servicesList = [
-  'Full-Stack Software Development',
-  'Custom Web Applications',
-  'Cross-Platform Mobile Apps',
-  'Autonomous AI Agents & RAG',
-  'Enterprise ERP & CRM Systems',
-  'AWS Cloud Architecture & DevOps',
-  'Database Engineering & Security'
-]
-
-const socialLinks = [
-  { label: 'Email Us', href: 'mailto:srivoratech9@gmail.com' },
-  { label: 'WhatsApp Chat', href: 'https://wa.me/919182030946' },
-  { label: 'Instagram', href: 'https://www.instagram.com/srivora_tech?igsh=MWRxOWJ6Z2F6bnUzdg==' },
-  { label: 'Facebook', href: 'https://www.facebook.com/p/SriVoratech-SriVoratech-61591870486562/' },
-  { label: 'X (Twitter)', href: 'https://x.com/srivorateclrqn' },
-  { label: 'LinkedIn', href: 'https://www.linkedin.com/in/srikanthbadisa/' },
+const footerLinks = [
+  { name: 'About Us', href: '/about', isRoute: true },
+  { name: 'Services', href: '/services', isRoute: true },
+  { name: 'Signature Products', href: '#our-works', isRoute: false },
+  { name: 'Case Studies', href: '/case-studies', isRoute: true },
+  { name: 'Tech Stack', href: '#tech-stack', isRoute: false },
+  { name: 'Cost Estimator', href: '#estimator', isRoute: false },
+  { name: 'Client Portal', href: '/client-portal', isRoute: true },
+  { name: 'Engineering Careers', href: '/careers', isRoute: true },
+  { name: 'Technical Blog', href: '/blog', isRoute: true },
+  { name: 'Privacy Policy', href: '/privacy', isRoute: true },
+  { name: 'Terms of Service', href: '/terms', isRoute: true },
+  { name: 'HTML Sitemap', href: '/sitemap', isRoute: true },
 ]
 
 export default function Footer({ onNavigate }) {
   const [ref, isVisible] = useScrollAnimation()
-  const [subscribed, setSubscribed] = useState(false)
-  const [emailInput, setEmailInput] = useState('')
   const [activeLegal, setActiveLegal] = useState(null)
 
   const handleLinkClick = (e, link) => {
@@ -60,15 +41,6 @@ export default function Footer({ onNavigate }) {
     }
   }
 
-  const handleNewsletterSubmit = (e) => {
-    e.preventDefault()
-    if (emailInput) {
-      setSubscribed(true)
-      setEmailInput('')
-      setTimeout(() => setSubscribed(false), 4000)
-    }
-  }
-
   const toggleLegal = (section) => {
     setActiveLegal(activeLegal === section ? null : section)
   }
@@ -79,87 +51,83 @@ export default function Footer({ onNavigate }) {
         <span className="footer-bg-text">SriVoraTech</span>
       </div>
 
-      <div className="footer-grid container">
-        {/* Column 1: Logo + tagline */}
+      <div className="footer-top container">
+        {/* Column 1: Brand & Contact */}
         <div className="footer-col footer-brand">
-          <a
-            className="footer-logo"
-            href="/"
-            onClick={(e) => {
-              e.preventDefault()
-              if (onNavigate) onNavigate('/')
-              else window.location.href = '/'
-            }}
-          >
-            <div className="logo-badge">
-              <Zap size={16} />
-            </div>
-            <span className="logo-text">SriVora<span className="logo-accent">Tech</span></span>
-          </a>
+          <div className="footer-logo">
+            <span className="logo-text">Sri<span className="gradient-text">Vora</span>Tech</span>
+          </div>
           <p className="footer-tagline">
-            End-to-end digital product design, web engineering, and AI automation tailored to accelerate business growth.
+            Next-Gen Software Engineering, Applied AI &amp; Cloud Platform Solutions.
           </p>
-          <p className="footer-contact-email">
-            <Mail size={14} /> srivoratech9@gmail.com
-          </p>
-          <div className="footer-status-pill">
-            <span className="pulse-ring" />
-            <span>Building Innovative Software • AI Solutions • Cloud Engineering</span>
-          </div>
-        </div>
 
-        {/* Column 2: Quick Links + Socials */}
-        <div className="footer-col footer-links-grid">
-          <div>
-            <h4 className="footer-heading">Navigation</h4>
-            <div className="footer-link-list">
-              {companyLinks.map((link) => (
-                <a key={link.href} className="footer-link" href={link.href} onClick={(e) => handleLinkClick(e, link)}>
-                  {link.label}
-                </a>
-              ))}
-            </div>
-          </div>
-          <div>
-            <h4 className="footer-heading">Connect</h4>
-            <div className="footer-link-list">
-              {socialLinks.map((link) => (
-                <a key={link.label} className="footer-link footer-social-link" href={link.href} target="_blank" rel="noopener noreferrer">
-                  {link.label}
-                  <ArrowRight size={12} style={{ transform: 'rotate(-45deg)' }} />
-                </a>
-              ))}
+          <div className="footer-contact-info">
+            <a href={`mailto:${COMPANY_CONFIG.email.support}`} className="footer-contact-link">
+              <Mail size={15} />
+              <span>{COMPANY_CONFIG.email.support}</span>
+            </a>
+            <a href={`tel:${COMPANY_CONFIG.phone.international}`} className="footer-contact-link">
+              <Phone size={15} />
+              <span>{COMPANY_CONFIG.phone.display}</span>
+            </a>
+            <div className="footer-contact-item">
+              <MapPin size={15} />
+              <span>{COMPANY_CONFIG.location.addressDisplay}</span>
             </div>
           </div>
         </div>
 
-        {/* Column 3: Newsletter */}
+        {/* Column 2: Navigation Links */}
+        <div className="footer-col footer-links-col">
+          <h4 className="footer-heading">Quick Navigation</h4>
+          <div className="footer-nav-grid">
+            <div className="footer-nav-col">
+              {footerLinks.slice(0, 6).map((link) => (
+                <a
+                  key={link.name}
+                  href={link.href}
+                  onClick={(e) => handleLinkClick(e, link)}
+                  className="footer-nav-link"
+                >
+                  {link.name}
+                </a>
+              ))}
+            </div>
+            <div className="footer-nav-col">
+              {footerLinks.slice(6).map((link) => (
+                <a
+                  key={link.name}
+                  href={link.href}
+                  onClick={(e) => handleLinkClick(e, link)}
+                  className="footer-nav-link"
+                >
+                  {link.name}
+                </a>
+              ))}
+            </div>
+          </div>
+        </div>
+
+        {/* Column 3: Newsletter (Honest Status - Coming Soon) */}
         <div className="footer-col footer-newsletter">
-          <h4 className="footer-heading">Tech Insights Newsletter</h4>
+          <h4 className="footer-heading">Engineering Digest</h4>
+          <div style={{ display: 'inline-flex', alignItems: 'center', gap: '6px', padding: '3px 10px', background: 'rgba(56, 189, 248, 0.1)', border: '1px solid rgba(56, 189, 248, 0.25)', borderRadius: '999px', color: '#38bdf8', fontSize: '11px', fontWeight: '700', marginBottom: '10px' }}>
+            <Sparkles size={11} /> Publication Launching Q4 2026
+          </div>
           <p className="footer-newsletter-desc">
-            Subscribe for monthly engineering updates, architecture teardowns, and technology insights.
+            We are preparing our quarterly technical publication covering cloud architecture teardowns, distributed systems, and applied AI workflows.
           </p>
-          {subscribed ? (
-            <div className="newsletter-success">
-              <CheckCircle2 size={18} />
-              <span>Subscribed! Thank you for joining.</span>
-            </div>
-          ) : (
-            <form className="footer-form" onSubmit={handleNewsletterSubmit}>
-              <span className="footer-form-at">@</span>
-              <input
-                type="email"
-                placeholder="Enter work email..."
-                className="footer-form-input"
-                value={emailInput}
-                onChange={(e) => setEmailInput(e.target.value)}
-                required
-              />
-              <button type="submit" className="footer-form-btn" aria-label="Submit newsletter">
-                <ArrowRight size={18} />
-              </button>
-            </form>
-          )}
+          <div style={{ marginTop: '12px' }}>
+            <a
+              href={COMPANY_CONFIG.social.linkedin}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="btn-secondary-light"
+              style={{ display: 'inline-flex', alignItems: 'center', gap: '8px', padding: '8px 16px', fontSize: '13px' }}
+            >
+              <Linkedin size={15} /> Follow Us on LinkedIn
+            </a>
+          </div>
         </div>
       </div>
 
@@ -177,60 +145,42 @@ export default function Footer({ onNavigate }) {
             <div className="legal-content">
               <p>At SriVoraTech, security is integrated into every stage of our software development lifecycle.</p>
               <ul className="legal-list">
-                <li>OWASP Secure Coding Practices</li>
-                <li>TLS 1.3 Encryption in Transit &amp; AES-256 at Rest</li>
-                <li>Role-Based Access Control (RBAC) &amp; JWT Verification</li>
-                <li>Automated Dependency Scanning and Code Reviews</li>
-                <li>Zero-Trust Network Configurations on AWS / GCP</li>
+                <li>OWASP Security Guidelines &amp; Input Validation</li>
+                <li>Role-Based Access Control (RBAC) via Secure JWT</li>
+                <li>Data Protection in Transit via TLS / HTTPS</li>
+                <li>Secure Secrets Management &amp; Sanitized Environment Variables</li>
               </ul>
-              <p className="legal-email"><Mail size={14} /> srivoratech9@gmail.com</p>
             </div>
           )}
         </div>
 
-        {/* Copyright & IP */}
-        <div className={`legal-accordion ${activeLegal === 'copyright' ? 'open' : ''}`}>
-          <button className="legal-accordion-btn" onClick={() => toggleLegal('copyright')}>
+        {/* Intellectual Property */}
+        <div className={`legal-accordion ${activeLegal === 'ip' ? 'open' : ''}`}>
+          <button className="legal-accordion-btn" onClick={() => toggleLegal('ip')}>
             <span className="legal-icon-label">
-              <Copyright size={16} /> Copyright &amp; Intellectual Property
+              <FileText size={16} /> Intellectual Property &amp; Code Ownership
             </span>
-            <span className="legal-toggle">{activeLegal === 'copyright' ? '−' : '+'}</span>
+            <span className="legal-toggle">{activeLegal === 'ip' ? '−' : '+'}</span>
           </button>
-          {activeLegal === 'copyright' && (
+          {activeLegal === 'ip' && (
             <div className="legal-content">
-              <p>© 2026 SriVoraTech Technologies. All Rights Reserved.</p>
-              <p>All content, source code, software, designs, graphics, logos, trademarks, and documentation on this website are the intellectual property of SriVoraTech unless otherwise stated.</p>
-              <p>Custom client software developed under formal contract includes full source code and IP rights transfer upon project completion.</p>
+              <p>Upon final sprint completion and invoice settlement, 100% of all custom source code, documentation, schemas, and cloud deployment credentials are unconditionally transferred to your organization.</p>
             </div>
           )}
         </div>
       </div>
 
-      {/* Bottom bar */}
+      {/* ── Footer Bottom Row ── */}
       <div className="footer-bottom container">
-        <p className="footer-copyright">© 2026 SriVoraTech Technologies. All Rights Reserved.</p>
-        <p className="footer-made-with">
-          Designed &amp; Developed with <Heart size={13} className="heart-icon" /> by SriVoraTech
-        </p>
-        <div className="footer-legal">
-          <button
-            className="footer-legal-link"
-            onClick={() => onNavigate ? onNavigate('/privacy') : window.location.href = '/privacy'}
-          >
-            Privacy Policy
-          </button>
-          <button
-            className="footer-legal-link"
-            onClick={() => onNavigate ? onNavigate('/terms') : window.location.href = '/terms'}
-          >
-            Terms of Service
-          </button>
-          <button
-            className="footer-legal-link"
-            onClick={() => onNavigate ? onNavigate('/client-portal') : window.location.href = '/client-portal'}
-          >
-            Client Portal
-          </button>
+        <div className="footer-copyright">
+          © {COMPANY_CONFIG.copyrightYear} {COMPANY_CONFIG.legalName}. All rights reserved.
+        </div>
+        <div className="footer-bottom-links">
+          <a href="/privacy" onClick={(e) => handleLinkClick(e, { href: '/privacy', isRoute: true })}>Privacy Policy</a>
+          <span className="footer-dot">•</span>
+          <a href="/terms" onClick={(e) => handleLinkClick(e, { href: '/terms', isRoute: true })}>Terms of Service</a>
+          <span className="footer-dot">•</span>
+          <a href="/sitemap" onClick={(e) => handleLinkClick(e, { href: '/sitemap', isRoute: true })}>Sitemap</a>
         </div>
       </div>
     </footer>

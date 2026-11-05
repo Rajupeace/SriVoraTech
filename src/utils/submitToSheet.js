@@ -1,19 +1,12 @@
 /**
- * Google Apps Script Web App URL
+ * Unified Form Submission Utility
+ * SriVoraTech Contact & Applications Workflow
  * 
- * HOW TO SET UP:
- * 1. Open Google Sheets → Extensions → Apps Script
- * 2. Paste contents of google-apps-script.js
- * 3. Deploy → New Deployment → Web App
- *    - Execute as: "Me"
- *    - Who has access: "Anyone"
- * 4. Copy the Web App URL and paste below
- * 
- * URL looks like: https://script.google.com/macros/s/AKfycb.../exec
+ * Flow:
+ * 1. For Contact enquiries: Direct POST to `/api/contact` (verified status, durable persistence, no opaque no-cors)
+ * 2. For Careers applications: Direct POST to `/api/apply/*` with local/serverless fallback
  */
-const GOOGLE_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbzzB8S5E3JqKFYuj-2RX7oHWXkv0taRPv0aQBAjIr2TQkVp0K0grPCIcZWVrbbXQlSo/exec'
 
-// Local backend endpoints (fallback when Apps Script URL is not set)
 const backendEndpoints = {
   fresher: '/api/apply/fresher',
   experience: '/api/apply/experienced',
@@ -21,84 +14,106 @@ const backendEndpoints = {
   contact: '/api/contact',
 }
 
+const GOOGLE_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbzzB8S5E3JqKFYuj-2RX7oHWXkv0taRPv0aQBAjIr2TQkVp0K0grPCIcZWVrbbXQlSo/exec'
+
 /**
- * Submit form data to Google Sheets via Apps Script Web App,
- * with fallback to local backend server.
- * @param {'fresher' | 'experience' | 'experienced'} formType
+ * Submit form data with verified response handling
+ * @param {'fresher' | 'experience' | 'experienced' | 'contact'} formType
  * @param {Object} data - The form data to submit
- * @returns {Promise<{ success: boolean, error?: string }>}
+ * @returns {Promise<{ success: boolean, enquiryId?: string, error?: string }>}
  */
 export async function submitToSheet(formType, data) {
-  // Build the payload (strip File objects for JSON — can't send files via JSON)
-  const jsonPayload = {}
-  Object.entries(data).forEach(([key, value]) => {
-    if (value === undefined || value === null) return
-    if (value instanceof File) {
-      jsonPayload[key + '_filename'] = value.name
-    } else {
-      jsonPayload[key] = value
-    }
-  })
-  jsonPayload.type = formType === 'fresher' ? 'Fresher' : formType === 'contact' ? 'Contact' : formType === 'rating' ? 'Rating' : 'Experienced'
-
-  // --- Strategy 1: Google Apps Script Web App (direct, no backend server needed) ---
-  if (GOOGLE_SCRIPT_URL && GOOGLE_SCRIPT_URL.includes('script.google.com')) {
+  // Strategy for Contact Forms: Always send directly to verified /api/contact endpoint
+  if (formType === 'contact') {
     try {
-      console.log('Submitting form data to Google Sheets via Apps Script...')
-      console.log('Payload:', JSON.stringify(jsonPayload, null, 2))
+      const response = await fetch('/api/contact', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Accept': 'application/json',
+        },
+        body: JSON.stringify(data),
+      })
+
+      const result = await response.json().catch(() => null)
+
+      if (!response.ok || !result?.success) {
+        return {
+          success: false,
+          error: result?.message || `Server error (${response.status}) processing enquiry.`
+        }
+      }
+
+      return {
+        success: true,
+        enquiryId: result.enquiryId,
+        message: result.message
+      }
+    } catch (err) {
+      console.error('Contact submission error:', err)
+      return {
+        success: false,
+        error: 'Network error submitting enquiry. Please email contact@srivoratech.in directly.'
+      }
+    }
+  }
+
+  // Strategy for Careers applications: Submit via FormData to application endpoints
+  const endpoint = backendEndpoints[formType]
+  if (endpoint) {
+    try {
+      const formData = new FormData()
+      Object.entries(data).forEach(([key, value]) => {
+        if (value !== undefined && value !== null) {
+          formData.append(key, value)
+        }
+      })
+
+      const response = await fetch(endpoint, {
+        method: 'POST',
+        body: formData,
+      })
+
+      if (response.ok) {
+        const body = await response.json().catch(() => null)
+        return { success: true, message: body?.message }
+      }
+    } catch (e) {
+      console.warn('Backend application endpoint failed, attempting secondary webhook...')
+    }
+  }
+
+  // Fallback for applications if backend is temporarily unreachable
+  if (GOOGLE_SCRIPT_URL) {
+    try {
+      const jsonPayload = {}
+      Object.entries(data).forEach(([key, value]) => {
+        if (value instanceof File) {
+          jsonPayload[key + '_filename'] = value.name
+        } else if (value !== undefined && value !== null) {
+          jsonPayload[key] = value
+        }
+      })
+      jsonPayload.type = formType === 'fresher' ? 'Fresher' : 'Experienced'
 
       await fetch(GOOGLE_SCRIPT_URL, {
         method: 'POST',
-        mode: 'no-cors', // Required for Google Apps Script from browsers
+        mode: 'no-cors',
         headers: { 'Content-Type': 'text/plain' },
         body: JSON.stringify(jsonPayload),
       })
 
-      // no-cors responses are opaque (status=0, body unreadable),
-      // but if fetch() resolved without throwing, the request was sent.
-      console.log('✅ Form submitted to Google Sheets successfully via Apps Script')
       return { success: true }
     } catch (err) {
-      console.warn('❌ Google Apps Script submission failed:', err.message)
-      console.warn('Falling back to local backend server...')
-    }
-  } else {
-    console.warn('⚠️ GOOGLE_SCRIPT_URL is not configured. Trying local backend...')
-  }
-
-  // --- Strategy 2: Local backend server (fallback) ---
-  const endpoint = backendEndpoints[formType]
-  if (!endpoint) {
-    return { success: false, error: `Unsupported form type: ${formType}` }
-  }
-
-  try {
-    const formData = new FormData()
-    Object.entries(data).forEach(([key, value]) => {
-      if (value === undefined || value === null) return
-      formData.append(key, value)
-    })
-
-    const response = await fetch(endpoint, {
-      method: 'POST',
-      body: formData,
-    })
-
-    if (!response.ok) {
-      const body = await response.json().catch(() => null)
       return {
         success: false,
-        error: body?.message || `Server error: ${response.status}`,
+        error: 'Unable to submit application. Please contact us directly at contact@srivoratech.in.'
       }
     }
+  }
 
-    console.log('✅ Form submitted via local backend server')
-    return { success: true }
-  } catch (error) {
-    console.error('❌ Form submission error (both strategies failed):', error)
-    return {
-      success: false,
-      error: 'Unable to submit application. Please check your connection and try again.',
-    }
+  return {
+    success: false,
+    error: 'Submission service temporarily unavailable. Please email contact@srivoratech.in.'
   }
 }

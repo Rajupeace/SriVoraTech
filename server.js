@@ -373,35 +373,101 @@ app.post('/api/apply/experienced', upload.single('resume'), async (req, res) => 
 // Contact & Project Enquiry endpoint
 const contactEnquiriesPath = path.join(uploadsDir, 'contact_enquiries.json')
 
+// Contact Rate Limiting Map
+const contactRateLimits = new Map()
+function checkExpressContactRateLimit(ip) {
+  if (!ip) return false
+  const now = Date.now()
+  const windowMs = 10 * 60 * 1000
+  const maxSubmissions = 5
+  const record = contactRateLimits.get(ip) || { count: 0, resetTime: now + windowMs }
+  if (now > record.resetTime) {
+    record.count = 1
+    record.resetTime = now + windowMs
+    contactRateLimits.set(ip, record)
+    return false
+  }
+  record.count++
+  contactRateLimits.set(ip, record)
+  return record.count > maxSubmissions
+}
+
 app.post('/api/contact', upload.none(), async (req, res) => {
+  const clientIp = req.ip || req.connection.remoteAddress || 'unknown'
+  if (checkExpressContactRateLimit(clientIp)) {
+    return res.status(429).json({
+      success: false,
+      message: 'Submission limit reached. Please wait a few minutes before submitting another enquiry.'
+    })
+  }
+
   try {
-    const { name, fullName, email, phone, company, budget, message, whySriVoraTech } = req.body
+    const { name, fullName, email, phone, company, budget, message, whySriVoraTech, botCheck, _gotcha } = req.body || {}
+
+    // Spam honeypot
+    if (botCheck || _gotcha) {
+      return res.status(200).json({ success: true, message: 'Enquiry received.' })
+    }
+
     const clientName = (name || fullName || '').trim()
-    const clientEmail = (email || '').trim()
+    const clientEmail = (email || '').trim().toLowerCase()
     const clientPhone = (phone || '').trim()
     const clientCompany = (company || '').trim()
     const clientBudget = (budget || '').trim()
     const clientMessage = (message || whySriVoraTech || '').trim()
 
-    if (!clientName || !clientEmail) {
+    if (!clientName || clientName.length < 2) {
       return res.status(400).json({
         success: false,
-        message: 'Name and email are required fields.'
+        message: 'Name is required and must be at least 2 characters.'
       })
     }
 
+    const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/
+    if (!clientEmail || !emailRegex.test(clientEmail)) {
+      return res.status(400).json({
+        success: false,
+        message: 'A valid email address is required.'
+      })
+    }
+
+    if (clientPhone && !/^[+\d\s()-]{7,20}$/.test(clientPhone)) {
+      return res.status(400).json({
+        success: false,
+        message: 'Please provide a valid phone number.'
+      })
+    }
+
+    if (!clientMessage || clientMessage.length < 10) {
+      return res.status(400).json({
+        success: false,
+        message: 'Enquiry message must be at least 10 characters.'
+      })
+    }
+
+    if (clientMessage.length > 5000) {
+      return res.status(400).json({
+        success: false,
+        message: 'Message exceeds the maximum allowed length of 5,000 characters.'
+      })
+    }
+
+    const enquiryId = `svt_enq_${Date.now()}_${Math.random().toString(36).substring(2, 7)}`
     const enquiry = {
+      enquiryId,
       id: Date.now(),
       type: 'Contact',
       name: clientName,
       email: clientEmail,
-      phone: clientPhone,
-      company: clientCompany,
-      budget: clientBudget,
+      phone: clientPhone || null,
+      company: clientCompany || null,
+      budget: clientBudget || null,
       message: clientMessage,
-      submittedAt: new Date().toISOString()
+      submittedAt: new Date().toISOString(),
+      ip: clientIp
     }
 
+    let persisted = false
     try {
       let list = []
       if (fs.existsSync(contactEnquiriesPath)) {
@@ -409,34 +475,48 @@ app.post('/api/contact', upload.none(), async (req, res) => {
       }
       list.push(enquiry)
       fs.writeFileSync(contactEnquiriesPath, JSON.stringify(list, null, 2))
+      persisted = true
     } catch (fsErr) {
       console.error('Error saving contact enquiry locally:', fsErr)
     }
 
-    await addRowToSheet({
-      'Application ID': enquiry.id,
-      'Type': 'Contact Enquiry',
-      'Full Name': enquiry.name,
-      'Email': enquiry.email,
-      'Phone': enquiry.phone,
-      'College / Company': enquiry.company,
-      'Degree / Designation': enquiry.budget,
-      'Why SriVoraTech': enquiry.message,
-      'Submitted At': enquiry.submittedAt
-    })
+    // Google Sheets Backup
+    try {
+      await addRowToSheet({
+        'Application ID': enquiry.enquiryId,
+        'Type': 'Contact Enquiry',
+        'Full Name': enquiry.name,
+        'Email': enquiry.email,
+        'Phone': enquiry.phone,
+        'College / Company': enquiry.company,
+        'Degree / Designation': enquiry.budget,
+        'Why SriVoraTech': enquiry.message,
+        'Submitted At': enquiry.submittedAt
+      })
+      persisted = true
+    } catch (sheetErr) {
+      console.warn('Google Sheets sync skipped:', sheetErr.message)
+    }
+
+    if (!persisted) {
+      return res.status(500).json({
+        success: false,
+        message: 'Unable to durably save your enquiry at this moment. Please email contact@srivoratech.in directly.'
+      })
+    }
 
     console.log('New contact enquiry processed:', enquiry.name, enquiry.email)
 
     res.status(200).json({
       success: true,
       message: 'Enquiry received successfully! Our team will contact you within 24 hours.',
-      enquiryId: enquiry.id
+      enquiryId: enquiry.enquiryId
     })
   } catch (error) {
     console.error('Error processing contact enquiry:', error)
     res.status(500).json({
       success: false,
-      message: 'Error processing enquiry. Please try again.'
+      message: 'Error processing enquiry. Please try again or email contact@srivoratech.in directly.'
     })
   }
 })
@@ -584,14 +664,25 @@ app.get('/api/reviews', async (req, res) => {
   try {
     res.setHeader('Cache-Control', 'no-store, no-cache, must-revalidate, proxy-revalidate')
     const reviews = await getReviewsFromDb()
-    const approvedReviews = reviews.filter(r => r.status === 'Approved')
+    const approvedReviews = reviews.filter(r => {
+      if (!r) return false
+      const s = String(r.status || '').toLowerCase()
+      const isInternal = Boolean(r.isFounder) || 
+        (r.name && (r.name.toLowerCase().includes('founder') || r.name.toLowerCase().includes('ceo') || r.name.toLowerCase().includes('cto')))
+      return s === 'approved' && !isInternal
+    })
     
     // Sort newest first
     approvedReviews.sort((a, b) => (b.timestamp || 0) - (a.timestamp || 0))
 
     const totalApproved = approvedReviews.length
-    const sum = approvedReviews.reduce((acc, curr) => acc + (parseInt(curr.star, 10) || 5), 0)
-    const averageRating = totalApproved > 0 ? parseFloat((sum / totalApproved).toFixed(1)) : 5.0
+    let averageRating = null
+    let satisfactionRate = null
+
+    if (totalApproved > 0) {
+      const sum = approvedReviews.reduce((acc, curr) => acc + (parseInt(curr.star, 10) || 0), 0)
+      averageRating = parseFloat((sum / totalApproved).toFixed(1))
+    }
 
     // Rating distribution calculations
     const counts = { 5: 0, 4: 0, 3: 0, 2: 0, 1: 0 }

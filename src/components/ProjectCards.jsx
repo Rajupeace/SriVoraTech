@@ -28,7 +28,7 @@ const projects = [
     icon: Cpu,
     liveUrl: 'https://srivoratech-ai-virtual-assistant-workflow-automat.ai.studio/',
     showcaseImg: '/smartai-dashboard-overview.png',
-    metrics: ['99.4% Query Accuracy', 'Automated Workflows', 'Vector Search Engine']
+    metrics: ['Context-Aware Semantic Search', 'Automated Workflows', 'Vector Search Engine']
   },
   {
     id: 3,
@@ -93,7 +93,7 @@ const projects = [
     showcaseImg: '/srivora-agentic-dashboard.png',
     isUpcoming: true,
     statusTag: 'Upcoming Project (Q4 2026)',
-    metrics: ['Multi-Agent Graph Orchestrator', '10x Speed Scaling', 'Q4 2026 Expected Launch']
+    metrics: ['Multi-Agent Graph Orchestrator', 'Dynamic Agent Orchestration', 'Q4 2026 Expected Launch']
   },
   {
     id: 8,
@@ -107,7 +107,7 @@ const projects = [
     showcaseImg: '/omnichannel-erp-dashboard.png',
     isUpcoming: true,
     statusTag: 'Upcoming Project (Q4 2026)',
-    metrics: ['Sub-50ms POS Transaction', 'Kafka Event Streaming', 'Multi-Store Inventory']
+    metrics: ['Low-Latency POS Architecture', 'Kafka Event Streaming', 'Multi-Store Inventory']
   },
   {
     id: 9,
@@ -121,7 +121,7 @@ const projects = [
     showcaseImg: '/payshield-fraud-dashboard.png',
     isUpcoming: true,
     statusTag: 'Upcoming Project (Q1 2027)',
-    metrics: ['AI Fraud Risk Scoring', 'Multi-Currency Settlement', '90% Fraud Reduction']
+    metrics: ['AI Fraud Risk Scoring', 'Multi-Currency Settlement', 'Heuristic Risk Analysis']
   }
 ]
 

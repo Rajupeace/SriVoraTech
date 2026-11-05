@@ -41,7 +41,7 @@ export const servicesData = [
     division: 'software-engineering',
     divisionLabel: 'Software Engineering',
     badge: 'Enterprise Architecture',
-    metric: '⚡ 2–4 Wks MVP',
+    metric: '⚡ Agile Delivery',
     desc: 'End-to-end software development combining modern reactive frontends, resilient backend APIs, and ACID-compliant relational databases.',
     problemSolved: 'Eliminates fragmented vendor silos, reducing architectural bugs and ensuring high cross-team velocity.',
     projectExample: 'SriERP Pro Campus Management & ShopSphere Multi-Vendor Hub',
@@ -55,7 +55,7 @@ export const servicesData = [
       'TypeScript Type-Safe End-to-End Contracts'
     ],
     technologies: ['React', 'Next.js', 'Node.js', 'TypeScript', 'PostgreSQL', 'Docker'],
-    benefits: ['Single-source codebase', 'Sub-100ms API response', '100% Code Ownership']
+    benefits: ['Single-source codebase', 'Optimized Low-Latency APIs', '100% Code Ownership']
   },
   {
     id: 'webapp-dev',
@@ -63,7 +63,7 @@ export const servicesData = [
     division: 'software-engineering',
     divisionLabel: 'Software Engineering',
     badge: 'High Performance',
-    metric: '🚀 99.9% Uptime Target',
+    metric: '🚀 High Availability',
     desc: 'Bespoke web platforms built for speed, conversion rate optimization, and high concurrent active users.',
     problemSolved: 'Solves slow page load times, high bounce rates, and broken responsive mobile layouts.',
     projectExample: 'ShopSphere E-Commerce & HealthConnect Telemedicine Portal',
@@ -72,7 +72,7 @@ export const servicesData = [
     gradient: 'linear-gradient(135deg, #6366f1, #4f46e5)',
     features: [
       'Interactive Single Page Applications (SPA) & PWAs',
-      '100/100 Google Lighthouse Core Web Vitals Optimization',
+      'Google Core Web Vitals Performance Optimization',
       'Secure JWT & OAuth2 Session Authentication',
       'Edge CDN Caching & Global Asset Delivery'
     ],
@@ -87,7 +87,7 @@ export const servicesData = [
     badge: 'iOS & Android',
     metric: '📱 60 FPS Native UX',
     desc: 'Cross-platform native mobile applications delivering fluid user experiences across smartphones and tablets.',
-    problemSolved: 'Cuts development costs by 50% compared to building separate native Swift and Kotlin teams.',
+    problemSolved: 'Significantly reduces cross-platform development overhead compared to maintaining separate native codebases.',
     projectExample: 'HealthConnect Mobile Doctor/Patient Teleconsult App',
     icon: Smartphone,
     color: '#10b981',
@@ -172,7 +172,7 @@ export const servicesData = [
     title: 'API Development & System Integration',
     division: 'software-engineering',
     divisionLabel: 'Software Engineering',
-    badge: 'Sub-100ms Latency',
+    badge: 'Low-Latency APIs',
     metric: '⚡ High Concurrency',
     desc: 'Robust RESTful, GraphQL, and WebSocket APIs engineered with rate limiting, OpenAPI specifications, and caching.',
     problemSolved: 'Connects legacy databases and third-party SaaS services with secure, low-latency bridges.',
@@ -211,7 +211,7 @@ export const servicesData = [
       'Cost-Optimized Model Routing (Flash / Pro)'
     ],
     technologies: ['OpenAI API', 'Google Gemini', 'Anthropic Claude', 'Python', 'LangChain'],
-    benefits: ['80% faster drafting', 'Zero hallucinations', 'Token cost efficiency']
+    benefits: ['Accelerated content workflows', 'Grounded RAG retrieval to minimize hallucinations', 'Token cost optimization']
   },
   {
     id: 'ai-agents',
@@ -241,7 +241,7 @@ export const servicesData = [
     division: 'ai-automation',
     divisionLabel: 'AI & Intelligent Automation',
     badge: 'Enterprise Vector Search',
-    metric: '🔍 Sub-200ms Retrieval',
+    metric: '🔍 Fast Vector Retrieval',
     desc: 'Connect private company knowledge bases, PDFs, databases, and wikis to AI models without data leakage or hallucinations.',
     problemSolved: 'Enables instant answers grounded strictly in verified enterprise company documents.',
     projectExample: 'SmartAI Knowledge Base & EMR Medical Protocol Assistant',
@@ -284,8 +284,8 @@ export const servicesData = [
     title: 'Intelligent AI Chatbots',
     division: 'ai-automation',
     divisionLabel: 'AI & Intelligent Automation',
-    badge: '24/7 Customer Support',
-    metric: '💬 80% Ticket Deflection',
+    badge: 'Continuous Automated Assistance',
+    metric: '💬 Automated Inquiry Resolution',
     desc: 'Omnichannel AI conversational assistants trained on company FAQs, product catalogs, and policies with escalation to human agents.',
     problemSolved: 'Resolves customer inquiries instantly at 2 AM without requiring a 24/7 human support desk.',
     projectExample: 'Live Embed Chatbot Widget & Multi-Language Support Engine',
@@ -299,7 +299,7 @@ export const servicesData = [
       'Analytics Dashboard on Inquiries & Sentiment'
     ],
     technologies: ['React', 'Python', 'FastAPI', 'OpenAI', 'WebSockets'],
-    benefits: ['24/7 Instant response', '80% inquiry resolution', 'CRM sync']
+    benefits: ['Continuous automated response', 'Context-aware inquiry handling', 'CRM pipeline synchronization']
   },
   {
     id: 'workflow-automation',
@@ -307,7 +307,7 @@ export const servicesData = [
     division: 'ai-automation',
     divisionLabel: 'AI & Intelligent Automation',
     badge: 'Process Efficiency',
-    metric: '⏱️ 120+ Hrs Saved/Mo',
+    metric: '⏱️ Significant Time Savings',
     desc: 'Automating repetitive data entry, PDF invoice processing, lead qualification, and cross-department notification pipelines.',
     problemSolved: 'Eliminates hours of manual copy-pasting between Google Sheets, CRMs, emails, and databases.',
     projectExample: 'SmartAI Visual Workflow Canvas & Google Sheets Sync Pipeline',
@@ -321,7 +321,7 @@ export const servicesData = [
       'Error Handling & Scheduled Cron Jobs'
     ],
     technologies: ['Python', 'Node.js', 'Google Apps Script', 'FastAPI', 'Redis'],
-    benefits: ['Zero manual entry errors', 'Instant notifications', '120+ hours saved monthly']
+    benefits: ['Eliminates manual entry errors', 'Real-time alert dispatch', 'Substantial operational time savings']
   },
 
   // ── DIVISION 3: CLOUD & DIGITAL ENGINEERING ──
@@ -331,7 +331,7 @@ export const servicesData = [
     division: 'cloud-engineering',
     divisionLabel: 'Cloud & Digital Engineering',
     badge: 'High Availability',
-    metric: '☁️ Zero Single Point of Failure',
+    metric: '☁️ Multi-AZ Resilience',
     desc: 'Scalable AWS cloud architecture design utilizing ECS, Lambda serverless, RDS PostgreSQL, S3, and CloudFront.',
     problemSolved: 'Prevents server crashes under traffic spikes and reduces unoptimized monthly cloud bills.',
     projectExample: 'Dockerized AWS ECS Multi-Container Infrastructure',
@@ -353,7 +353,7 @@ export const servicesData = [
     division: 'cloud-engineering',
     divisionLabel: 'Cloud & Digital Engineering',
     badge: 'Automated Release',
-    metric: '⚡ Zero-Downtime Deploys',
+    metric: '⚡ Automated CI/CD',
     desc: 'Automated Continuous Integration and Continuous Deployment (CI/CD) pipelines with linting, testing, and blue-green deployments.',
     problemSolved: 'Eliminates stressful manual FTP/SSH deployments and avoids pushing broken code to production.',
     projectExample: 'GitHub Actions Automated Testing & Vercel / AWS Pipeline',
@@ -375,7 +375,7 @@ export const servicesData = [
     division: 'cloud-engineering',
     divisionLabel: 'Cloud & Digital Engineering',
     badge: 'Data Integrity',
-    metric: '⚡ Sub-Millisecond Queries',
+    metric: '⚡ Optimized Query Indexing',
     desc: 'Schema modeling, index optimization, read replication, connection pooling, and automated backup strategies.',
     problemSolved: 'Fixes slow database queries, connection pool exhaustion, and prevents disastrous data loss.',
     projectExample: 'High-Throughput PostgreSQL & Redis Caching Layer',
@@ -415,7 +415,7 @@ export const servicesData = [
   },
   {
     id: 'monitoring-maintenance',
-    title: 'Monitoring, Alerting & 24/7 SLA',
+    title: 'Monitoring, Alerting & High-Availability Target',
     division: 'cloud-engineering',
     divisionLabel: 'Cloud & Digital Engineering',
     badge: 'Proactive Health',
@@ -433,7 +433,7 @@ export const servicesData = [
       'Periodic Security Updates & Patch Management'
     ],
     technologies: ['CloudWatch', 'Prometheus', 'Grafana', 'Sentry', 'Docker'],
-    benefits: ['Proactive issue detection', 'Near-zero downtime', 'Rapid incident resolution']
+    benefits: ['Proactive error detection', 'Target 99.9% availability', 'Rapid incident triage & resolution']
   }
 ]
 

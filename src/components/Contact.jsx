@@ -8,6 +8,8 @@ export default function Contact() {
   const [ref, isVisible] = useScrollAnimation()
   const [submitting, setSubmitting] = useState(false)
   const [submitted, setSubmitted] = useState(false)
+  const [submittedEnquiryId, setSubmittedEnquiryId] = useState('')
+  const [serverError, setServerError] = useState('')
   const [touched, setTouched] = useState({})
 
   // Client "Book a Call" form state
@@ -41,24 +43,24 @@ export default function Contact() {
       message: 'Name must be at least 2 characters',
     },
     email: {
-      valid: /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(clientForm.email),
+      valid: /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/.test(clientForm.email.trim()),
       message: 'Enter a valid email address',
     },
     company: {
       valid: clientForm.company.trim().length >= 1,
-      message: 'Company name is required',
+      message: 'Company or startup name is required',
     },
     phone: {
-      valid: /^[+\d\s()-]{7,15}$/.test(clientForm.phone),
-      message: 'Enter a valid phone number',
+      valid: clientForm.phone.trim().length === 0 || /^[+\d\s()-]{7,20}$/.test(clientForm.phone.trim()),
+      message: 'Enter a valid phone number (or leave blank)',
     },
     budget: {
       valid: clientForm.budget.length > 0,
-      message: 'Please select a budget range',
+      message: 'Please select an estimated budget range',
     },
     message: {
       valid: clientForm.message.trim().length >= 10,
-      message: 'Tell us more (at least 10 characters)',
+      message: 'Please describe your requirements (at least 10 characters)',
     },
   }), [clientForm])
 
@@ -69,6 +71,7 @@ export default function Contact() {
   const handleClientChange = (e) => {
     const { name, value } = e.target
     setClientForm(prev => ({ ...prev, [name]: value }))
+    if (serverError) setServerError('')
   }
 
   const handleBlur = (fieldName) => {
@@ -77,6 +80,7 @@ export default function Contact() {
 
   const handleClientSubmit = async (e) => {
     e.preventDefault()
+    setServerError('')
 
     // Mark all fields touched
     const allTouched = {}
@@ -89,20 +93,20 @@ export default function Contact() {
 
     try {
       const payload = {
-        fullName: clientForm.name,
-        name: clientForm.name,
-        email: clientForm.email,
-        company: clientForm.company,
-        phone: clientForm.phone,
+        name: clientForm.name.trim(),
+        fullName: clientForm.name.trim(),
+        email: clientForm.email.trim(),
+        company: clientForm.company.trim(),
+        phone: clientForm.phone.trim(),
         budget: clientForm.budget,
-        message: clientForm.message,
-        whySriVoraTech: clientForm.message,
+        message: clientForm.message.trim(),
       }
 
       const res = await submitToSheet('contact', payload)
 
       if (res.success) {
         setSubmitted(true)
+        setSubmittedEnquiryId(res.enquiryId || '')
         setClientForm({
           name: '',
           email: '',
@@ -112,13 +116,13 @@ export default function Contact() {
           message: '',
         })
         setTouched({})
-        setTimeout(() => setSubmitted(false), 6000)
+        setTimeout(() => setSubmitted(false), 8000)
       } else {
-        alert(res.error || 'Error submitting form. Please try again.')
+        setServerError(res.error || 'Unable to submit enquiry. Please try again or email contact@srivoratech.in directly.')
       }
     } catch (error) {
-      console.error('Error submitting client form:', error)
-      alert('Error submitting form. Please try again.')
+      console.error('Client contact submission error:', error)
+      setServerError('An unexpected error occurred. Please try again or email contact@srivoratech.in.')
     } finally {
       setSubmitting(false)
     }
@@ -155,10 +159,19 @@ export default function Contact() {
         <div className="contact-wrapper">
           <div className="form-container">
             {submitted ? (
-              <div className="success-message animate-pop">
-                <Send size={32} className="success-icon" />
-                <h3>Thank You!</h3>
-                <p>We have received your project details. Our technical team will get back to you within 24 hours.</p>
+              <div className="success-message animate-pop" style={{ padding: '36px 24px', textAlign: 'center' }}>
+                <CheckCircle2 size={40} style={{ color: '#10b981', margin: '0 auto 16px' }} />
+                <h3 style={{ fontSize: '22px', fontWeight: 700, color: '#0f172a', marginBottom: '8px' }}>
+                  Enquiry Received Successfully!
+                </h3>
+                <p style={{ color: '#475569', fontSize: '15px', lineHeight: 1.6, maxWidth: '480px', margin: '0 auto 12px' }}>
+                  Our technical engineering team will review your requirements and respond within 24 hours.
+                </p>
+                {submittedEnquiryId && (
+                  <span style={{ display: 'inline-block', padding: '6px 14px', background: '#f1f5f9', border: '1px solid #cbd5e1', borderRadius: '6px', fontSize: '12.5px', fontFamily: 'monospace', color: '#334155' }}>
+                    Reference: {submittedEnquiryId}
+                  </span>
+                )}
               </div>
             ) : (
               <form onSubmit={handleClientSubmit} className="application-form" noValidate>
@@ -170,6 +183,13 @@ export default function Contact() {
                   </span>
                 </div>
 
+                {serverError && (
+                  <div style={{ background: '#fef2f2', border: '1px solid #fecaca', borderRadius: '8px', padding: '12px 16px', color: '#b91c1c', fontSize: '13.5px', marginBottom: '16px', display: 'flex', alignItems: 'center', gap: '8px' }}>
+                    <AlertCircle size={16} style={{ flexShrink: 0 }} />
+                    <span>{serverError}</span>
+                  </div>
+                )}
+
                 <div className="form-row">
                   <div className={`form-group ${touched.name ? (validations.name.valid ? 'valid' : 'invalid') : ''}`}>
                     <label><User size={13} /> Full Name *</label>
@@ -179,21 +199,22 @@ export default function Contact() {
                       value={clientForm.name}
                       onChange={handleClientChange}
                       onBlur={() => handleBlur('name')}
+                      placeholder="e.g. Alex Morgan"
                       required
-                      placeholder="Enter your full name"
                     />
                     {renderFieldStatus('name')}
                   </div>
+
                   <div className={`form-group ${touched.email ? (validations.email.valid ? 'valid' : 'invalid') : ''}`}>
-                    <label><Mail size={13} /> Email Address *</label>
+                    <label><Mail size={13} /> Official Email *</label>
                     <input
                       type="email"
                       name="email"
                       value={clientForm.email}
                       onChange={handleClientChange}
                       onBlur={() => handleBlur('email')}
+                      placeholder="alex@company.com"
                       required
-                      placeholder="Enter email address"
                     />
                     {renderFieldStatus('email')}
                   </div>
@@ -201,94 +222,74 @@ export default function Contact() {
 
                 <div className="form-row">
                   <div className={`form-group ${touched.company ? (validations.company.valid ? 'valid' : 'invalid') : ''}`}>
-                    <label><Building2 size={13} /> Company / Organization *</label>
+                    <label><Building2 size={13} /> Company / Startup *</label>
                     <input
                       type="text"
                       name="company"
                       value={clientForm.company}
                       onChange={handleClientChange}
                       onBlur={() => handleBlur('company')}
+                      placeholder="e.g. Acme Corp or Seed Startup"
                       required
-                      placeholder="Your company name"
                     />
                     {renderFieldStatus('company')}
                   </div>
+
                   <div className={`form-group ${touched.phone ? (validations.phone.valid ? 'valid' : 'invalid') : ''}`}>
-                    <label><PhoneIcon size={13} /> Phone Number *</label>
+                    <label><PhoneIcon size={13} /> Phone / WhatsApp (Optional)</label>
                     <input
                       type="tel"
                       name="phone"
                       value={clientForm.phone}
                       onChange={handleClientChange}
                       onBlur={() => handleBlur('phone')}
-                      required
-                      placeholder="Enter phone number"
+                      placeholder="+1 (555) 000-0000"
                     />
                     {renderFieldStatus('phone')}
                   </div>
                 </div>
 
                 <div className={`form-group ${touched.budget ? (validations.budget.valid ? 'valid' : 'invalid') : ''}`}>
-                  <label><Wallet size={13} /> Project Budget Range *</label>
-                  <div className="budget-pills">
-                    {['Under ₹50,000', '₹50,000 - ₹1,00,000', '₹1,00,000 - ₹5,00,000', '₹5,00,000 - ₹10,00,000', '₹10,00,000+', "Let's Discuss"].map(b => (
-                      <button
-                        type="button"
-                        key={b}
-                        className={`budget-pill ${clientForm.budget === b ? 'active' : ''}`}
-                        onClick={() => {
-                          setClientForm(prev => ({ ...prev, budget: b }))
-                          setTouched(prev => ({ ...prev, budget: true }))
-                        }}
-                      >
-                        {b}
-                      </button>
-                    ))}
-                  </div>
+                  <label><Wallet size={13} /> Estimated Project Scope / Budget *</label>
                   <select
                     name="budget"
                     value={clientForm.budget}
-                    onChange={(e) => {
-                      handleClientChange(e)
-                      setTouched(prev => ({ ...prev, budget: true }))
-                    }}
+                    onChange={handleClientChange}
+                    onBlur={() => handleBlur('budget')}
                     required
                   >
-                    <option value="">Select budget range</option>
-                    <option value="Under ₹50,000">Under ₹50,000</option>
-                    <option value="₹50,000 - ₹1,00,000">₹50,000 - ₹1,00,000</option>
-                    <option value="₹1,00,000 - ₹5,00,000">₹1,00,000 - ₹5,00,000</option>
-                    <option value="₹5,00,000 - ₹10,00,000">₹5,00,000 - ₹10,00,000</option>
-                    <option value="₹10,00,000+">₹10,00,000+</option>
-                    <option value="Let's Discuss">Let's Discuss</option>
+                    <option value="">Select scope or budget range...</option>
+                    <option value="Under $2,000">Under $2,000 (Small Feature / Fix)</option>
+                    <option value="$2,000 - $5,000">$2,000 - $5,000 (MVP / Fast Prototype)</option>
+                    <option value="$5,000 - $15,000">$5,000 - $15,000 (Full Web / Mobile Application)</option>
+                    <option value="$15,000 - $50,000">$15,000 - $50,000 (Enterprise Cloud / SaaS Platform)</option>
+                    <option value="$50,000+">$50,000+ (Comprehensive Custom ERP & AI Ecosystem)</option>
                   </select>
                   {renderFieldStatus('budget')}
                 </div>
 
                 <div className={`form-group ${touched.message ? (validations.message.valid ? 'valid' : 'invalid') : ''}`}>
-                  <label><MessageSquareText size={13} /> Project Scope / Details *</label>
+                  <label><MessageSquareText size={13} /> Project Requirements & Goals *</label>
                   <textarea
                     name="message"
+                    rows={4}
                     value={clientForm.message}
                     onChange={handleClientChange}
                     onBlur={() => handleBlur('message')}
+                    placeholder="Tell us about the product you want to build, key timeline requirements, and any preferred technologies..."
                     required
-                    placeholder="Tell us about your project requirements, features, or goals..."
-                    rows={4}
                   />
-                  <div className="textarea-meta-row">
-                    {renderFieldStatus('message')}
-                    <span className="char-counter">{clientForm.message.length} chars</span>
-                  </div>
+                  {renderFieldStatus('message')}
                 </div>
 
-                <button type="submit" className="submit-btn" disabled={submitting}>
-                  {submitting ? 'Submitting...' : (
-                    <>
-                      <Send size={18} />
-                      Book a Call
-                    </>
-                  )}
+                <button
+                  type="submit"
+                  disabled={submitting}
+                  className="btn-primary submit-btn"
+                  style={{ width: '100%', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px' }}
+                >
+                  <Send size={16} />
+                  {submitting ? 'Submitting Enquiry...' : 'Schedule Discovery Sprint'}
                 </button>
               </form>
             )}

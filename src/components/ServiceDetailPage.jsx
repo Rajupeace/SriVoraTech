@@ -2,8 +2,8 @@ import React from 'react'
 import SEO from './SEO'
 import StructuredData from './StructuredData'
 import { CheckCircle2, ArrowRight, ShieldCheck, Zap, Code2, Cpu, Globe, Smartphone, Layers } from 'lucide-react'
+import { COMPANY } from '../config/company'
 import './Services.css'
-
 
 const SERVICE_DATA = {
   'web-development': {
@@ -14,20 +14,19 @@ const SERVICE_DATA = {
     features: [
       'Custom React.js & Next.js 15 App Architecture',
       'Server-Side Rendering (SSR) & Static Generation (SSG)',
-      '100/100 Google Lighthouse Core Web Vitals Optimization',
+      'Core Web Vitals & Speed Optimization',
       'Headless CMS & E-Commerce Integration (Shopify, Strapi)',
       'Enterprise Micro-Frontends & API First Engineering',
       'Progressive Web Apps (PWA) with Offline Capabilities'
     ],
     techStack: ['React', 'Next.js', 'Node.js', 'TypeScript', 'TailwindCSS', 'Express', 'MongoDB'],
-    deliverables: 'Production-ready web application in 2-4 weeks with source code IP transfer.'
+    deliverables: 'Production-ready web application with sprint-based milestones and source code IP transfer.'
   },
   'mobile-app-development': {
     title: 'Mobile App Development Company | iOS & Android Apps',
     h1: 'Cross-Platform & Native Mobile App Development',
     subtitle: 'Build sleek, scalable iOS and Android applications engineered with React Native, Flutter, and cloud-native backends.',
     icon: Smartphone,
-
     features: [
       'React Native & Flutter Cross-Platform Development',
       'Native iOS (Swift) & Android (Kotlin) Optimization',
@@ -66,22 +65,22 @@ const SERVICE_DATA = {
       'High-Throughput Microservices & GraphQL APIs',
       'Legacy System Modernization & Cloud Migration',
       'Automated Testing & CI/CD Pipeline Setup',
-      'HIPAA & OWASP Security Compliant Development'
+      'Security-Focused Architecture & OWASP Alignment'
     ],
     techStack: ['Node.js', 'Python', 'React', 'PostgreSQL', 'Docker', 'Kubernetes', 'AWS'],
-    deliverables: 'Scalable enterprise architecture built to handle millions of transactions.'
+    deliverables: 'Scalable enterprise architecture built for reliable multi-tenant workflows.'
   },
   'cloud-services': {
     title: 'Cloud Solutions & DevOps Engineering',
     h1: 'Cloud Infrastructure & DevOps Solutions',
-    subtitle: 'Deploy, scale, and secure your applications on AWS, Azure, and GCP with zero downtime and automated CI/CD.',
+    subtitle: 'Deploy, scale, and secure your applications on AWS, Azure, and GCP with automated CI/CD and high availability.',
     icon: Globe,
     features: [
       'AWS, Azure & Google Cloud Platform Architecture',
       'Infrastructure as Code (Terraform & CloudFormation)',
       'Docker Containerization & Kubernetes Orchestration',
-      'Zero-Downtime Deployment & Auto-Scaling',
-      '24/7 Cloud Monitoring, Logging & Alerting',
+      'Continuous Deployment & Auto-Scaling Topologies',
+      'Cloud Monitoring, Centralized Logging & Automated Alerting',
       'Disaster Recovery & High-Availability Configurations'
     ],
     techStack: ['AWS', 'Docker', 'Kubernetes', 'Terraform', 'GitHub Actions', 'Nginx'],
@@ -98,14 +97,14 @@ const SERVICE_DATA = {
       'Scalable Design Systems & Component Libraries',
       'Web & Mobile UI Visual Refresh',
       'Conversion Rate Optimization (CRO) Interfaces',
-      'Accessibility (WCAG 2.1 AAA) Compliant Styling'
+      'Accessibility (WCAG 2.1) Compliant Styling'
     ],
     techStack: ['Figma', 'Adobe CC', 'Principle', 'Design Systems', 'CSS3', 'Tailwind'],
     deliverables: 'Complete Figma design specs & developer-ready assets.'
   },
   'seo-services': {
     title: 'SEO Services & Technical SEO Agency',
-    h1: '100/100 Google Lighthouse & Technical SEO',
+    h1: 'Technical SEO & Core Web Vitals Optimization',
     subtitle: 'Outrank competitors with technical SEO audits, Core Web Vitals optimization, schema markup, and high-converting content.',
     icon: Zap,
     features: [
@@ -117,7 +116,7 @@ const SERVICE_DATA = {
       'Local Business SEO & Multi-Region Hreflang Targeting'
     ],
     techStack: ['Google Search Console', 'Lighthouse', 'Schema.org', 'GA4', 'Ahrefs', 'Semrush'],
-    deliverables: '100/100 Lighthouse score & verified Search Console indexing.'
+    deliverables: 'Rigorous Core Web Vitals optimization and verified Search Console indexing.'
   }
 }
 
@@ -131,11 +130,11 @@ export default function ServiceDetailPage({ serviceSlug = 'web-development', onN
     description: service.subtitle,
     provider: {
       '@type': 'Organization',
-      name: 'SriVoraTech',
-      url: 'https://srivoratech.in'
+      name: COMPANY.name,
+      url: COMPANY.website
     },
     areaServed: ['India', 'United States', 'United Kingdom', 'Canada', 'Australia', 'United Arab Emirates'],
-    url: `https://srivoratech.in/services/${serviceSlug}`
+    url: `${COMPANY.website}/services/${serviceSlug}`
   }
 
   const breadcrumbs = [
@@ -190,7 +189,7 @@ export default function ServiceDetailPage({ serviceSlug = 'web-development', onN
             ))}
           </div>
           <div className="deliverable-box">
-            <strong>Guaranteed Deliverable:</strong> {service.deliverables}
+            <strong>Standard Deliverable:</strong> {service.deliverables}
           </div>
         </div>
       </section>

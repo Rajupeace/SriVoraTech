@@ -1,7 +1,7 @@
 import { useState, useEffect, useRef } from 'react'
 import { Star, Send, Sparkles, CheckCircle2, Award, Eye, Users, MessageSquare, Shield, ShieldCheck, X, Edit, Trash, Lock, Search, Filter, RefreshCw, Upload, FileImage, ShieldAlert, ChevronLeft, ChevronRight, Download, ThumbsUp, BadgeCheck, LayoutGrid, Layers } from 'lucide-react'
 import { useScrollAnimation } from '../hooks/useScrollAnimation'
-import { subscribeToRatings, submitRating, incrementViewCount, adminLogin, adminGetReviews, adminApproveReview, adminRejectReview, adminEditReview, adminDeleteReview, markReviewHelpful, getAdminToken, removeAdminToken } from '../services/ratingsService'
+import { subscribeToRatings, submitRating, adminLogin, adminGetReviews, adminApproveReview, adminRejectReview, adminEditReview, adminDeleteReview, markReviewHelpful, getAdminToken, removeAdminToken } from '../services/ratingsService'
 import srikanthPhoto from '../assets/badisa_srikanth.jpg'
 import vamsiPhoto from '../assets/vamsi_krishna.jpg'
 import saiPhoto from '../assets/sai_manindra.jpg'
@@ -606,31 +606,24 @@ export default function WebsiteRating() {
             {/* Live Stats Summary Row */}
             <div className="rating-live-counters">
               <div className="live-counter-pill">
-                <Eye size={16} className="counter-icon views-icon" />
+                <ShieldCheck size={16} className="counter-icon users-icon" />
                 <div className="counter-data">
-                  <span className="counter-number">{viewCount.toLocaleString()}</span>
-                  <span className="counter-label">Page Views</span>
+                  <span className="counter-number">Moderated</span>
+                  <span className="counter-label">Verified Standards</span>
                 </div>
               </div>
               <div className="live-counter-pill">
                 <Users size={16} className="counter-icon users-icon" />
                 <div className="counter-data">
                   <span className="counter-number">{totalCount}</span>
-                  <span className="counter-label">Approved Ratings</span>
-                </div>
-              </div>
-              <div className="live-counter-pill">
-                <MessageSquare size={16} className="counter-icon reviews-icon" />
-                <div className="counter-data">
-                  <span className="counter-number">{reviewsList.length}</span>
-                  <span className="counter-label">Live Reviews</span>
+                  <span className="counter-label">Verified Reviews</span>
                 </div>
               </div>
               <div className="live-counter-pill featured-pill">
                 <Star size={16} className="counter-icon star-icon" fill="#f59e0b" color="#f59e0b" />
                 <div className="counter-data">
-                  <span className="counter-number">{averageRating}</span>
-                  <span className="counter-label">Avg Rating</span>
+                  <span className="counter-number">{averageRating !== null ? averageRating : '—'}</span>
+                  <span className="counter-label">Average Score</span>
                 </div>
               </div>
             </div>
@@ -640,19 +633,23 @@ export default function WebsiteRating() {
               {/* Star statistics summary grid */}
               <div className="rating-stats-grid">
                 <div className="rating-overall-box">
-                  <div className="big-rating-number">{averageRating}</div>
+                  <div className="big-rating-number">{averageRating !== null ? averageRating : '—'}</div>
                   <div className="overall-stars">
                     {[1, 2, 3, 4, 5].map((star) => (
                       <Star
                         key={star}
                         size={22}
-                        fill={star <= Math.round(averageRating) ? '#f59e0b' : 'none'}
-                        color={star <= Math.round(averageRating) ? '#f59e0b' : '#cbd5e1'}
+                        fill={averageRating && star <= Math.round(averageRating) ? '#f59e0b' : 'none'}
+                        color={averageRating && star <= Math.round(averageRating) ? '#f59e0b' : '#cbd5e1'}
                       />
                     ))}
                   </div>
-                  <span className="overall-count">Based on {totalCount} approved ratings</span>
-                  <span className="overall-satisfaction">{satisfactionRate}% Customer Satisfaction</span>
+                  <span className="overall-count">
+                    {totalCount > 0 ? `Based on ${totalCount} verified client reviews` : 'No verified customer reviews yet.'}
+                  </span>
+                  {satisfactionRate !== null && (
+                    <span className="overall-satisfaction">{satisfactionRate}% Verified Client Satisfaction</span>
+                  )}
                 </div>
 
                 <div className="rating-breakdown-box">
@@ -962,9 +959,14 @@ export default function WebsiteRating() {
                     ))}
                   </div>
                 ) : filteredPublicReviews.length === 0 ? (
-                  <div className="admin-empty-state">
-                    <MessageSquare size={32} />
-                    <p>No customer reviews match your search filter.</p>
+                  <div className="admin-empty-state verified-empty-box" style={{ padding: '36px 20px', textAlign: 'center' }}>
+                    <MessageSquare size={36} style={{ color: '#0067f4', margin: '0 auto 12px' }} />
+                    <h4 style={{ fontSize: '18px', fontWeight: 700, color: '#0f172a', marginBottom: '8px' }}>
+                      No verified customer reviews yet.
+                    </h4>
+                    <p style={{ maxWidth: '520px', margin: '0 auto 16px', color: '#64748b', fontSize: '14px', lineHeight: 1.6 }}>
+                      We do not manufacture or fabricate client testimonials. Every published review undergoes administrative verification. If you have partnered with SriVoraTech on a software, AI, or cloud project, please submit your feedback below.
+                    </p>
                   </div>
                 ) : publicViewMode === 'grid' ? (
                   <div className="reviews-all-grid-wrapper">

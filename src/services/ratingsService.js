@@ -1,6 +1,14 @@
-// Real-time Ratings & Admin Review Service
-// Communicates with our server database with instant zero-flashing master persistence
-import { submitToSheet } from '../utils/submitToSheet'
+/**
+ * Real-time Ratings & Review Service
+ * SriVoraTech Genuine Client Feedback Engine
+ * 
+ * Rules:
+ * 1. Founder/Executive statements are NOT customer reviews (kept strictly in Leadership/About).
+ * 2. No fabricated fallbacks (no 5.0 defaults when empty).
+ * 3. No artificial visitor counts.
+ * 4. Strictly require admin approval for public display.
+ * 5. No plaintext credentials in client code.
+ */
 
 // Client helper to get the saved admin token
 export function getAdminToken() {
@@ -8,51 +16,56 @@ export function getAdminToken() {
 }
 
 export function saveAdminToken(token) {
-  localStorage.setItem('svt_admin_token', token)
+  if (token) {
+    localStorage.setItem('svt_admin_token', token)
+  }
 }
 
 export function removeAdminToken() {
   localStorage.removeItem('svt_admin_token')
 }
 
+// Calculate metrics strictly from approved customer reviews (excluding internal team)
 function calculateMetrics(reviewsList = []) {
   const approved = reviewsList.filter(r => {
     if (!r) return false
-    if (!r.status) return true
-    const s = String(r.status).trim().toLowerCase()
-    return s !== 'rejected'
+    const s = String(r.status || '').trim().toLowerCase()
+    const isInternal = Boolean(r.isFounder) || 
+      (r.name && (r.name.toLowerCase().includes('founder') || r.name.toLowerCase().includes('ceo') || r.name.toLowerCase().includes('cto')))
+    return s === 'approved' && !isInternal
   })
+
   approved.sort((a, b) => (b.timestamp || 0) - (a.timestamp || 0))
 
   const totalCount = approved.length
-  const sum = approved.reduce((acc, curr) => acc + (parseInt(curr.star, 10) || 5), 0)
-  const calculatedAvg = totalCount > 0 ? parseFloat((sum / totalCount).toFixed(1)) : 5.0
-  const averageRating = calculatedAvg > 0 ? calculatedAvg : 5.0
-
   const counts = { 5: 0, 4: 0, 3: 0, 2: 0, 1: 0 }
+  
   approved.forEach(r => {
-    const s = parseInt(r.star, 10) || 5
-    if (counts[s] !== undefined) {
+    const s = parseInt(r.star, 10)
+    if (s >= 1 && s <= 5 && counts[s] !== undefined) {
       counts[s]++
     }
   })
 
-  const distribution = {}
-  Object.keys(counts).forEach(star => {
-    distribution[star] = totalCount > 0 
-      ? Math.round((counts[star] / totalCount) * 100)
-      : 0
-  })
+  let averageRating = null
+  let satisfactionRate = null
+  const distribution = { 5: 0, 4: 0, 3: 0, 2: 0, 1: 0 }
 
-  const highRatings = counts[5] + counts[4]
-  const satisfactionRate = totalCount > 0
-    ? Math.round((highRatings / totalCount) * 100)
-    : 100
+  if (totalCount > 0) {
+    const sum = approved.reduce((acc, curr) => acc + (parseInt(curr.star, 10) || 0), 0)
+    averageRating = parseFloat((sum / totalCount).toFixed(1))
+    
+    Object.keys(counts).forEach(star => {
+      distribution[star] = Math.round((counts[star] / totalCount) * 100)
+    })
+
+    const highRatings = counts[5] + counts[4]
+    satisfactionRate = Math.round((highRatings / totalCount) * 100)
+  }
 
   return {
-    ratings: approved.map(r => parseInt(r.star, 10) || 5),
+    ratings: approved.map(r => parseInt(r.star, 10)),
     reviews: approved,
-    viewCount: approved.length * 28 + 847,
     totalCount,
     averageRating,
     distribution,
@@ -61,537 +74,247 @@ function calculateMetrics(reviewsList = []) {
   }
 }
 
-const DEFAULT_APPROVED_REVIEWS = [
-  {
-    id: 1,
-    name: 'Badisa Srikanth (Founder & CEO)',
-    email: 'srikanthbsqy@gmail.com',
-    star: 5,
-    comment: 'Building innovative software and AI-powered solutions that empower businesses to grow, automate, and succeed in the digital era.',
-    date: 'Jul 20, 2026',
-    status: 'Approved',
-    timestamp: 1784534400000,
-    company: 'SriVoraTech',
-    profileImage: '',
-    isFounder: true,
-    helpfulCount: 12
-  },
-  {
-    id: 2,
-    name: 'Badisa Vamsi Krishna (Co-Founder & COO)',
-    email: 'vamsibadisabadisa126@gmail.com',
-    star: 5,
-    comment: 'Ensuring seamless project delivery, customer success, and operational excellence for all our enterprise software and cloud clients.',
-    date: 'Jul 20, 2026',
-    status: 'Approved',
-    timestamp: 1784580000000,
-    company: 'SriVoraTech',
-    profileImage: '',
-    isFounder: true,
-    helpfulCount: 10
-  },
-  {
-    id: 3,
-    name: 'Garapati Sai Manindra (CTO)',
-    email: 'saimanindragarapati@gmail.com',
-    star: 5,
-    comment: 'Engineering scalable cloud architectures, high-performance web apps, and custom AI automation pipelines with battle-tested standards.',
-    date: 'Jul 21, 2026',
-    status: 'Approved',
-    timestamp: 1784620800000,
-    company: 'SriVoraTech',
-    profileImage: '',
-    isFounder: true,
-    helpfulCount: 9
-  }
-]
+// Memory store for loaded reviews in the current session
+let sessionReviews = []
+let subscribers = []
 
-function getStoredMasterReviews() {
-  try {
-    const data = localStorage.getItem('svt_master_reviews_store')
-    if (data) {
-      const parsed = JSON.parse(data)
-      if (Array.isArray(parsed) && parsed.length > 0) {
-        return parsed
-      }
-    }
-  } catch (e) {}
-  return DEFAULT_APPROVED_REVIEWS
-}
-
-function saveStoredMasterReviews(reviews) {
-  try {
-    localStorage.setItem('svt_master_reviews_store', JSON.stringify(reviews))
-  } catch (e) {}
-}
-
-function mergeUniqueReviews(existing = [], incoming = []) {
-  const map = new Map()
-  
-  // 1. Add incoming server reviews
-  incoming.forEach(r => {
-    if (r && r.id) {
-      map.set(String(r.id), r)
-    }
+function notifySubscribers() {
+  const metrics = calculateMetrics(sessionReviews)
+  subscribers.forEach(cb => {
+    try { cb(metrics) } catch (e) { console.error('Rating subscriber error:', e) }
   })
-
-  // 2. Merge existing local reviews so user ratings are never lost across cold serverless containers
-  existing.forEach(r => {
-    if (r && r.id) {
-      if (!map.has(String(r.id))) {
-        map.set(String(r.id), r)
-      }
-    }
-  })
-
-  const merged = Array.from(map.values())
-  merged.sort((a, b) => (b.timestamp || 0) - (a.timestamp || 0))
-  return merged
-}
-
-// ── Public Ratings / Reviews ──
-
-/**
- * Polls the public reviews endpoint directly from server with persistent fallback
- */
-export function subscribeToRatings(callback) {
-  let prevReviewsString = ''
-
-  // 1. Render master stored reviews immediately in 0ms (no loading skeleton delay, no flickering)
-  const initialLocal = getStoredMasterReviews()
-  if (initialLocal.length > 0) {
-    prevReviewsString = JSON.stringify(initialLocal)
-    callback(calculateMetrics(initialLocal))
-  }
-
-  const GOOGLE_RATINGS_URL = 'https://script.google.com/macros/s/AKfycbzzB8S5E3JqKFYuj-2RX7oHWXkv0taRPv0aQBAjIr2TQkVp0K0grPCIcZWVrbbXQlSo/exec?action=ratings'
-
-  const fetchUpdatedRatings = async () => {
-    let serverReviews = []
-
-    // 1. Fetch from local/Vercel server API
-    try {
-      const res = await fetch(`/api/reviews?_t=${Date.now()}`)
-      if (res.ok) {
-        const contentType = res.headers.get('content-type') || ''
-        if (contentType.includes('application/json')) {
-          const data = await res.json()
-          if (data && data.success && Array.isArray(data.reviews)) {
-            serverReviews = data.reviews
-          }
-        }
-      }
-    } catch (err) {
-      console.warn('Local API live ratings fetch status:', err.message)
-    }
-
-    // 2. Fetch from Google Apps Script centralized database (multi-user sync across all mobile devices)
-    try {
-      const sheetRes = await fetch(`${GOOGLE_RATINGS_URL}&_t=${Date.now()}`)
-      if (sheetRes.ok) {
-        const sheetData = await sheetRes.json()
-        if (sheetData && sheetData.success && Array.isArray(sheetData.reviews) && sheetData.reviews.length > 0) {
-          serverReviews = mergeUniqueReviews(serverReviews, sheetData.reviews)
-        }
-      }
-    } catch (sheetErr) {
-      console.warn('Google Sheet live ratings fetch status:', sheetErr.message)
-    }
-
-    // 3. Merge with local master store
-    const localMaster = getStoredMasterReviews()
-    const mergedReviews = mergeUniqueReviews(localMaster, serverReviews)
-    saveStoredMasterReviews(mergedReviews)
-
-    const currentReviewsString = JSON.stringify(mergedReviews)
-    if (currentReviewsString !== prevReviewsString) {
-      prevReviewsString = currentReviewsString
-      callback(calculateMetrics(mergedReviews))
-    }
-  }
-
-  // Fetch immediately from server
-  fetchUpdatedRatings()
-
-  // Listen to immediate refresh events & tab focus
-  window.addEventListener('svt_reviews_changed', fetchUpdatedRatings)
-  const handleVisibilityChange = () => {
-    if (document.visibilityState === 'visible') {
-      fetchUpdatedRatings()
-    }
-  }
-  document.addEventListener('visibilitychange', handleVisibilityChange)
-
-  // Fast polling every 2.5 seconds for instant multi-user synchronization
-  const interval = setInterval(fetchUpdatedRatings, 2500)
-
-  return () => {
-    clearInterval(interval)
-    window.removeEventListener('svt_reviews_changed', fetchUpdatedRatings)
-    document.removeEventListener('visibilitychange', handleVisibilityChange)
-  }
 }
 
 /**
- * Submit a customer rating with optional profile image upload
+ * Fetch verified reviews from backend API
  */
-export async function submitRating({ name, email, star, comment, company, profileImageFile, profileImagePreview }) {
-  // 1. Mirror submission to Google Sheets (centralized multi-device database)
+export async function fetchLiveReviews() {
   try {
-    submitToSheet('rating', {
-      name,
-      fullName: name,
-      email,
-      star: parseInt(star, 10) || 5,
-      rating: parseInt(star, 10) || 5,
-      comment,
-      message: comment,
-      company,
-      status: 'Approved'
+    const res = await fetch('/api/reviews', {
+      headers: { 'Accept': 'application/json' },
+      cache: 'no-store'
     })
-  } catch (sheetErr) {
-    console.warn('Google Sheet mirror skipped:', sheetErr)
-  }
-
-  try {
-    let response
-
-    if (profileImageFile) {
-      const formData = new FormData()
-      formData.append('name', name)
-      formData.append('rating', star)
-      formData.append('comment', comment)
-      if (email) formData.append('email', email)
-      if (company) formData.append('company', company)
-      formData.append('profileImage', profileImageFile)
-
-      response = await fetch('/api/reviews', {
-        method: 'POST',
-        body: formData
-      })
-    } else {
-      response = await fetch('/api/reviews', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ name, email, rating: star, comment, company, profileImage: profileImagePreview || '' })
-      })
-    }
-
-    let newReviewObj = null
-
-    if (response && response.ok) {
-      const contentType = response.headers.get('content-type') || ''
-      if (contentType.includes('application/json')) {
-        const result = await response.json()
-        if (result && result.success && result.review) {
-          newReviewObj = result.review
-        }
+    if (res.ok) {
+      const data = await res.json()
+      if (data && Array.isArray(data.reviews)) {
+        sessionReviews = data.reviews
+        notifySubscribers()
+        return calculateMetrics(sessionReviews)
       }
-    }
-
-    // Client-side fallback review creation if backend endpoint is unavailable
-    if (!newReviewObj) {
-      newReviewObj = {
-        id: Date.now() + Math.floor(Math.random() * 1000),
-        name,
-        email: email || '',
-        star: parseInt(star, 10) || 5,
-        comment,
-        company: company || '',
-        profileImage: profileImagePreview || '',
-        status: 'Approved',
-        date: new Date().toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' }),
-        timestamp: Date.now()
-      }
-    }
-
-    // Save submitted review to local master store immediately
-    const localMaster = getStoredMasterReviews()
-    const updatedMaster = mergeUniqueReviews(localMaster, [newReviewObj])
-    saveStoredMasterReviews(updatedMaster)
-
-    window.dispatchEvent(new CustomEvent('svt_reviews_changed'))
-    return {
-      success: true,
-      message: 'Review submitted successfully! Your rating has been saved and is now live for all visitors.',
-      review: newReviewObj
     }
   } catch (err) {
-    // Graceful offline submission fallback
-    const fallbackReview = {
-      id: Date.now() + Math.floor(Math.random() * 1000),
-      name,
-      email: email || '',
-      star: parseInt(star, 10) || 5,
-      comment,
-      company: company || '',
-      status: 'Approved',
-      date: new Date().toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' }),
-      timestamp: Date.now()
-    }
-    const localMaster = getStoredMasterReviews()
-    const updatedMaster = mergeUniqueReviews(localMaster, [fallbackReview])
-    saveStoredMasterReviews(updatedMaster)
-    window.dispatchEvent(new CustomEvent('svt_reviews_changed'))
-
-    return {
-      success: true,
-      message: 'Review submitted successfully! Saved to your ratings database.',
-      review: fallbackReview
-    }
+    // Non-fatal network fallback
   }
+  return calculateMetrics(sessionReviews)
 }
 
 /**
- * Simple local page view incrementer
+ * Subscribe to rating metrics updates
  */
-export async function incrementViewCount() {
-  try {
-    const current = localStorage.getItem('svt_page_views') || '847'
-    const count = parseInt(current, 10) + 1
-    localStorage.setItem('svt_page_views', count.toString())
-    return count
-  } catch (e) {
-    return 847
+export function subscribeToRatings(callback) {
+  subscribers.push(callback)
+  // Immediate invocation with current metrics
+  callback(calculateMetrics(sessionReviews))
+  // Trigger initial fetch
+  fetchLiveReviews()
+
+  // Periodic refresh (every 30s, not 2.5s spam)
+  const interval = setInterval(fetchLiveReviews, 30000)
+
+  return () => {
+    subscribers = subscribers.filter(cb => cb !== callback)
+    clearInterval(interval)
   }
 }
 
-// ── Admin Section Services ──
+/**
+ * Submit a customer rating
+ * Submissions enter the moderation queue as 'Pending'
+ */
+export async function submitRating(reviewData) {
+  const { name, email, star, comment, company, profileImage } = reviewData
+
+  if (!name || !email || !star || !comment) {
+    throw new Error('Name, email, star rating, and review comment are required.')
+  }
+
+  const payload = {
+    name: name.trim(),
+    email: email.trim().toLowerCase(),
+    company: (company || '').trim(),
+    star: parseInt(star, 10),
+    comment: comment.trim(),
+    profileImage: profileImage || '',
+    status: 'Pending', // Strictly pending until admin review
+    date: new Date().toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' }),
+    timestamp: Date.now()
+  }
+
+  // 1. Submit to server API
+  const res = await fetch('/api/reviews', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(payload)
+  })
+
+  if (!res.ok) {
+    const errorBody = await res.json().catch(() => ({}))
+    throw new Error(errorBody.message || `Server error (${res.status}) while submitting review.`)
+  }
+
+  const result = await res.json()
+  return {
+    success: true,
+    message: 'Thank you! Your review has been submitted for moderation and will appear after verification.'
+  }
+}
 
 /**
- * Admin Login with dual server & client-side fail-safe authentication
+ * Secure Admin Login
+ * Authenticates against the backend API — no plaintext credentials in client code.
  */
 export async function adminLogin(username, password) {
-  const u = (username || '').trim().toLowerCase()
+  const u = (username || '').trim()
   const p = (password || '').trim()
 
-  const isValidLocalUser = (u === 'admin' || u === 'srivoratech')
-  const isValidLocalPass = (p === 'srivoratech2026' || p === 'admin123' || p === 'srivoratech9' || p === 'admin' || p === 'srivoratech')
-
-  if (isValidLocalUser && isValidLocalPass) {
-    const token = 'srivoratech_admin_secure_session_token_2026'
-    saveAdminToken(token)
-    return { success: true, token, message: 'Admin authentication successful!' }
+  if (!u || !p) {
+    throw new Error('Username and password are required.')
   }
 
-  try {
-    const response = await fetch('/api/admin/login', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ username, password })
-    })
+  const response = await fetch('/api/reviews?action=login', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ username: u, password: p })
+  })
 
-    if (response.ok) {
-      const result = await response.json()
-      if (result.token) {
-        saveAdminToken(result.token)
-        return result
-      }
-    }
-  } catch (e) {}
+  if (!response.ok) {
+    const data = await response.json().catch(() => ({}))
+    throw new Error(data.message || 'Authentication failed. Please verify your administrator credentials.')
+  }
 
-  throw new Error('Invalid Admin Credentials. (Username: admin, Password: srivoratech2026)')
+  const result = await response.json()
+  if (result.token) {
+    saveAdminToken(result.token)
+    return { success: true, token: result.token }
+  }
+
+  throw new Error('Authentication failed: no session token returned.')
 }
 
 /**
- * Get all reviews for admin console directly from server & database
+ * Admin: Get all reviews (including Pending and Rejected)
  */
 export async function adminGetReviews({ search = '', rating = '', status = '' } = {}) {
   const token = getAdminToken()
-  let list = getStoredMasterReviews()
+  const params = new URLSearchParams()
+  if (search) params.append('search', search)
+  if (rating) params.append('rating', rating)
+  if (status) params.append('status', status)
 
-  try {
-    const params = new URLSearchParams()
-    if (search) params.append('search', search)
-    if (rating) params.append('rating', rating)
-    if (status) params.append('status', status)
-
-    const response = await fetch(`/api/admin/reviews?${params.toString()}`, {
-      headers: {
-        'x-admin-token': token
-      }
-    })
-
-    if (response.ok) {
-      const contentType = response.headers.get('content-type') || ''
-      if (contentType.includes('application/json')) {
-        const result = await response.json()
-        const serverList = Array.isArray(result.reviews) ? result.reviews : (Array.isArray(result) ? result : [])
-        if (serverList.length > 0) {
-          list = mergeUniqueReviews(list, serverList)
-          saveStoredMasterReviews(list)
-        }
-      }
+  const res = await fetch(`/api/reviews?action=admin_list&${params.toString()}`, {
+    headers: {
+      'x-admin-token': token,
+      'Accept': 'application/json'
     }
-  } catch (err) {}
-
-  return list.filter(r => {
-    if (rating && String(r.star) !== String(rating)) return false
-    if (status && String(r.status).toLowerCase() !== String(status).toLowerCase()) return false
-    if (search) {
-      const q = search.toLowerCase()
-      const matchName = (r.name || '').toLowerCase().includes(q)
-      const matchComment = (r.comment || '').toLowerCase().includes(q)
-      const matchCompany = (r.company || '').toLowerCase().includes(q)
-      if (!matchName && !matchComment && !matchCompany) return false
-    }
-    return true
   })
+
+  if (!res.ok) {
+    throw new Error(`Admin fetch failed: HTTP ${res.status}`)
+  }
+
+  const data = await res.json()
+  return data.reviews || []
 }
 
 /**
- * Approve a review in server database
+ * Admin: Approve a review
  */
 export async function adminApproveReview(id) {
   const token = getAdminToken()
+  const res = await fetch(`/api/reviews?action=approve&id=${id}`, {
+    method: 'PATCH',
+    headers: {
+      'x-admin-token': token,
+      'Content-Type': 'application/json'
+    },
+    body: JSON.stringify({ status: 'Approved' })
+  })
 
-  try {
-    const localMaster = getStoredMasterReviews()
-    const updated = localMaster.map(r => {
-      if (String(r.id) === String(id) || Number(r.id) === parseInt(id, 10)) {
-        return { ...r, status: 'Approved' }
-      }
-      return r
-    })
-    saveStoredMasterReviews(updated)
-  } catch (e) {}
-
-  try {
-    await fetch(`/api/admin/reviews/${id}/approve?id=${id}`, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'x-admin-token': token
-      },
-      body: JSON.stringify({ id })
-    })
-  } catch (e) {}
-
-  window.dispatchEvent(new CustomEvent('svt_reviews_changed'))
-  return { success: true, message: 'Review approved successfully' }
+  if (!res.ok) {
+    throw new Error('Failed to approve review.')
+  }
+  await fetchLiveReviews()
+  return res.json()
 }
 
 /**
- * Reject a review in server database
+ * Admin: Reject a review
  */
 export async function adminRejectReview(id) {
   const token = getAdminToken()
+  const res = await fetch(`/api/reviews?action=reject&id=${id}`, {
+    method: 'PATCH',
+    headers: {
+      'x-admin-token': token,
+      'Content-Type': 'application/json'
+    },
+    body: JSON.stringify({ status: 'Rejected' })
+  })
 
-  try {
-    const localMaster = getStoredMasterReviews()
-    const updated = localMaster.map(r => {
-      if (String(r.id) === String(id) || Number(r.id) === parseInt(id, 10)) {
-        return { ...r, status: 'Rejected' }
-      }
-      return r
-    })
-    saveStoredMasterReviews(updated)
-  } catch (e) {}
-
-  try {
-    await fetch(`/api/admin/reviews/${id}/reject?id=${id}`, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'x-admin-token': token
-      },
-      body: JSON.stringify({ id })
-    })
-  } catch (e) {}
-
-  window.dispatchEvent(new CustomEvent('svt_reviews_changed'))
-  return { success: true, message: 'Review rejected successfully' }
+  if (!res.ok) {
+    throw new Error('Failed to reject review.')
+  }
+  await fetchLiveReviews()
+  return res.json()
 }
 
 /**
- * Edit a review in server database
+ * Admin: Edit a review
  */
-export async function adminEditReview(id, data) {
+export async function adminEditReview(id, updates) {
   const token = getAdminToken()
+  const res = await fetch(`/api/reviews?action=edit&id=${id}`, {
+    method: 'PUT',
+    headers: {
+      'x-admin-token': token,
+      'Content-Type': 'application/json'
+    },
+    body: JSON.stringify(updates)
+  })
 
-  // Update local master store immediately
-  try {
-    const localMaster = getStoredMasterReviews()
-    const updated = localMaster.map(r => {
-      if (String(r.id) === String(id) || Number(r.id) === parseInt(id, 10)) {
-        return {
-          ...r,
-          name: data.name !== undefined ? data.name : r.name,
-          company: data.company !== undefined ? data.company : r.company,
-          star: data.star !== undefined ? parseInt(data.star, 10) : r.star,
-          comment: data.comment !== undefined ? data.comment : r.comment,
-          adminReply: data.adminReply !== undefined ? data.adminReply : r.adminReply
-        }
-      }
-      return r
-    })
-    saveStoredMasterReviews(updated)
-  } catch (e) {}
-
-  try {
-    await fetch(`/api/admin/reviews/${id}?id=${id}`, {
-      method: 'PUT',
-      headers: {
-        'Content-Type': 'application/json',
-        'x-admin-token': token
-      },
-      body: JSON.stringify({ ...data, id })
-    })
-  } catch (e) {}
-
-  window.dispatchEvent(new CustomEvent('svt_reviews_changed'))
-  return { success: true, message: 'Review updated successfully' }
+  if (!res.ok) {
+    throw new Error('Failed to update review.')
+  }
+  await fetchLiveReviews()
+  return res.json()
 }
 
 /**
- * Delete a review from server database
+ * Admin: Delete a review
  */
 export async function adminDeleteReview(id) {
   const token = getAdminToken()
+  const res = await fetch(`/api/reviews?action=delete&id=${id}`, {
+    method: 'DELETE',
+    headers: {
+      'x-admin-token': token
+    }
+  })
 
-  // Remove deleted review from local master store immediately
-  try {
-    const localMaster = getStoredMasterReviews()
-    const filtered = localMaster.filter(r => String(r.id) !== String(id) && Number(r.id) !== parseInt(id, 10))
-    saveStoredMasterReviews(filtered)
-  } catch (e) {}
-
-  try {
-    await fetch(`/api/admin/reviews/${id}?id=${id}`, {
-      method: 'DELETE',
-      headers: {
-        'x-admin-token': token
-      }
-    })
-  } catch (e) {}
-
-  window.dispatchEvent(new CustomEvent('svt_reviews_changed'))
-  return { success: true, message: 'Review deleted successfully' }
+  if (!res.ok) {
+    throw new Error('Failed to delete review.')
+  }
+  await fetchLiveReviews()
+  return res.json()
 }
 
 /**
- * Increment helpful count for a review
+ * Public: Mark review as helpful
  */
 export async function markReviewHelpful(id) {
   try {
-    const localMaster = getStoredMasterReviews()
-    const updated = localMaster.map(r => {
-      if (String(r.id) === String(id) || Number(r.id) === parseInt(id, 10)) {
-        return { ...r, helpfulCount: (r.helpfulCount || 0) + 1 }
-      }
-      return r
-    })
-    saveStoredMasterReviews(updated)
-  } catch (e) {}
-
-  try {
-    await fetch(`/api/reviews?action=helpful&id=${id}`, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ id, isHelpful: true })
-    })
-  } catch (e) {}
-
-  window.dispatchEvent(new CustomEvent('svt_reviews_changed'))
-  return { success: true }
+    await fetch(`/api/reviews?action=helpful&id=${id}`, { method: 'POST' })
+  } catch (e) {
+    // Non-fatal
+  }
 }

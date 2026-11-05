@@ -11,9 +11,9 @@ import {
   Server,
   Globe,
   Terminal,
-  Flame,
   Search,
-  X
+  X,
+  CheckCircle2
 } from 'lucide-react'
 import './TechStack.css'
 
@@ -32,127 +32,127 @@ const technologies = [
     id: 'react',
     name: 'React.js',
     category: 'frontend',
-    desc: 'Component-driven UI architecture for high-speed dynamic web applications.',
+    desc: 'Component-driven UI architecture for high-speed dynamic web applications and portals.',
     icon: Code2,
     badge: 'Frontend',
     color: '#0067f4',
-    popularity: '98%',
-    level: 98,
-    tags: ['UI Framework', 'Hooks', 'Vite', 'SPAs'],
+    tier: 'Primary UI Stack',
+    useCase: 'Interactive SPAs & Client Dashboards',
+    tags: ['UI Framework', 'Hooks', 'Vite', 'Component-Driven'],
   },
   {
     id: 'nextjs',
-    name: 'Next.js 14',
+    name: 'Next.js',
     category: 'frontend',
-    desc: 'Server-side rendering, App Router, and static site generation for SEO.',
+    desc: 'Server-side rendering, App Router, and static site generation optimized for SEO performance.',
     icon: Globe,
     badge: 'Frontend',
     color: '#8b5cf6',
-    popularity: '96%',
-    level: 96,
-    tags: ['SSR/SSG', 'Server Actions', 'SEO Optimized'],
+    tier: 'SSR & Jamstack',
+    useCase: 'Production Web Platforms & E-Commerce',
+    tags: ['Server Components', 'SSR / SSG', 'Edge Caching'],
   },
   {
     id: 'typescript',
     name: 'TypeScript',
     category: 'frontend',
-    desc: 'Strongly typed JavaScript for scalable, robust, and error-free codebases.',
+    desc: 'Strictly typed JavaScript ensuring type safety, maintainability, and enterprise code quality.',
     icon: Terminal,
-    badge: 'Language',
+    badge: 'Frontend',
     color: '#3178c6',
-    popularity: '95%',
-    level: 95,
-    tags: ['Type Safety', 'Interfaces', 'Enterprise'],
+    tier: 'Core Language',
+    useCase: 'Full-Stack Type Contracts & Scalability',
+    tags: ['Static Typing', 'Refactoring Safety', 'Interfaces'],
   },
   {
     id: 'tailwind',
     name: 'Tailwind CSS',
     category: 'frontend',
-    desc: 'Utility-first CSS framework for rapid modern UI layout construction.',
+    desc: 'Utility-first responsive styling framework for consistent, accessible design systems.',
     icon: Layers,
-    badge: 'Styling',
+    badge: 'Frontend',
     color: '#06b6d4',
-    popularity: '94%',
-    level: 94,
-    tags: ['Glassmorphism', 'Responsive', 'Design Systems'],
+    tier: 'Design System',
+    useCase: 'Rapid Responsive UI & Mobile Layouts',
+    tags: ['Responsive Design', 'Utility Classes', 'Design Tokens'],
   },
 
-  // Backend
+  // Backend & APIs
   {
     id: 'nodejs',
     name: 'Node.js & Express',
     category: 'backend',
-    desc: 'Event-driven, asynchronous JavaScript runtime powering REST & GraphQL microservices.',
+    desc: 'Event-driven, asynchronous backend runtime for scalable microservices and REST APIs.',
     icon: Server,
     badge: 'Backend',
     color: '#10b981',
-    popularity: '97%',
-    level: 97,
-    tags: ['Event Loop', 'REST API', 'Microservices'],
+    tier: 'Core Backend',
+    useCase: 'High-Throughput APIs & Event Services',
+    tags: ['Async I/O', 'REST APIs', 'JWT Auth', 'WebSockets'],
   },
   {
     id: 'python',
-    name: 'Python / FastAPI',
+    name: 'Python & FastAPI',
     category: 'backend',
-    desc: 'High-performance backend API execution and asynchronous data workflows.',
-    icon: Flame,
+    desc: 'Modern, high-performance web framework for AI integration, data processing, and APIs.',
+    icon: Terminal,
     badge: 'Backend',
-    color: '#f59e0b',
-    popularity: '95%',
-    level: 95,
-    tags: ['AsyncIO', 'FastAPI', 'Automation'],
+    color: '#eab308',
+    tier: 'AI & Data Services',
+    useCase: 'Machine Learning Pipelines & AI Agents',
+    tags: ['Async Python', 'Pydantic Types', 'Swagger Docs'],
   },
 
   // Cloud & DevOps
   {
     id: 'aws',
-    name: 'AWS Cloud',
+    name: 'Amazon Web Services',
     category: 'cloud',
-    desc: 'Scalable cloud infrastructure, S3 storage, Lambda serverless computing, and CloudFront CDN.',
+    desc: 'Enterprise cloud infrastructure: EC2, S3, RDS, Lambda, CloudFront, and VPC networking.',
     icon: Cloud,
-    badge: 'Cloud Infrastructure',
-    color: '#ff9900',
-    popularity: '96%',
-    level: 96,
-    tags: ['EC2', 'S3 Storage', 'Lambda Serverless', 'CloudFront'],
+    badge: 'Cloud',
+    color: '#f97316',
+    tier: 'Primary Cloud',
+    useCase: 'Multi-Region Architecture & File Storage',
+    tags: ['S3 Buckets', 'RDS Scaling', 'CloudFront CDN'],
   },
   {
     id: 'docker',
-    name: 'Docker Containerization',
+    name: 'Docker & Containers',
     category: 'cloud',
-    desc: 'Lightweight containerized application environments for smooth staging & production deployments.',
-    icon: Server,
+    desc: 'Containerization for predictable, isolated environments across development, staging, and production.',
+    icon: Layers,
     badge: 'DevOps',
     color: '#0284c7',
-    popularity: '94%',
-    level: 94,
-    tags: ['Containers', 'CI/CD Pipelines', 'Deployments'],
+    tier: 'Containerization',
+    useCase: 'Reproducible Deployments & Microservices',
+    tags: ['Container Images', 'Docker Compose', 'CI/CD Ready'],
   },
 
   // AI & Data
   {
-    id: 'ai-ml',
-    name: 'PyTorch & OpenAI API',
+    id: 'llm',
+    name: 'LLM Orchestration & RAG',
     category: 'ai',
-    desc: 'Generative AI integrations, LLM pipelines, RAG systems, and custom ML modeling.',
+    desc: 'Integration with frontier LLMs (Gemini, Claude, GPT) combined with vector search for custom context.',
     icon: Cpu,
-    badge: 'AI / ML',
+    badge: 'Artificial Intelligence',
     color: '#ec4899',
-    popularity: '97%',
-    level: 97,
-    tags: ['LLMs', 'RAG', 'Vector Embeddings', 'Neural Nets'],
+    tier: 'Applied AI',
+    useCase: 'RAG Retrieval, AI Agents & Chatbots',
+    tags: ['Vector Embeddings', 'Prompt Engineering', 'LangChain'],
   },
   {
-    id: 'python-data',
-    name: 'Pandas & NumPy',
+    id: 'data-processing',
+    name: 'Pandas & Scientific Python',
     category: 'ai',
-    desc: 'High-performance data analysis, cleaning, and predictive modeling algorithms.',
-    icon: Sparkles,
-    badge: 'Analytics',
-    color: '#a855f7',
-    popularity: '92%',
-    level: 92,
-    tags: ['Data Science', 'ETL Pipelines', 'Analytics'],
+    desc: 'Data transformation, analytics aggregation, and automated reporting pipelines.',
+    icon: Database,
+    badge: 'Data Engineering',
+    color: '#6366f1',
+    tier: 'Analytics',
+    useCase: 'Business Intelligence & Automated Reports',
+    tags: ['Data Cleaning', 'Aggregation', 'Analytics APIs'],
   },
 
   // Databases
@@ -160,142 +160,110 @@ const technologies = [
     id: 'postgres',
     name: 'PostgreSQL',
     category: 'database',
-    desc: 'Battle-tested relational database with JSONB support, indexing, and high reliability.',
+    desc: 'ACID-compliant relational database for structured enterprise data, transactions, and integrity.',
     icon: Database,
-    badge: 'Relational',
-    color: '#3b82f6',
-    popularity: '96%',
-    level: 96,
-    tags: ['ACID Compliant', 'SQL', 'JSONB', 'Prisma ORM'],
+    badge: 'Database',
+    color: '#336791',
+    tier: 'Relational Store',
+    useCase: 'ERP Data, User Records & Financials',
+    tags: ['ACID Compliance', 'Complex Joins', 'Indexed Queries'],
   },
   {
     id: 'mongodb',
     name: 'MongoDB',
     category: 'database',
-    desc: 'Document-oriented NoSQL database for flexible data structures and rapid scaling.',
+    desc: 'Document-oriented NoSQL database optimized for flexible schemas, catalogs, and logs.',
     icon: Database,
-    badge: 'NoSQL',
+    badge: 'Database',
     color: '#22c55e',
-    popularity: '93%',
-    level: 93,
-    tags: ['NoSQL', 'Document Store', 'Mongoose'],
+    tier: 'Document Store',
+    useCase: 'Content Catalogs, Logs & JSON Schemas',
+    tags: ['Flexible Schemas', 'Aggregation Pipelines', 'Atlas Cloud'],
   },
   {
     id: 'redis',
-    name: 'Redis Cache',
+    name: 'Redis',
     category: 'database',
-    desc: 'Ultra-fast in-memory data store for session caching, pub/sub, and rate limiting.',
+    desc: 'In-memory key-value data store used for sub-millisecond caching, session storage, and rate limiting.',
     icon: Zap,
-    badge: 'Caching',
+    badge: 'Database',
     color: '#ef4444',
-    popularity: '94%',
-    level: 94,
-    tags: ['In-Memory', 'Pub/Sub', 'High Throughput'],
+    tier: 'In-Memory Cache',
+    useCase: 'Rate Limiting, Session Stores & Fast Cache',
+    tags: ['Memory Cache', 'Token Bucket', 'Pub/Sub Events'],
   },
 ]
 
-const marqueeRow1 = [
-  'React.js', 'Next.js 14', 'TypeScript', 'Node.js', 'Python', 'AWS Cloud', 'Docker', 'PostgreSQL'
-]
-
-const marqueeRow2 = [
-  'PyTorch AI', 'Tailwind CSS', 'FastAPI', 'MongoDB', 'Redis', 'NestJS', 'Kubernetes', 'GraphQL'
-]
-
 export default function TechStack() {
-  const [sectionRef, isVisible] = useScrollAnimation()
   const [activeCategory, setActiveCategory] = useState('all')
   const [searchQuery, setSearchQuery] = useState('')
+  const [ref, isVisible] = useScrollAnimation()
 
-  const filteredTech = technologies.filter((t) => {
-    const matchesCategory = activeCategory === 'all' || t.category === activeCategory
-    const matchesSearch = searchQuery === '' || 
-      t.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      t.desc.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      t.tags.some(tag => tag.toLowerCase().includes(searchQuery.toLowerCase()))
+  const filteredTechnologies = technologies.filter((tech) => {
+    const matchesCategory = activeCategory === 'all' || tech.category === activeCategory
+    const matchesSearch = 
+      tech.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      tech.desc.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      tech.tags.some(t => t.toLowerCase().includes(searchQuery.toLowerCase()))
     return matchesCategory && matchesSearch
   })
 
   return (
-    <section className="tech-section section" id="tech-stack">
-      {/* Background Animated Gradient Orbs */}
-      <div className="tech-bg-orb orb-1" />
-      <div className="tech-bg-orb orb-2" />
-
+    <section ref={ref} className="tech-stack section" id="tech-stack">
       <div className="container">
-        {/* Section Header */}
-        <div ref={sectionRef} className={`tech-header animate-on-scroll ${isVisible ? 'visible' : ''}`}>
-          <div className="tech-badge-top">
-            <Zap size={14} className="badge-zap" />
-            <span>Modern Tech Ecosystem</span>
+        <div className={`animate-on-scroll ${isVisible ? 'visible' : ''}`}>
+          <div className="tech-badge">
+            <Sparkles size={14} />
+            Verified Technology Stack
           </div>
-          <h2 className="tech-title">
-            Engineered with <span className="tech-title-gradient">Cutting-Edge Tech</span>
+          <h2 className="section-title">
+            Modern, Proven & <span className="gradient-text">Battle-Tested</span>
           </h2>
-          <p className="tech-subtitle">
-            We leverage battle-tested frameworks, serverless cloud architectures, and intelligent AI models to deliver hyper-scalable solutions.
+          <p className="section-subtitle">
+            We build with industry-standard frameworks, scalable databases, and enterprise cloud infrastructure selected for long-term reliability.
           </p>
         </div>
 
-        {/* Continuous Ticker / Marquee Banner */}
-        <div className="tech-marquee-container">
-          <div className="tech-marquee-track track-left">
-            {[...marqueeRow1, ...marqueeRow1, ...marqueeRow1].map((item, idx) => (
-              <div key={`m1-${idx}`} className="tech-marquee-chip">
-                <span className="chip-dot" />
-                <span className="chip-text">{item}</span>
-              </div>
-            ))}
+        {/* Filter Controls */}
+        <div className="tech-controls">
+          <div className="tech-search-wrapper">
+            <Search size={16} className="search-icon" />
+            <input 
+              type="text" 
+              placeholder="Search technologies, tags, or use cases..." 
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              className="tech-search-input"
+            />
+            {searchQuery && (
+              <button onClick={() => setSearchQuery('')} className="clear-search-btn" aria-label="Clear search">
+                <X size={14} />
+              </button>
+            )}
           </div>
-          <div className="tech-marquee-track track-right">
-            {[...marqueeRow2, ...marqueeRow2, ...marqueeRow2].map((item, idx) => (
-              <div key={`m2-${idx}`} className="tech-marquee-chip chip-alt">
-                <span className="chip-dot dot-alt" />
-                <span className="chip-text">{item}</span>
-              </div>
-            ))}
-          </div>
-        </div>
 
-        {/* Category Filter Pills & Search */}
-        <div className="tech-filter-row">
-          <div className="tech-category-tabs">
+          <div className="tech-categories-pills">
             {categories.map((cat) => {
               const Icon = cat.icon
-              const isActive = activeCategory === cat.id
               return (
                 <button
                   key={cat.id}
-                  className={`tech-tab-btn ${isActive ? 'active' : ''}`}
                   onClick={() => setActiveCategory(cat.id)}
+                  className={`tech-cat-btn ${activeCategory === cat.id ? 'active' : ''}`}
                 >
-                  <Icon size={16} className="tab-icon" />
+                  <Icon size={14} />
                   <span>{cat.label}</span>
                 </button>
               )
             })}
           </div>
-
-          <div className="tech-search-box">
-            <Search size={16} className="search-icon" />
-            <input
-              type="text"
-              placeholder="Search tech stack..."
-              value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
-            />
-            {searchQuery && (
-              <button className="search-clear" onClick={() => setSearchQuery('')}>
-                <X size={14} />
-              </button>
-            )}
-          </div>
         </div>
 
-        {/* Tech Cards Grid — Clean Professional White Startup UI/UX */}
-        <div className="tech-cards-grid">
-          {filteredTech.map((tech, idx) => {
+        {/* Tech Grid */}
+        <div className="tech-grid">
+          {filteredTechnologies.map((tech, idx) => {
             const Icon = tech.icon
+
             return (
               <div 
                 key={tech.id} 
@@ -305,7 +273,6 @@ export default function TechStack() {
                   '--delay': `${0.04 + idx * 0.04}s` 
                 }}
               >
-                {/* Top Subtle Brand Color Line */}
                 <div 
                   className="tech-top-accent-line" 
                   style={{ background: tech.color }} 
@@ -315,7 +282,7 @@ export default function TechStack() {
                   <div 
                     className="tech-icon-wrapper" 
                     style={{ 
-                      background: `linear-gradient(135deg, ${tech.color}14, ${tech.color}06)`, 
+                      background: `${tech.color}14`, 
                       color: tech.color, 
                       borderColor: `${tech.color}30` 
                     }}
@@ -333,41 +300,23 @@ export default function TechStack() {
                     >
                       {tech.badge}
                     </span>
-                    <div className="tech-rating">
-                      <span className="pulse-indicator" style={{ background: tech.color }} />
-                      <span className="rating-num">{tech.popularity} Match</span>
-                    </div>
+                    <span className="tech-tier-chip" style={{ color: tech.color }}>
+                      {tech.tier}
+                    </span>
                   </div>
                 </div>
 
                 <h3 className="tech-name">{tech.name}</h3>
                 <p className="tech-desc">{tech.desc}</p>
 
-                {/* Skill Meter Progress Bar */}
-                <div className="tech-skill-meter">
-                  <div className="skill-meter-header">
-                    <span className="skill-meter-title">Production Readiness</span>
-                    <span className="skill-meter-text" style={{ color: tech.color }}>
-                      {tech.level}%
-                    </span>
-                  </div>
-                  <div className="skill-meter-track">
-                    <div 
-                      className="skill-meter-fill" 
-                      style={{ 
-                        width: `${tech.level}%`, 
-                        background: tech.color
-                      }} 
-                    />
-                  </div>
+                <div className="tech-use-case">
+                  <span className="use-case-label">Primary Application:</span>
+                  <span className="use-case-text">{tech.useCase}</span>
                 </div>
 
                 <div className="tech-tags">
                   {tech.tags.map((tag) => (
-                    <span 
-                      key={tag} 
-                      className="tech-tag"
-                    >
+                    <span key={tag} className="tech-tag">
                       <Zap size={10} style={{ color: tech.color }} />
                       {tag}
                     </span>

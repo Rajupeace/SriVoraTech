@@ -347,22 +347,39 @@
   border: 1px solid;
 }
 
-.tech-rating {
+.tech-tier-chip {
+  font-size: 0.72rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  padding: 2px 8px;
+  border-radius: 9999px;
+  background: rgba(0, 0, 0, 0.04);
+}
+
+.tech-use-case {
   display: flex;
-  align-items: center;
-  gap: 0.35rem;
+  flex-direction: column;
+  gap: 3px;
+  padding: 8px 10px;
+  background: #f8fafc;
+  border-radius: 8px;
+  border: 1px solid #edf2f7;
+  margin-bottom: 1rem;
 }
 
-.pulse-indicator {
-  width: 6px;
-  height: 6px;
-  border-radius: 50%;
-}
-
-.rating-num {
-  font-size: 0.75rem;
-  font-weight: 600;
+.use-case-label {
+  font-size: 0.68rem;
+  font-weight: 700;
+  text-transform: uppercase;
   color: #64748b;
+  letter-spacing: 0.03em;
+}
+
+.use-case-text {
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: #1e293b;
 }
 
 .tech-name {

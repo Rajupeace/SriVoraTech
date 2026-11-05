@@ -38,6 +38,7 @@ const FounderPage = lazy(() => import('./components/FounderPage'))
 const PrivacyPolicyPage = lazy(() => import('./components/PrivacyPolicyPage'))
 const TermsPage = lazy(() => import('./components/TermsPage'))
 const ClientPortalPage = lazy(() => import('./components/ClientPortalPage'))
+const NotFoundPage = lazy(() => import('./components/NotFoundPage'))
 
 export default function App() {
   const glowRef = useRef(null)
@@ -64,6 +65,7 @@ export default function App() {
     let target = path.startsWith('/') ? path : `/${path}`
     window.history.pushState({}, '', target)
     setCurrentPath(target)
+    setCurrentHash('')
     setSelectedPostSlug(null)
     window.scrollTo({ top: 0, behavior: 'smooth' })
   }
@@ -81,6 +83,21 @@ export default function App() {
       window.removeEventListener('hashchange', handlePopState)
     }
   }, [])
+
+  // Auto-scroll for section anchor aliases (/services -> #services, /contact -> #contact)
+  useEffect(() => {
+    if (currentPath === '/services') {
+      setTimeout(() => {
+        const el = document.getElementById('services')
+        if (el) el.scrollIntoView({ behavior: 'smooth' })
+      }, 100)
+    } else if (currentPath === '/contact') {
+      setTimeout(() => {
+        const el = document.getElementById('contact')
+        if (el) el.scrollIntoView({ behavior: 'smooth' })
+      }, 100)
+    }
+  }, [currentPath])
 
   useEffect(() => {
     const glow = glowRef.current
@@ -141,7 +158,7 @@ export default function App() {
     }
   }, [])
 
-  // Render Sub-pages cleanly
+  // Render Sub-pages cleanly with explicit 404 fallback
   const renderContent = () => {
     if (currentPath === '/careers' || currentHash === '#careers') {
       return <CareersPage onBack={() => navigate('/')} />
@@ -196,54 +213,55 @@ export default function App() {
       return <BlogHub onSelectPost={(slug) => navigate(`/blog/${slug}`)} onNavigate={navigate} />
     }
 
-    // Default Homepage view
-    return (
-      <main>
-        <Hero />
-        <TrustTicker />
-        <ProjectCards />
-        <QuoteBlock />
-        <Challenges />
-        <WhyChoose />
-        <Leadership />
-        <OnboardingSteps />
-        <Services onNavigate={navigate} />
-        <ProjectEstimator />
-        <TechStack />
-        <WorkShowcase />
-        <Achievements />
-        <FAQ />
-        <WebsiteRating />
-        <Contact />
-        <PreFooterCTA />
-      </main>
-    )
+    // Homepage view (also targets /services and /contact section scrolls)
+    if (currentPath === '/' || currentPath === '' || currentPath === '/services' || currentPath === '/contact') {
+      return (
+        <main>
+          <Hero />
+          <TrustTicker />
+          <ProjectCards />
+          <QuoteBlock />
+          <Challenges />
+          <WhyChoose />
+          <Leadership />
+          <OnboardingSteps />
+          <Services onNavigate={navigate} />
+          <ProjectEstimator />
+          <TechStack />
+          <WorkShowcase />
+          <Achievements />
+          <FAQ />
+          <WebsiteRating />
+          <Contact />
+          <PreFooterCTA />
+        </main>
+      )
+    }
+
+    // Explicit 404 Fallback for unknown routes
+    return <NotFoundPage onNavigate={navigate} />
   }
 
   return (
     <div className="app">
       <SEO pathname={currentPath} />
-      <Analytics gaId="G-HH0PJXC25F" gtmId="GTM-MNG59GDZ" />
+      <Analytics />
 
-      {/* Opening Splash Overlay */}
-      {showSplash && currentPath === '/' && <WelcomeSplash onComplete={() => setShowSplash(false)} />}
-
-      {/* Mouse-follow cursor glow */}
+      {/* Mouse tracker ambient light */}
       <div ref={glowRef} className="cursor-glow" />
 
-      <Navbar onNavigate={navigate} onOpenCareers={() => navigate('/careers')} />
+      {/* Cinematic Welcome Splash */}
+      {showSplash && <WelcomeSplash onComplete={() => setShowSplash(false)} />}
 
-      <Suspense fallback={
-        <div style={{ minHeight: '60vh', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#10b981' }}>
-          Loading SriVoraTech...
-        </div>
-      }>
+      <Navbar onNavigate={navigate} activePath={currentPath} />
+
+      <Suspense fallback={<div className="page-loading-skeleton" />}>
         {renderContent()}
       </Suspense>
 
-      <Footer onNavigate={navigate} onOpenCareers={() => navigate('/careers')} />
-      <FloatingActions />
-      <AIChatWidget />
+      <Footer onNavigate={navigate} />
+      <FloatingActions onNavigate={navigate} />
+      <AIChatWidget onNavigate={navigate} />
     </div>
   )
 }

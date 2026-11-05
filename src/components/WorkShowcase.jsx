@@ -324,7 +324,7 @@ export const works = [
     businessRequirements: [
       'Enable non-technical operators to build custom AI assistants with system prompts and temperature sliders.',
       'Provide a visual drag-and-drop workflow canvas for chaining webhooks, LLM calls, and CRM triggers.',
-      'Ground answers in private enterprise documents (PDF, DOCX, CSV) using vector embeddings with zero hallucinations.',
+      'Ground answers in private enterprise documents (PDF, DOCX, CSV) using vector embeddings to minimize hallucinations.',
       'Track real-time token spending, API latency, and conversation sentiment analytics.'
     ],
     solution: 'SriVoraTech built SmartAI Assistant featuring a React visual studio, FastAPI backend microservice, Pinecone vector database integration, and multi-model LLM routing supporting OpenAI, Google Gemini, and Anthropic.',
@@ -431,8 +431,8 @@ export const works = [
     headline: 'Digital Teleconsultation & Patient Electronic Medical Records (EMR)',
     category: 'Healthcare • Telemedicine',
     catGroup: 'healthcare',
-    status: 'Live',
-    statusTag: 'Live Healthcare Prototype',
+    status: 'Prototype',
+    statusTag: 'Interactive Healthcare Prototype',
     liveUrl: 'https://papafoundation09-commits.github.io/hps/',
     githubUrl: 'https://github.com/Rajupeace',
     showcaseImg: '/healthconnect-emr-dashboard.png',

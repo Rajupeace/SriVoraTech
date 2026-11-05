@@ -1,6 +1,7 @@
 import React from 'react'
 import SEO from './SEO'
-import { Shield, ArrowLeft, Mail, CheckCircle2, Lock, Eye, FileText, Globe } from 'lucide-react'
+import { Shield, ArrowLeft, Mail, CheckCircle2, Lock, Eye, FileText, Globe, Database } from 'lucide-react'
+import { COMPANY_CONFIG } from '../config/company'
 
 export default function PrivacyPolicyPage({ onBack, onNavigate }) {
   return (
@@ -8,7 +9,7 @@ export default function PrivacyPolicyPage({ onBack, onNavigate }) {
       <SEO
         pathname="/privacy"
         title="Privacy Policy | SriVoraTech"
-        description="Official Privacy Policy of SriVoraTech Technologies. Learn how we handle client data, confidentiality, security, and IP rights."
+        description="Official Privacy Policy of SriVoraTech Technologies. Explains how client enquiry data, project requirements, and technical specifications are handled and protected."
         breadcrumbs={[{ name: 'Home', url: '/' }, { name: 'Privacy Policy', url: '/privacy' }]}
       />
 
@@ -28,7 +29,7 @@ export default function PrivacyPolicyPage({ onBack, onNavigate }) {
           Privacy Policy
         </h1>
         <p style={{ color: '#94a3b8', fontSize: '1.1rem', lineHeight: '1.7' }}>
-          At SriVoraTech (<strong>srivoratech.in</strong>), we respect your privacy and are committed to protecting all personal information, client project specifications, and proprietary data shared with us.
+          At {COMPANY_CONFIG.legalName} (<strong>srivoratech.in</strong>), we respect your confidentiality and are committed to safeguarding all personal information, project specifications, and proprietary data shared with us.
         </p>
       </div>
 
@@ -38,30 +39,30 @@ export default function PrivacyPolicyPage({ onBack, onNavigate }) {
             <Eye size={20} /> 1. Information We Collect
           </h2>
           <p style={{ color: '#cbd5e1', lineHeight: '1.7', fontSize: '14.5px' }}>
-            We only collect information voluntarily provided by visitors when submitting contact forms, requesting project estimates, applying for open career roles, or engaging in discovery calls:
+            We only collect data voluntarily submitted by visitors when requesting project estimates, booking technical discovery calls, or applying for engineering positions:
           </p>
           <ul style={{ listStyle: 'none', padding: 0, margin: '12px 0', display: 'flex', flexDirection: 'column', gap: '8px' }}>
             <li style={{ display: 'flex', alignItems: 'center', gap: '8px', color: '#94a3b8', fontSize: '14px' }}>
-              <CheckCircle2 size={16} color="#10b981" /> Name, official email address, phone number, and organization name.
+              <CheckCircle2 size={16} color="#10b981" /> Name, business email address, phone number, and organization name.
             </li>
             <li style={{ display: 'flex', alignItems: 'center', gap: '8px', color: '#94a3b8', fontSize: '14px' }}>
-              <CheckCircle2 size={16} color="#10b981" /> Project specifications, scope documents, and budget preferences.
+              <CheckCircle2 size={16} color="#10b981" /> Project requirements, technical architecture preferences, and budget selections.
             </li>
             <li style={{ display: 'flex', alignItems: 'center', gap: '8px', color: '#94a3b8', fontSize: '14px' }}>
-              <CheckCircle2 size={16} color="#10b981" /> Resumes and portfolio links provided during job or internship applications.
+              <CheckCircle2 size={16} color="#10b981" /> Resumes, portfolio links, and GitHub profiles submitted during job applications.
             </li>
           </ul>
         </section>
 
         <section>
           <h2 style={{ fontSize: '1.4rem', fontWeight: '700', color: '#38bdf8', marginBottom: '12px', display: 'flex', alignItems: 'center', gap: '10px' }}>
-            <Lock size={20} /> 2. How We Use &amp; Protect Your Data
+            <Database size={20} /> 2. Processing &amp; Data Storage
           </h2>
           <p style={{ color: '#cbd5e1', lineHeight: '1.7', fontSize: '14.5px' }}>
-            All collected information is used solely to respond to inquiries, execute contractual software engineering sprints, issue invoices, and communicate milestone updates.
+            Contact form submissions are processed through our authenticated backend API and stored in our database records to ensure reliable enquiry delivery. Enquiries are additionally mirrored to our internal Google Workspace spreadsheet for sales team assignment.
           </p>
           <p style={{ color: '#cbd5e1', lineHeight: '1.7', fontSize: '14.5px', marginTop: '10px' }}>
-            <strong>We never sell, rent, or trade customer information to third-party advertisers or brokers.</strong> All data transmission is protected using SSL/TLS 1.3 encryption and stored within secured access-controlled databases.
+            <strong>We never sell, rent, or trade your personal or project data to third-party data brokers or marketing networks.</strong> All transmissions occur over encrypted TLS / HTTPS connections.
           </p>
         </section>
 
@@ -70,7 +71,7 @@ export default function PrivacyPolicyPage({ onBack, onNavigate }) {
             <FileText size={20} /> 3. Non-Disclosure &amp; Intellectual Property
           </h2>
           <p style={{ color: '#cbd5e1', lineHeight: '1.7', fontSize: '14.5px' }}>
-            We sign formal Mutual Non-Disclosure Agreements (NDA) before reviewing confidential codebase repositories or proprietary trade secrets. Upon completion of milestone payments, all intellectual property, git repositories, and cloud credentials are transferred immediately to the client.
+            We execute formal Mutual Non-Disclosure Agreements (NDA) prior to reviewing proprietary client repositories, business logic, or technical trade secrets. Upon final sprint milestone payment, 100% of all custom source code, documentation, and cloud deployment access is unconditionally transferred to the client.
           </p>
         </section>
 
@@ -79,23 +80,22 @@ export default function PrivacyPolicyPage({ onBack, onNavigate }) {
             <Globe size={20} /> 4. Cookies &amp; Analytics
           </h2>
           <p style={{ color: '#cbd5e1', lineHeight: '1.7', fontSize: '14.5px' }}>
-            Our website uses lightweight standard analytics (Google Analytics) to assess page performance, identify broken links, and measure user navigation without storing personally identifiable information.
+            Our website uses Google Analytics to measure aggregate visitor navigation, page performance, and device screen dimensions without tracking personally identifiable information.
           </p>
         </section>
 
         <section style={{ borderTop: '1px solid #1e293b', paddingTop: '20px' }}>
           <h2 style={{ fontSize: '1.2rem', fontWeight: '700', color: '#f8fafc', marginBottom: '8px' }}>
-            Contact SriVoraTech Privacy Office
+            Data Access, Rectification &amp; Deletion
           </h2>
           <p style={{ color: '#94a3b8', fontSize: '14px', lineHeight: '1.6' }}>
-            For privacy inquiries, data deletion requests, or NDA execution, contact us at:
+            Under applicable data protection principles (including India's Digital Personal Data Protection Act and GDPR principles), you have the right to request access to or permanent deletion of your enquiry data. To exercise these rights, email:
           </p>
           <p style={{ display: 'inline-flex', alignItems: 'center', gap: '8px', color: '#38bdf8', fontWeight: '600', marginTop: '8px' }}>
-            <Mail size={16} /> srivoratech9@gmail.com
+            <Mail size={16} /> {COMPANY_CONFIG.email.support}
           </p>
         </section>
       </div>
     </div>
   )
 }
-

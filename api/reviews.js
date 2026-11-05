@@ -2,26 +2,33 @@ import fs from 'fs'
 import path from 'path'
 import { connectToDatabase } from './mongodb.js'
 
-const ADMIN_TOKEN = 'srivoratech_admin_secure_session_token_2026'
+const ADMIN_TOKEN = process.env.ADMIN_SECRET_KEY || 'srivoratech_admin_secure_session_token_2026'
+const ADMIN_USER = process.env.ADMIN_USER || 'admin'
+const ADMIN_PASS = process.env.ADMIN_PASSWORD || 'srivoratech2026'
 
-const DEFAULT_REVIEWS = [
-  {
-    id: 1,
-    name: 'Badisa Srikanth (Founder & CEO)',
-    email: 'srikanth@srivoratech.in',
-    star: 5,
-    comment: 'Building innovative software and AI-powered solutions that empower businesses to grow, automate, and succeed in the digital era.',
-    date: 'Jul 20, 2026',
-    status: 'Approved',
-    timestamp: 1784534400000,
-    company: 'SriVoraTech',
-    profileImage: '',
-    isFounder: true,
-    helpfulCount: 0
+// Empty initial reviews — no fake or founder self-reviews in customer feedback
+const DEFAULT_REVIEWS = []
+
+// Simple in-memory IP rate limiter for review submissions
+const rateLimitMap = new Map()
+function isRateLimited(ip) {
+  if (!ip) return false
+  const now = Date.now()
+  const windowMs = 60 * 1000 // 1 minute
+  const maxReqs = 5
+
+  const record = rateLimitMap.get(ip) || { count: 0, resetTime: now + windowMs }
+  if (now > record.resetTime) {
+    record.count = 1
+    record.resetTime = now + windowMs
+    rateLimitMap.set(ip, record)
+    return false
   }
-]
+  record.count++
+  rateLimitMap.set(ip, record)
+  return record.count > maxReqs
+}
 
-// Determine storage file path for persistent memory across serverless restarts safely
 function getWritableStoragePath() {
   const tmpPath = path.join('/tmp', 'reviews.json')
   const uploadsDir = path.join(process.cwd(), 'uploads')
@@ -42,36 +49,20 @@ function getWritableStoragePath() {
 
 function getLocalReviews() {
   const targetPath = getWritableStoragePath()
-  const uploadsPath = path.join(process.cwd(), 'uploads', 'reviews.json')
-
   try {
     if (fs.existsSync(targetPath)) {
       const data = fs.readFileSync(targetPath, 'utf8')
       const parsed = JSON.parse(data)
-      if (Array.isArray(parsed) && parsed.length > 0) {
+      if (Array.isArray(parsed)) {
         global._svt_in_memory_reviews = parsed
         return parsed
       }
     }
   } catch (err) {}
 
-  if (targetPath !== uploadsPath) {
-    try {
-      if (fs.existsSync(uploadsPath)) {
-        const seedData = fs.readFileSync(uploadsPath, 'utf8')
-        const seedParsed = JSON.parse(seedData)
-        if (Array.isArray(seedParsed) && seedParsed.length > 0) {
-          global._svt_in_memory_reviews = seedParsed
-          return seedParsed
-        }
-      }
-    } catch (err) {}
-  }
-
-  if (!global._svt_in_memory_reviews || global._svt_in_memory_reviews.length === 0) {
+  if (!global._svt_in_memory_reviews) {
     global._svt_in_memory_reviews = [...DEFAULT_REVIEWS]
   }
-
   return global._svt_in_memory_reviews
 }
 
@@ -87,404 +78,245 @@ function saveLocalReviews(reviews) {
   } catch (err) {}
 }
 
-function mergeUniqueReviews(existing = [], incoming = []) {
-  const map = new Map()
-  incoming.forEach(r => {
-    if (r && r.id) map.set(String(r.id), r)
-  })
-  existing.forEach(r => {
-    if (r && r.id) {
-      if (!map.has(String(r.id))) map.set(String(r.id), r)
-    }
-  })
-  const merged = Array.from(map.values())
-  merged.sort((a, b) => (b.timestamp || 0) - (a.timestamp || 0))
-  return merged
-}
-
 async function getReviewsFromDb() {
-  let reviews = []
-
-  // 1. Fetch from MongoDB Atlas if connection URI is available
-  if (process.env.MONGODB_URI) {
-    try {
-      const { db } = await connectToDatabase()
-      if (db) {
-        const collection = db.collection('reviews')
-        const docs = await collection.find({}).toArray()
-        if (Array.isArray(docs) && docs.length > 0) {
-          reviews = docs.map(d => {
-            const { _id, ...rest } = d
-            return rest
-          })
-        }
-      }
-    } catch (e) {
-      console.warn('MongoDB Atlas fetch fallback:', e.message)
-    }
-  }
-
-  // 2. Fetch from Google Apps Script centralized database (cross-device user sync)
+  const localList = getLocalReviews()
   try {
-    const sheetRes = await fetch('https://script.google.com/macros/s/AKfycbzzB8S5E3JqKFYuj-2RX7oHWXkv0taRPv0aQBAjIr2TQkVp0K0grPCIcZWVrbbXQlSo/exec?action=ratings')
-    if (sheetRes.ok) {
-      const contentType = sheetRes.headers.get('content-type') || ''
-      if (contentType.includes('application/json')) {
-        const sheetData = await sheetRes.json()
-        if (sheetData && sheetData.success && Array.isArray(sheetData.reviews) && sheetData.reviews.length > 0) {
-          reviews = mergeUniqueReviews(reviews, sheetData.reviews)
-        }
+    const { db } = await connectToDatabase()
+    if (db) {
+      const dbReviews = await db.collection('reviews').find({}).toArray()
+      if (Array.isArray(dbReviews) && dbReviews.length > 0) {
+        return dbReviews
       }
     }
-  } catch (sheetErr) {
-    console.warn('Google Sheet reviews fetch warning:', sheetErr.message)
+  } catch (e) {
+    console.warn('MongoDB read failed, using local store:', e.message)
   }
-
-  // 3. Fallback to local memory reviews
-  const local = getLocalReviews()
-  const merged = mergeUniqueReviews(local, reviews)
-  global._svt_in_memory_reviews = merged
-  saveLocalReviews(merged)
-  return merged
+  return localList
 }
 
-async function saveReviewToDb(newReview) {
-  if (process.env.MONGODB_URI) {
-    try {
-      const { db } = await connectToDatabase()
-      if (db) {
-        const collection = db.collection('reviews')
-        await collection.updateOne(
-          { id: newReview.id },
-          { $set: newReview },
-          { upsert: true }
-        )
-      }
-    } catch (e) {
-      console.warn('MongoDB Atlas save fallback:', e.message)
+async function saveReviewToDb(review) {
+  try {
+    const { db } = await connectToDatabase()
+    if (db) {
+      await db.collection('reviews').updateOne(
+        { id: review.id },
+        { $set: review },
+        { upsert: true }
+      )
     }
+  } catch (e) {
+    console.warn('MongoDB write failed:', e.message)
   }
 }
 
-async function deleteReviewFromDb(targetId) {
-  if (process.env.MONGODB_URI) {
-    try {
-      const { db } = await connectToDatabase()
-      if (db) {
-        const collection = db.collection('reviews')
-        const numId = parseInt(targetId, 10)
-        await collection.deleteMany({
-          $or: [
-            { id: targetId },
-            { id: String(targetId) },
-            { id: isNaN(numId) ? targetId : numId }
-          ]
-        })
-      }
-    } catch (e) {
-      console.warn('MongoDB Atlas delete fallback:', e.message)
+async function deleteReviewFromDb(id) {
+  try {
+    const { db } = await connectToDatabase()
+    if (db) {
+      await db.collection('reviews').deleteOne({
+        $or: [{ id: String(id) }, { id: parseInt(id, 10) }]
+      })
     }
+  } catch (e) {
+    console.warn('MongoDB delete failed:', e.message)
   }
 }
 
 function checkAdminAuth(req) {
-  const token = req.headers['x-admin-token']
-  return token === ADMIN_TOKEN
-}
-
-function extractReviewId(url, req) {
-  if (!url) return ''
-  try {
-    const urlObj = new URL(url, `http://${req?.headers?.host || 'localhost'}`)
-    const queryId = urlObj.searchParams.get('id')
-    if (queryId) return queryId
-
-    let bodyId = null
-    if (req?.body) {
-      let b = req.body
-      if (typeof b === 'string') {
-        try { b = JSON.parse(b) } catch(e) {}
-      }
-      if (b && b.id) bodyId = String(b.id)
-    }
-    if (bodyId) return bodyId
-
-    const cleanUrl = urlObj.pathname
-    let match = cleanUrl.match(/\/admin\/reviews\/([^/]+)/)
-    if (match && match[1]) return match[1]
-
-    match = cleanUrl.match(/\/reviews\/([^/]+)/)
-    if (match && match[1] && match[1] !== 'admin') return match[1]
-
-    const parts = cleanUrl.split('/').filter(Boolean)
-    const ignored = ['api', 'admin', 'reviews', 'approve', 'reject']
-    for (let i = parts.length - 1; i >= 0; i--) {
-      if (!ignored.includes(parts[i].toLowerCase())) {
-        return parts[i]
-      }
-    }
-  } catch (e) {}
-  return ''
-}
-
-function findReviewIndex(reviews, url, req) {
-  const targetId = extractReviewId(url, req)
-  if (!targetId) return -1
-  let index = reviews.findIndex(r => String(r.id) === String(targetId))
-  if (index === -1) {
-    const numId = parseInt(targetId, 10)
-    if (!isNaN(numId)) {
-      index = reviews.findIndex(r => Number(r.id) === numId)
-    }
-  }
-  return index
+  const token = req.headers['x-admin-token'] || req.headers['authorization']?.replace('Bearer ', '')
+  return Boolean(token && token === ADMIN_TOKEN)
 }
 
 export default async function handler(req, res) {
-  // CORS & Cache & CSP Headers
+  // CORS & Security Headers
+  const origin = req.headers.origin || ''
+  const allowedOrigins = ['https://www.srivoratech.in', 'https://srivoratech.in', 'http://localhost:3000', 'http://localhost:5173', 'http://localhost:3001']
+  if (allowedOrigins.includes(origin)) {
+    res.setHeader('Access-Control-Allow-Origin', origin)
+  } else {
+    res.setHeader('Access-Control-Allow-Origin', 'https://www.srivoratech.in')
+  }
+
   res.setHeader('Access-Control-Allow-Credentials', 'true')
-  res.setHeader('Access-Control-Allow-Origin', '*')
   res.setHeader('Access-Control-Allow-Methods', 'GET,OPTIONS,PATCH,DELETE,POST,PUT')
   res.setHeader(
     'Access-Control-Allow-Headers',
-    'X-CSRF-Token, X-Requested-With, Accept, Accept-Version, Content-Length, Content-MD5, Content-Type, Date, X-Api-Version, x-admin-token'
+    'X-CSRF-Token, X-Requested-With, Accept, Content-Type, x-admin-token, Authorization'
   )
-  res.setHeader('Cache-Control', 'no-store, no-cache, must-revalidate, proxy-revalidate')
-  res.setHeader(
-    'Content-Security-Policy',
-    "default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://api.fontshare.com https://cdn.fontshare.com; font-src 'self' data: https://fonts.gstatic.com https://api.fontshare.com https://cdn.fontshare.com; img-src 'self' data: https: blob:; connect-src 'self' https:;"
-  )
+  res.setHeader('Cache-Control', 'no-store, no-cache, must-revalidate')
+  res.setHeader('X-Content-Type-Options', 'nosniff')
 
   if (req.method === 'OPTIONS') {
-    res.status(200).end()
-    return
+    return res.status(200).end()
   }
 
   const url = req.url || ''
+  const clientIp = req.headers['x-forwarded-for']?.split(',')[0] || req.socket?.remoteAddress || 'unknown'
 
   // ── 1. Admin Login Endpoint ──
-  if (url.includes('login')) {
-    if (req.method !== 'POST') return res.status(405).json({ success: false, message: 'Method Not Allowed' })
-    return res.status(200).json({ success: true, token: ADMIN_TOKEN })
+  const isLoginReq = url.includes('action=login') || url.includes('/login')
+  if (isLoginReq && req.method === 'POST') {
+    let body = req.body || {}
+    if (typeof body === 'string') {
+      try { body = JSON.parse(body) } catch (e) { body = {} }
+    }
+
+    const { username, password } = body
+    if (username === ADMIN_USER && password === ADMIN_PASS) {
+      return res.status(200).json({ success: true, token: ADMIN_TOKEN })
+    }
+    return res.status(401).json({ success: false, message: 'Invalid administrator credentials.' })
   }
 
-  // ── 2. Admin Operations Endpoint ──
-  const isAdminOp = req.headers['x-admin-token'] || 
-                    url.includes('admin') || 
-                    url.includes('/approve') || 
-                    url.includes('/reject') || 
-                    req.method === 'PUT' || 
-                    req.method === 'DELETE'
+  // ── 2. Admin Operations (Strict Authorization Required) ──
+  const isAdminList = url.includes('action=admin_list')
+  const isApprove = url.includes('action=approve')
+  const isReject = url.includes('action=reject')
+  const isEdit = url.includes('action=edit')
+  const isDelete = url.includes('action=delete')
 
-  if (isAdminOp && (req.method !== 'GET' || url.includes('admin'))) {
+  if (isAdminList || isApprove || isReject || isEdit || isDelete) {
     if (!checkAdminAuth(req)) {
-      return res.status(403).json({ success: false, message: 'Access denied: Administrator token required' })
+      return res.status(403).json({ success: false, message: 'Forbidden: Valid administrator authentication required.' })
     }
 
-    // Admin GET reviews list (search & filter)
-    if (req.method === 'GET') {
-      const urlObj = new URL(url, `http://${req.headers.host || 'localhost'}`)
-      const search = urlObj.searchParams.get('search') || ''
-      const rating = urlObj.searchParams.get('rating') || ''
-      const status = urlObj.searchParams.get('status') || ''
+    const reviews = await getReviewsFromDb()
+    const urlObj = new URL(url, 'http://localhost')
+    const id = urlObj.searchParams.get('id')
 
-      let resultList = await getReviewsFromDb()
-      if (rating) {
-        const rVal = parseInt(rating, 10)
-        resultList = resultList.filter(r => r.star === rVal)
-      }
-      if (status) {
-        resultList = resultList.filter(r => r.status.toLowerCase() === status.toLowerCase())
-      }
-      if (search) {
-        const q = search.toLowerCase()
-        resultList = resultList.filter(r => 
-          r.name.toLowerCase().includes(q) || 
-          r.comment.toLowerCase().includes(q) || 
-          (r.company && r.company.toLowerCase().includes(q))
-        )
-      }
-
-      resultList.sort((a, b) => (b.timestamp || 0) - (a.timestamp || 0))
-      return res.status(200).json({ success: true, reviews: resultList })
+    if (isAdminList && req.method === 'GET') {
+      return res.status(200).json({ success: true, reviews })
     }
 
-    // Admin POST (Approve / Reject)
-    if (req.method === 'POST') {
-      const reviews = await getReviewsFromDb()
-      const reviewIndex = findReviewIndex(reviews, url, req)
-
-      if (reviewIndex === -1) {
-        return res.status(404).json({ success: false, message: 'Review not found' })
-      }
-
-      if (url.includes('/approve')) {
-        reviews[reviewIndex].status = 'Approved'
-        saveLocalReviews(reviews)
-        await saveReviewToDb(reviews[reviewIndex])
-        return res.status(200).json({ success: true, message: 'Review approved successfully', review: reviews[reviewIndex] })
-      }
-      if (url.includes('/reject')) {
-        reviews[reviewIndex].status = 'Rejected'
-        saveLocalReviews(reviews)
-        await saveReviewToDb(reviews[reviewIndex])
-        return res.status(200).json({ success: true, message: 'Review rejected successfully', review: reviews[reviewIndex] })
-      }
-    }
-
-    // Admin PUT (Edit review)
-    if (req.method === 'PUT') {
-      let body = req.body || {}
-      if (typeof body === 'string') {
-        try { body = JSON.parse(body) } catch(e) {}
-      }
-
-      const reviews = await getReviewsFromDb()
-      const reviewIndex = findReviewIndex(reviews, url, req)
-
-      if (reviewIndex === -1) {
-        return res.status(404).json({ success: false, message: 'Review not found' })
-      }
-
-      const { name, company, star, comment, adminReply } = body
-      if (name) reviews[reviewIndex].name = String(name).replace(/<[^>]*>/g, '').trim()
-      if (company !== undefined) reviews[reviewIndex].company = String(company).replace(/<[^>]*>/g, '').trim()
-      if (star) reviews[reviewIndex].star = parseInt(star, 10) || 5
-      if (comment) reviews[reviewIndex].comment = String(comment).replace(/<[^>]*>/g, '').trim()
-      if (adminReply !== undefined) reviews[reviewIndex].adminReply = String(adminReply).replace(/<[^>]*>/g, '').trim()
-
+    if (isApprove) {
+      const match = reviews.find(r => String(r.id) === String(id))
+      if (!match) return res.status(404).json({ success: false, message: 'Review not found.' })
+      match.status = 'Approved'
       saveLocalReviews(reviews)
-      await saveReviewToDb(reviews[reviewIndex])
-      return res.status(200).json({ success: true, message: 'Review updated successfully', review: reviews[reviewIndex] })
+      await saveReviewToDb(match)
+      return res.status(200).json({ success: true, review: match })
     }
 
-    // Admin DELETE (Delete review)
-    if (req.method === 'DELETE') {
-      let reviews = await getReviewsFromDb()
-      const targetId = extractReviewId(url, req)
-      const originalLength = reviews.length
-
-      reviews = reviews.filter(r => String(r.id) !== String(targetId) && Number(r.id) !== parseInt(targetId, 10))
-
-      if (reviews.length === originalLength) {
-        return res.status(404).json({ success: false, message: 'Review not found' })
-      }
-
+    if (isReject) {
+      const match = reviews.find(r => String(r.id) === String(id))
+      if (!match) return res.status(404).json({ success: false, message: 'Review not found.' })
+      match.status = 'Rejected'
       saveLocalReviews(reviews)
-      await deleteReviewFromDb(targetId)
-      return res.status(200).json({ success: true, message: 'Review deleted successfully' })
+      await saveReviewToDb(match)
+      return res.status(200).json({ success: true, review: match })
+    }
+
+    if (isDelete) {
+      const filtered = reviews.filter(r => String(r.id) !== String(id))
+      saveLocalReviews(filtered)
+      await deleteReviewFromDb(id)
+      return res.status(200).json({ success: true, message: 'Review deleted.' })
     }
   }
 
-  // ── 3. Public GET /api/reviews Endpoint ──
+  // ── 3. Public GET /api/reviews ──
+  // Returns ONLY administrator-approved customer reviews. No self-reviews.
   if (req.method === 'GET') {
     const allReviews = await getReviewsFromDb()
     const approved = allReviews.filter(r => {
       if (!r) return false
-      if (!r.status) return true
-      const s = String(r.status).trim().toLowerCase()
-      return s !== 'rejected'
+      const s = String(r.status || '').toLowerCase()
+      const isInternal = Boolean(r.isFounder) || 
+        (r.name && (r.name.toLowerCase().includes('founder') || r.name.toLowerCase().includes('ceo') || r.name.toLowerCase().includes('cto')))
+      return s === 'approved' && !isInternal
     })
+
     approved.sort((a, b) => (b.timestamp || 0) - (a.timestamp || 0))
-
     const totalApproved = approved.length
-    const sum = approved.reduce((acc, curr) => acc + (parseInt(curr.star, 10) || 5), 0)
-    const averageRating = totalApproved > 0 ? parseFloat((sum / totalApproved).toFixed(1)) : 5.0
 
+    let averageRating = null
+    let satisfactionRate = null
     const counts = { 5: 0, 4: 0, 3: 0, 2: 0, 1: 0 }
-    approved.forEach(r => {
-      const s = parseInt(r.star, 10) || 5
-      if (counts[s] !== undefined) {
-        counts[s]++
-      }
-    })
+    const distribution = { 5: 0, 4: 0, 3: 0, 2: 0, 1: 0 }
 
-    const percentages = {}
-    Object.keys(counts).forEach(star => {
-      percentages[star] = totalApproved > 0 
-        ? Math.round((counts[star] / totalApproved) * 100)
-        : 0
-    })
+    if (totalApproved > 0) {
+      const sum = approved.reduce((acc, curr) => acc + (parseInt(curr.star, 10) || 0), 0)
+      averageRating = parseFloat((sum / totalApproved).toFixed(1))
 
-    const highRatings = counts[5] + counts[4]
-    const satisfactionRate = totalApproved > 0
-      ? Math.round((highRatings / totalApproved) * 100)
-      : 100
+      approved.forEach(r => {
+        const s = parseInt(r.star, 10)
+        if (s >= 1 && s <= 5 && counts[s] !== undefined) {
+          counts[s]++
+        }
+      })
+
+      Object.keys(counts).forEach(s => {
+        distribution[s] = Math.round((counts[s] / totalApproved) * 100)
+      })
+
+      const highRatings = counts[5] + counts[4]
+      satisfactionRate = Math.round((highRatings / totalApproved) * 100)
+    }
 
     return res.status(200).json({
       success: true,
       reviews: approved,
       totalCount: totalApproved,
       averageRating,
-      distribution: percentages,
+      distribution,
       counts,
       satisfactionRate
     })
   }
 
-  let reqBody = req.body || {}
-  if (typeof reqBody === 'string') {
-    try { reqBody = JSON.parse(reqBody) } catch(e) { reqBody = {} }
-  }
-
-  // ── 4. Helpful Counter Endpoint ──
-  const isHelpfulReq = url.includes('helpful') || req.query?.action === 'helpful' || req.query?.helpful || reqBody?.isHelpful || reqBody?.action === 'helpful'
-  if (isHelpfulReq) {
-    if (req.method !== 'POST') return res.status(405).json({ success: false, message: 'Method Not Allowed' })
-    const targetId = extractReviewId(url, req)
-    const reviews = await getReviewsFromDb()
-    const match = reviews.find(r => String(r.id) === String(targetId) || Number(r.id) === parseInt(targetId, 10))
-    if (!match) return res.status(404).json({ success: false, message: 'Review not found' })
-
-    match.helpfulCount = (match.helpfulCount || 0) + 1
-    saveLocalReviews(reviews)
-    await saveReviewToDb(match)
-    return res.status(200).json({ success: true, helpfulCount: match.helpfulCount, review: match })
-  }
-
-  // ── 4. Public POST /api/reviews Endpoint (Defaults to Approved) ──
+  // ── 4. Public POST /api/reviews (New Customer Review Submission) ──
   if (req.method === 'POST') {
-    try {
-      const body = reqBody
-
-      const { name, comment, email, company } = body
-      const rawRating = body.rating !== undefined ? body.rating : body.star
-      const starNum = parseInt(rawRating, 10)
-      
-      if (!name || isNaN(starNum) || starNum < 1 || starNum > 5 || !comment) {
-        return res.status(400).json({
-          success: false,
-          message: 'Name, valid Star Rating (1-5), and Review Message are required.'
-        })
-      }
-
-      const newReview = {
-        id: Date.now() + Math.floor(Math.random() * 1000),
-        name: String(name).replace(/<[^>]*>/g, '').trim(),
-        email: email ? String(email).replace(/<[^>]*>/g, '').trim() : '',
-        star: starNum,
-        comment: String(comment).replace(/<[^>]*>/g, '').trim(),
-        company: company ? String(company).replace(/<[^>]*>/g, '').trim() : '',
-        status: 'Approved', // Display live to all visitors immediately!
-        date: new Date().toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' }),
-        timestamp: Date.now()
-      }
-
-      const reviews = await getReviewsFromDb()
-      reviews.unshift(newReview)
-      saveLocalReviews(reviews)
-      await saveReviewToDb(newReview)
-
-      return res.status(200).json({
-        success: true,
-        message: 'Review submitted successfully! Your rating has been saved and is now live for all visitors.',
-        review: newReview
-      })
-    } catch (err) {
-      return res.status(500).json({ success: false, message: err.message })
+    if (isRateLimited(clientIp)) {
+      return res.status(429).json({ success: false, message: 'Too many submissions. Please try again later.' })
     }
+
+    let body = req.body || {}
+    if (typeof body === 'string') {
+      try { body = JSON.parse(body) } catch (e) { body = {} }
+    }
+
+    const name = (body.name || '').trim()
+    const email = (body.email || '').trim().toLowerCase()
+    const star = parseInt(body.star, 10)
+    const comment = (body.comment || '').trim()
+    const company = (body.company || '').trim()
+
+    if (!name || !email || !star || !comment) {
+      return res.status(400).json({ success: false, message: 'Name, valid email, star rating, and review comment are required.' })
+    }
+
+    if (star < 1 || star > 5) {
+      return res.status(400).json({ success: false, message: 'Star rating must be between 1 and 5.' })
+    }
+
+    if (comment.length < 10) {
+      return res.status(400).json({ success: false, message: 'Review comment must be at least 10 characters.' })
+    }
+
+    const newReview = {
+      id: Date.now(),
+      name,
+      email,
+      company,
+      star,
+      comment,
+      status: 'Pending', // Enforce Pending status — never auto-approved
+      isFounder: false,
+      date: new Date().toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' }),
+      timestamp: Date.now(),
+      ip: clientIp
+    }
+
+    const reviews = await getReviewsFromDb()
+    reviews.push(newReview)
+    saveLocalReviews(reviews)
+    await saveReviewToDb(newReview)
+
+    return res.status(201).json({
+      success: true,
+      message: 'Thank you! Your review has been submitted for moderation and will appear after verification.'
+    })
   }
 
   return res.status(405).json({ success: false, message: 'Method Not Allowed' })
 }
-

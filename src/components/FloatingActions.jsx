@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react'
-import { ArrowUp, Calculator, MessageSquare, PhoneCall, X, Sparkles } from 'lucide-react'
+import { ArrowUp, Calculator, MessageSquare, Mail, PhoneCall, X, Sparkles } from 'lucide-react'
+import { COMPANY } from '../config/company'
 import './FloatingActions.css'
 
 export default function FloatingActions() {
@@ -45,7 +46,7 @@ export default function FloatingActions() {
               </div>
               <div className="drawer-btn-text">
                 <strong>Project Estimator</strong>
-                <span>Calculate budget & scope in 60s</span>
+                <span>Calculate budget &amp; scope in 60s</span>
               </div>
             </button>
 
@@ -60,7 +61,7 @@ export default function FloatingActions() {
             </button>
 
             <a
-              href="https://wa.me/919182030946?text=Hi%20SriVoraTech,%20I'd%20like%20to%20discuss%20a%20project!"
+              href={`https://wa.me/${COMPANY.phoneRaw}?text=Hi%20SriVoraTech,%20I'd%20like%20to%20discuss%20a%20project!`}
               className="drawer-btn"
               target="_blank"
               rel="noopener noreferrer"
@@ -70,29 +71,29 @@ export default function FloatingActions() {
               </div>
               <div className="drawer-btn-text">
                 <strong>WhatsApp Us</strong>
-                <span>+91 9182030946</span>
+                <span>{COMPANY.phone}</span>
               </div>
             </a>
 
             <a
-              href="mailto:srivoratech9@gmail.com?subject=Project%20Inquiry%20from%20Website"
+              href={`mailto:${COMPANY.contactEmail}?subject=Project%20Inquiry%20from%20Website`}
               className="drawer-btn"
             >
               <div className="drawer-icon-box bg-purple">
-                <PhoneCall size={18} />
+                <Mail size={18} />
               </div>
               <div className="drawer-btn-text">
                 <strong>Email Us Directly</strong>
-                <span>srivoratech9@gmail.com</span>
+                <span>{COMPANY.contactEmail}</span>
               </div>
             </a>
 
             <div className="drawer-social-bar">
               <span>Follow Us:</span>
-              <a href="https://www.facebook.com/p/SriVoratech-SriVoratech-61591870486562/" target="_blank" rel="noopener noreferrer" title="Facebook">FB</a>
-              <a href="https://x.com/srivorateclrqn" target="_blank" rel="noopener noreferrer" title="X (Twitter)">X</a>
-              <a href="https://www.instagram.com/srivora_tech?igsh=MWRxOWJ6Z2F6bnUzdg==" target="_blank" rel="noopener noreferrer" title="Instagram">IG</a>
-              <a href="https://wa.me/919182030946" target="_blank" rel="noopener noreferrer" title="WhatsApp">WA</a>
+              <a href={COMPANY.socials.facebook} target="_blank" rel="noopener noreferrer" title="Facebook">FB</a>
+              <a href={COMPANY.socials.twitter} target="_blank" rel="noopener noreferrer" title="X (Twitter)">X</a>
+              <a href={COMPANY.socials.instagram} target="_blank" rel="noopener noreferrer" title="Instagram">IG</a>
+              <a href={`https://wa.me/${COMPANY.phoneRaw}`} target="_blank" rel="noopener noreferrer" title="WhatsApp">WA</a>
             </div>
           </div>
         </div>

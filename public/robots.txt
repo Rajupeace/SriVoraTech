@@ -1,5 +1,5 @@
 # SriVoraTech - Robots.txt
-# Website: https://srivoratech.in
+# Website: https://www.srivoratech.in
 # Founder & CEO: Badisa Srikanth (Srikanth Badisa)
 # Contact: contact@srivoratech.in
 
@@ -9,6 +9,7 @@ Allow: /
 Disallow: /api/
 Disallow: /uploads/
 Disallow: /admin/
+Disallow: /seo-dashboard
 Disallow: /private/
 
 # Googlebot
@@ -70,6 +71,6 @@ User-agent: cohere-ai
 Allow: /
 
 # Sitemaps
-Sitemap: https://srivoratech.in/sitemap.xml
-Sitemap: https://srivoratech.in/sitemap-index.xml
-Sitemap: https://srivoratech.in/sitemap_index.xml
+Sitemap: https://www.srivoratech.in/sitemap.xml
+Sitemap: https://www.srivoratech.in/sitemap-index.xml
+Sitemap: https://www.srivoratech.in/sitemap_index.xml
