@@ -2,6 +2,7 @@ import { useState, useEffect, useMemo } from 'react'
 import { useScrollAnimation } from '../hooks/useScrollAnimation'
 import { Send, Sparkles, CheckCircle2, AlertCircle, Mail, User, Building2, Phone as PhoneIcon, MessageSquareText, Wallet } from 'lucide-react'
 import { submitToSheet } from '../utils/submitToSheet'
+import { COMPANY } from '../config/company'
 import './Contact.css'
 
 export default function Contact() {
@@ -20,6 +21,7 @@ export default function Contact() {
     phone: '',
     budget: '',
     message: '',
+    _gotcha: '',
   })
 
   useEffect(() => {
@@ -100,6 +102,7 @@ export default function Contact() {
         phone: clientForm.phone.trim(),
         budget: clientForm.budget,
         message: clientForm.message.trim(),
+        _gotcha: clientForm._gotcha || undefined,
       }
 
       const res = await submitToSheet('contact', payload)
@@ -118,11 +121,11 @@ export default function Contact() {
         setTouched({})
         setTimeout(() => setSubmitted(false), 8000)
       } else {
-        setServerError(res.error || 'Unable to submit enquiry. Please try again or email contact@srivoratech.in directly.')
+        setServerError(res.error || `Unable to submit enquiry. Please try again or email ${COMPANY.contactEmail} directly.`)
       }
     } catch (error) {
       console.error('Client contact submission error:', error)
-      setServerError('An unexpected error occurred. Please try again or email contact@srivoratech.in.')
+      setServerError(`An unexpected error occurred. Please try again or email ${COMPANY.contactEmail}.`)
     } finally {
       setSubmitting(false)
     }
@@ -175,6 +178,17 @@ export default function Contact() {
               </div>
             ) : (
               <form onSubmit={handleClientSubmit} className="application-form" noValidate>
+                {/* Honeypot anti-spam field */}
+                <input
+                  type="text"
+                  name="_gotcha"
+                  value={clientForm._gotcha || ''}
+                  onChange={handleClientChange}
+                  style={{ display: 'none' }}
+                  tabIndex={-1}
+                  autoComplete="off"
+                  aria-hidden="true"
+                />
                 {/* Form completion progress */}
                 <div className="form-progress-track">
                   <div className="form-progress-fill" style={{ width: `${(filledCount / totalFields) * 100}%` }} />
