@@ -249,7 +249,7 @@ export const works = [
       'Centralize 10+ departmental portals into a single unified identity provider.',
       'Deliver role-based authorization for Students, Faculty, Department Heads, and Super Admins.',
       'Provide instant grade computation, fee payment tracking, and automated biometric attendance logging.',
-      'Ensure sub-second page transitions and 99.9% uptime availability during peak exam and registration seasons.'
+      'Ensure sub-second page transitions and high system availability during peak exam and registration seasons.'
     ],
     solution: 'SriVoraTech architected SriERP Pro (Vu UniVerse360) using a modular React frontend backed by Express/Node.js REST microservices and a high-throughput PostgreSQL relational database, containerized with Docker.',
     architectureDiagram: `[Student / Faculty / Admin Client]
@@ -283,7 +283,7 @@ export const works = [
     resultsList: [
       'Unified 12 separate academic and operational modules into one cohesive portal.',
       'Sub-second page rendering and instant search across student directories.',
-      'Zero downtime observed during peak grade release periods.',
+      'High system stability maintained during peak grade release periods.',
       'Complete role isolation ensuring student data privacy and grade security.'
     ],
     technologies: ['React.js', 'Node.js', 'Express', 'PostgreSQL', 'Docker', 'Redis', 'Vercel']
@@ -356,7 +356,7 @@ export const works = [
     challenges: 'Preventing LLM hallucinations on ambiguous questions. Solved by implementing strict system prompt guardrails, context threshold scoring, and fallback handoffs to human operators.',
     resultsList: [
       'Enables rapid deployment of custom AI chatbots in under 15 minutes.',
-      'Sub-200ms semantic knowledge retrieval on enterprise documentation.',
+      'Fast semantic knowledge retrieval on enterprise documentation.',
       'Visual automation canvas eliminates need for manual Python scripting for standard workflows.',
       'Comprehensive observability into token consumption and model performance.'
     ],
