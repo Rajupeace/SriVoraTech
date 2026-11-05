@@ -730,25 +730,24 @@ const categories = [
   { id: 'upcoming', label: '🚀 Upcoming / Roadmap' },
 ]
 
+export function getStatusBadge(status) {
+  switch (status) {
+    case 'Live':
+      return { label: '● Live Platform', color: '#10b981' }
+    case 'Prototype':
+      return { label: '⚡ Functional Prototype', color: '#8b5cf6' }
+    case 'In Development':
+      return { label: '🛠️ In Development', color: '#0067f4' }
+    case 'Planned':
+    default:
+      return { label: '📋 Planned Architecture', color: '#f59e0b' }
+  }
+}
+
 /* Individual card component */
 function WorkCard({ work, idx, onSelect }) {
   const [cardRef, cardVisible] = useScrollAnimation()
   const [isHovered, setIsHovered] = useState(false)
-
-  const getStatusBadge = (status) => {
-    switch (status) {
-      case 'Live':
-        return { label: '● Live Platform', color: '#10b981' }
-      case 'Prototype':
-        return { label: '⚡ Functional Prototype', color: '#8b5cf6' }
-      case 'In Development':
-        return { label: '🛠️ In Development', color: '#0067f4' }
-      case 'Planned':
-      default:
-        return { label: '📋 Planned Architecture', color: '#f59e0b' }
-    }
-  }
-
   const statusBadge = getStatusBadge(work.status)
 
   return (
@@ -868,6 +867,7 @@ function ProjectDetailPage({ project, onClose, onSelectProject, allProjects }) {
     if (pageRef.current) pageRef.current.scrollTo(0, 0)
   }, [project])
 
+  const statusBadge = getStatusBadge(project.status)
   const otherProjects = allProjects.filter(p => p.id !== project.id).slice(0, 3)
 
   return (
@@ -906,8 +906,8 @@ function ProjectDetailPage({ project, onClose, onSelectProject, allProjects }) {
             </div>
             
             <div style={{ display: 'inline-flex', alignItems: 'center', gap: '8px', marginBottom: '10px' }}>
-              <span style={{ fontSize: '12px', fontWeight: '700', padding: '4px 12px', borderRadius: '999px', background: project.status === 'Live' ? '#10b98120' : '#8b5cf620', color: project.status === 'Live' ? '#10b981' : '#8b5cf6', border: `1px solid ${project.status === 'Live' ? '#10b98140' : '#8b5cf640'}` }}>
-                Status: {project.statusTag || project.status}
+              <span style={{ fontSize: '12px', fontWeight: '700', padding: '4px 12px', borderRadius: '999px', background: `${statusBadge.color}15`, color: statusBadge.color, border: `1px solid ${statusBadge.color}35` }}>
+                {statusBadge.label}
               </span>
               <span style={{ fontSize: '12px', color: '#64748b', fontWeight: '600' }}>
                 {project.category}
@@ -915,9 +915,24 @@ function ProjectDetailPage({ project, onClose, onSelectProject, allProjects }) {
             </div>
 
             <h1 className="project-hero-title">{project.title}</h1>
-            <p style={{ fontSize: '16px', color: '#475569', lineHeight: '1.6', margin: '12px 0 20px' }}>
+            <p style={{ fontSize: '16px', color: '#475569', lineHeight: '1.6', margin: '12px 0 16px' }}>
               {project.headline}
             </p>
+            {project.status === 'Prototype' && (
+              <div style={{ padding: '8px 14px', background: 'rgba(139, 92, 246, 0.08)', border: '1px solid rgba(139, 92, 246, 0.25)', borderRadius: '8px', color: '#6d28d9', fontSize: '12.5px', marginBottom: '16px', display: 'flex', alignItems: 'center', gap: '8px' }}>
+                <CheckCircle2 size={15} style={{ flexShrink: 0 }} /> <span><strong>Functional Prototype:</strong> Interactive demonstration engineered by SriVoraTech to showcase technical architecture and user experience workflows.</span>
+              </div>
+            )}
+            {project.status === 'In Development' && (
+              <div style={{ padding: '8px 14px', background: 'rgba(0, 103, 244, 0.08)', border: '1px solid rgba(0, 103, 244, 0.25)', borderRadius: '8px', color: '#0369a1', fontSize: '12.5px', marginBottom: '16px', display: 'flex', alignItems: 'center', gap: '8px' }}>
+                <CheckCircle2 size={15} style={{ flexShrink: 0 }} /> <span><strong>Active Development:</strong> This solution is undergoing core sprint engineering and microservices integration.</span>
+              </div>
+            )}
+            {project.status === 'Planned' && (
+              <div style={{ padding: '8px 14px', background: 'rgba(245, 158, 11, 0.08)', border: '1px solid rgba(245, 158, 11, 0.25)', borderRadius: '8px', color: '#b45309', fontSize: '12.5px', marginBottom: '16px', display: 'flex', alignItems: 'center', gap: '8px' }}>
+                <CheckCircle2 size={15} style={{ flexShrink: 0 }} /> <span><strong>Architecture Blueprint:</strong> System design, Kafka event schemas, and data pipelines documented for client rollout.</span>
+              </div>
+            )}
             
             <div style={{ display: 'flex', flexWrap: 'wrap', gap: '12px', marginTop: '14px', marginBottom: '20px' }}>
               {project.liveUrl && (
@@ -972,8 +987,8 @@ function ProjectDetailPage({ project, onClose, onSelectProject, allProjects }) {
 
             <div className="sidebar-section">
               <span className="sidebar-label">STATUS</span>
-              <p className="sidebar-value" style={{ color: project.status === 'Live' ? '#10b981' : '#8b5cf6', fontWeight: '700' }}>
-                {project.statusTag || project.status}
+              <p className="sidebar-value" style={{ color: statusBadge.color, fontWeight: '700' }}>
+                {statusBadge.label}
               </p>
             </div>
 
