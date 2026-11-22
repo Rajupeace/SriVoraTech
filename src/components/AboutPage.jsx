@@ -5,14 +5,21 @@ import WhyChoose from './WhyChoose'
 import Achievements from './Achievements'
 import LocalBusinessSchema from './StructuredData'
 import { generateLocalBusinessSchema } from '../lib/seo'
-import { ShieldCheck, Award, MapPin, Globe2, Users, CheckCircle2 } from 'lucide-react'
+import { ShieldCheck, Award, MapPin, Globe2, Users, CheckCircle2, ArrowLeft } from 'lucide-react'
 
-export default function AboutPage({ onNavigate }) {
+export default function AboutPage({ onBack, onNavigate }) {
   const localSchema = generateLocalBusinessSchema()
 
   return (
     <div className="about-page-container" style={{ padding: '110px 24px 100px', maxWidth: '1200px', margin: '0 auto', color: 'var(--color-text-primary, #1e293b)' }}>
       <SEO pathname="/about" breadcrumbs={[{ name: 'Home', url: '/' }, { name: 'About Us', url: '/about' }]} schema={localSchema} />
+
+      <button
+        onClick={onBack || (() => window.history.back())}
+        style={{ display: 'inline-flex', alignItems: 'center', gap: '8px', padding: '8px 16px', background: '#ffffff', border: '1px solid var(--color-gray-200, #e2e8f0)', borderRadius: '8px', color: 'var(--color-text-primary, #1e293b)', cursor: 'pointer', fontSize: '13.5px', fontWeight: '600', marginBottom: '24px', boxShadow: '0 2px 6px rgba(0,0,0,0.04)' }}
+      >
+        <ArrowLeft size={16} /> Back to Home
+      </button>
 
       <div style={{ textAlign: 'center', marginBottom: '60px' }}>
         <div className="seo-badge" style={{ display: 'inline-flex', alignItems: 'center', gap: '6px', padding: '6px 14px', background: 'rgba(16,185,129,0.12)', border: '1px solid rgba(16,185,129,0.3)', color: '#059669', borderRadius: '20px', fontSize: '0.85rem', fontWeight: '700', marginBottom: '14px' }}>

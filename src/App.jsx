@@ -185,7 +185,7 @@ export default function App() {
     }
 
     if (currentPath === '/about') {
-      return <AboutPage onNavigate={navigate} />
+      return <AboutPage onBack={() => navigate('/')} onNavigate={navigate} />
     }
 
     if (currentPath === '/founder') {
@@ -193,11 +193,11 @@ export default function App() {
     }
 
     if (currentPath === '/pricing') {
-      return <PricingPage />
+      return <PricingPage onBack={() => navigate('/')} onNavigate={navigate} />
     }
 
     if (currentPath === '/case-studies') {
-      return <CaseStudiesPage />
+      return <CaseStudiesPage onBack={() => navigate('/')} onNavigate={navigate} />
     }
 
     if (currentPath === '/sitemap') {
