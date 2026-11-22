@@ -54,11 +54,15 @@ export default function App() {
       setCurrentPath('/')
       setCurrentHash(hash)
       setSelectedPostSlug(null)
+      // Land directly at anchor target without flash of homepage top
+      requestAnimationFrame(() => {
+        const el = document.getElementById(hash.replace('#', ''))
+        if (el) el.scrollIntoView({ behavior: 'auto' })
+      })
       setTimeout(() => {
         const el = document.getElementById(hash.replace('#', ''))
-        if (el) el.scrollIntoView({ behavior: 'smooth' })
-        else window.scrollTo({ top: 0, behavior: 'smooth' })
-      }, 50)
+        if (el) el.scrollIntoView({ behavior: 'auto' })
+      }, 40)
       return
     }
 

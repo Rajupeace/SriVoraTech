@@ -14,7 +14,7 @@ export const COMPANY_CONFIG = {
   email: {
     support: 'contact@srivoratech.in',
     founder: 'srikanth@srivoratech.in',
-    alternateFounder: 'srikanthbsqy@gmail.com',
+    alternateFounder: 'contact@srivoratech.in',
   },
   
   phone: {
@@ -46,14 +46,14 @@ export const COMPANY_CONFIG = {
     {
       name: 'Badisa Vamsi Krishna',
       title: 'Co-Founder & Chief Operating Officer',
-      email: 'vamsibadisabadisa126@gmail.com',
+      email: 'vamsi@srivoratech.in',
       linkedin: 'https://www.linkedin.com/in/vamsi-krishna-badisa-460621371',
       bio: 'Operations and client success lead dedicated to agile project execution, operational excellence, and enterprise relationship management.',
     },
     {
       name: 'Garapati Sai Manindra',
       title: 'Chief Technology Officer',
-      email: 'saimanindragarapati@gmail.com',
+      email: 'sai@srivoratech.in',
       linkedin: 'https://www.linkedin.com/in/sai-manindra-garapati-430b20317',
       bio: 'Cloud infrastructure and AI architect leading modern web architecture, distributed systems, and intelligent workflow automation.',
     },

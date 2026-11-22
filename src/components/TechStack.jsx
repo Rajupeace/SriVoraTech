@@ -211,9 +211,9 @@ export default function TechStack() {
   return (
     <section ref={ref} className="tech-stack section" id="tech-stack">
       <div className="container">
-        <div className={`animate-on-scroll ${isVisible ? 'visible' : ''}`}>
-          <div className="tech-badge">
-            <Sparkles size={14} />
+        <div className={`animate-on-scroll ${isVisible ? 'visible' : ''}`} style={{ textAlign: 'center', marginBottom: '2.5rem' }}>
+          <div className="tech-badge-top">
+            <Sparkles size={14} className="badge-zap" />
             Verified Technology Stack
           </div>
           <h2 className="section-title">
@@ -231,6 +231,7 @@ export default function TechStack() {
             <input 
               type="text" 
               placeholder="Search technologies, tags, or use cases..." 
+              aria-label="Search technologies, tags, or use cases"
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
               className="tech-search-input"
@@ -260,7 +261,7 @@ export default function TechStack() {
         </div>
 
         {/* Tech Grid */}
-        <div className="tech-grid">
+        <div className="tech-cards-grid">
           {filteredTechnologies.map((tech, idx) => {
             const Icon = tech.icon
 

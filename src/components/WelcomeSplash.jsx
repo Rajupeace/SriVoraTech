@@ -16,19 +16,19 @@ export default function WelcomeSplash({ onComplete }) {
       return
     }
 
-    // Smooth progress animation
+    // Smooth quick progress animation
     const interval = setInterval(() => {
       setProgress((prev) => {
         if (prev >= 100) {
           clearInterval(interval)
           setTimeout(() => {
             triggerDismiss()
-          }, 250)
+          }, 150)
           return 100
         }
-        return prev + 4
+        return prev + 20
       })
-    }, 35)
+    }, 20)
 
     return () => clearInterval(interval)
   }, [])
@@ -40,7 +40,7 @@ export default function WelcomeSplash({ onComplete }) {
     setTimeout(() => {
       setIsDismissed(true)
       if (onComplete) onComplete()
-    }, 550)
+    }, 300)
   }
 
   if (isDismissed) return null

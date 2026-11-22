@@ -78,6 +78,33 @@ html {
   -moz-osx-font-smoothing: grayscale;
 }
 
+/* Shared scroll offset for navbar height clearance */
+section[id],
+#services,
+#why-choose,
+#our-products,
+#our-works,
+#tech-stack,
+#process,
+#estimator,
+#challenges,
+#leadership,
+#achievements,
+#website-rating,
+#faq,
+#contact {
+  scroll-margin-top: 100px;
+}
+
+/* Route transition skeleton placeholder to prevent footer-only flash */
+.page-loading-skeleton {
+  min-height: calc(100vh - 120px);
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
 body {
   font-family: var(--font-body);
   color: var(--color-text-primary);

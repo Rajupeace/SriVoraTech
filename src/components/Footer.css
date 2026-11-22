@@ -50,6 +50,7 @@
   -webkit-mask-image: linear-gradient(0deg, rgba(0,0,0,0) 18%, #f5f5f5 129%);
 }
 
+.footer-top,
 .footer-grid {
   display: grid;
   grid-template-columns: 1fr;
@@ -59,6 +60,14 @@
   width: 100%;
   position: relative;
   z-index: 1;
+}
+
+@media (min-width: 900px) {
+  .footer-top,
+  .footer-grid {
+    grid-template-columns: 1.2fr 1.5fr 1.3fr;
+    gap: 48px;
+  }
 }
 
 .footer-brand {
@@ -78,7 +87,57 @@
   font-size: 15px;
   color: var(--color-text-secondary);
   line-height: 1.5;
-  max-width: 256px;
+  max-width: 280px;
+}
+
+.footer-contact-info {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-top: 14px;
+}
+
+.footer-contact-link,
+.footer-contact-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 14px;
+  color: var(--color-text-secondary);
+  text-decoration: none;
+  transition: color var(--transition-base);
+}
+
+.footer-contact-link:hover {
+  color: var(--color-accent);
+}
+
+.footer-links-col {
+  display: flex;
+  flex-direction: column;
+}
+
+.footer-nav-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+}
+
+.footer-nav-col {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.footer-nav-link {
+  font-size: 14px;
+  color: var(--color-text-secondary);
+  text-decoration: none;
+  transition: color var(--transition-base);
+}
+
+.footer-nav-link:hover {
+  color: var(--color-accent);
 }
 
 .footer-links-grid {
@@ -330,6 +389,33 @@
 .footer-legal {
   display: flex;
   gap: 24px;
+}
+
+.footer-bottom-links {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex-wrap: wrap;
+  justify-content: center;
+  font-size: 13.5px;
+}
+
+.footer-bottom-links a {
+  color: var(--color-text-secondary);
+  text-decoration: none;
+  font-weight: 500;
+  transition: color var(--transition-base);
+}
+
+.footer-bottom-links a:hover {
+  color: var(--color-accent);
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
+.footer-dot {
+  color: var(--color-gray-400);
+  font-size: 12px;
 }
 
 .footer-legal-link {

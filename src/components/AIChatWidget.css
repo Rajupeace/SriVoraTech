@@ -38,8 +38,8 @@
 }
 
 .ai-chat-window {
-  width: 350px;
-  height: 480px;
+  width: min(420px, calc(100vw - 32px));
+  height: min(520px, calc(100vh - 120px));
   background: #ffffff;
   border: 1px solid var(--color-gray-200);
   border-radius: var(--radius-xl);
@@ -179,16 +179,15 @@
 
 .ai-quick-prompts {
   display: flex;
-  gap: 6px;
-  overflow-x: auto;
-  padding: 8px 12px;
+  gap: 8px;
+  flex-wrap: wrap;
+  padding: 10px 14px;
   background: #ffffff;
   border-top: 1px solid var(--color-gray-100);
-  white-space: nowrap;
 }
 
 .prompt-chip {
-  padding: 5px 10px;
+  padding: 6px 12px;
   background: var(--color-gray-100);
   border: 1px solid var(--color-gray-200);
   border-radius: var(--radius-full);
@@ -196,6 +195,7 @@
   font-weight: 600;
   color: var(--color-gray-700);
   cursor: pointer;
+  white-space: normal;
   transition: all 200ms ease;
 }
 

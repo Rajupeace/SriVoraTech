@@ -88,8 +88,8 @@ export default function FounderPage({ onNavigate }) {
 
   const faqs = [
     {
-      q: 'Who is Badisa Srikanth?',
-      a: 'Badisa Srikanth is the Founder and Chief Executive Officer (CEO) of SriVoraTech (srivoratech.in), a next-generation IT services and AI solutions company based in Hyderabad, India.'
+      q: 'Who is Badisa Srikanth (Srikanth Badisa)?',
+      a: 'Badisa Srikanth (also known as Srikanth Badisa) is the Founder and Chief Executive Officer (CEO) of SriVoraTech (srivoratech.in), a next-generation IT services and AI solutions company based in Hyderabad, India.'
     },
     {
       q: 'What is Badisa Srikanth\'s role at SriVoraTech?',
@@ -105,7 +105,7 @@ export default function FounderPage({ onNavigate }) {
     },
     {
       q: 'How can businesses contact Badisa Srikanth and SriVoraTech for projects?',
-      a: 'Businesses can connect with Badisa Srikanth via his official LinkedIn profile (linkedin.com/in/srikanthbadisa), email him at srikanthbsqy@gmail.com, or schedule a consultation call directly at srivoratech.in/#contact.'
+      a: 'Businesses can connect with Badisa Srikanth via his official LinkedIn profile (linkedin.com/in/srikanthbadisa), email him at srikanth@srivoratech.in, or schedule a consultation call directly at srivoratech.in/#contact.'
     }
   ]
 
@@ -177,7 +177,7 @@ export default function FounderPage({ onNavigate }) {
                     <span>GitHub</span>
                   </a>
                   <a
-                    href="mailto:srikanthbsqy@gmail.com"
+                    href="mailto:srikanth@srivoratech.in"
                     className="founder-social-btn email"
                     title="Send Email"
                   >
@@ -408,7 +408,7 @@ export default function FounderPage({ onNavigate }) {
               </p>
 
               <div className="cta-actions-bar">
-                <a href="mailto:srikanthbsqy@gmail.com" className="btn-primary">
+                <a href="mailto:srikanth@srivoratech.in" className="btn-primary">
                   <Mail size={16} /> Email Founder Directly
                 </a>
                 <button type="button" onClick={() => handleNav('/contact')} className="btn-secondary-light">

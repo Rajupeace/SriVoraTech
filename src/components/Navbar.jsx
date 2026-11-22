@@ -56,15 +56,20 @@ export default function Navbar({ onNavigate }) {
 
       // Active section scroll spy
       const sections = navLinks.filter(l => !l.isRoute).map(link => link.href.substring(1))
+      let matched = false
       for (const sectionId of sections) {
         const element = document.getElementById(sectionId)
         if (element) {
           const rect = element.getBoundingClientRect()
           if (rect.top <= 140 && rect.bottom >= 140) {
             setActiveSection(sectionId)
+            matched = true
             break
           }
         }
+      }
+      if (!matched) {
+        setActiveSection('')
       }
     }
 

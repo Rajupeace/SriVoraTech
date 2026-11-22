@@ -67,6 +67,8 @@ function ChallengeCard({ item, idx, isFlipped, toggleFlip }) {
       onClick={() => toggleFlip(idx)}
       role="button"
       tabIndex={0}
+      aria-expanded={isFlipped}
+      aria-label={`${item.problem}: ${isFlipped ? item.solution : item.problemDesc}. Click or press Enter to flip.`}
       onKeyDown={(e) => {
         if (e.key === 'Enter' || e.key === ' ') {
           e.preventDefault()
@@ -76,7 +78,7 @@ function ChallengeCard({ item, idx, isFlipped, toggleFlip }) {
     >
       <div className={`challenge-card-flipper ${isFlipped ? 'flipped' : ''}`}>
         {/* FRONT — Problem side */}
-        <div className="challenge-card challenge-front">
+        <div className="challenge-card challenge-front" aria-hidden={isFlipped}>
           <div className="challenge-problem-side">
             <div className="problem-pill">Problem</div>
             <div className="challenge-icon-box">{item.icon}</div>
@@ -89,7 +91,7 @@ function ChallengeCard({ item, idx, isFlipped, toggleFlip }) {
         </div>
 
         {/* BACK — Solution side */}
-        <div className="challenge-card challenge-back">
+        <div className="challenge-card challenge-back" aria-hidden={!isFlipped}>
           <div className="challenge-solution-side">
             <div className="solution-pill">
               <CheckCircle2 size={12} /> Solution

@@ -38,7 +38,7 @@ export default function BlogPost({ postSlug, onBack }) {
   ]
 
   return (
-    <div style={{ maxWidth: '840px', margin: '0 auto', padding: '60px 24px 100px', color: '#f8fafc' }}>
+    <div style={{ maxWidth: '840px', margin: '0 auto', padding: '110px 24px 100px', color: 'var(--color-text-primary, #1e293b)' }}>
       <SEO pathname={`/blog/${post.slug}`} breadcrumbs={breadcrumbs} schema={articleSchema} />
 
       <button
@@ -48,26 +48,29 @@ export default function BlogPost({ postSlug, onBack }) {
           alignItems: 'center',
           gap: '8px',
           padding: '8px 16px',
-          background: 'rgba(255,255,255,0.06)',
-          border: '1px solid rgba(255,255,255,0.1)',
+          background: '#ffffff',
+          border: '1px solid var(--color-gray-200, #e2e8f0)',
           borderRadius: '8px',
-          color: '#cbd5e1',
+          color: 'var(--color-text-primary, #1e293b)',
           cursor: 'pointer',
-          marginBottom: '32px'
+          fontWeight: '600',
+          fontSize: '13.5px',
+          marginBottom: '32px',
+          boxShadow: '0 2px 6px rgba(0,0,0,0.04)'
         }}
       >
         <ArrowLeft size={16} /> Back to Articles
       </button>
 
       <div style={{ marginBottom: '24px' }}>
-        <span style={{ color: '#10b981', fontWeight: '700', fontSize: '0.85rem' }}>{post.category}</span>
-        <h1 style={{ fontSize: '2.5rem', fontWeight: '800', margin: '12px 0 20px', lineHeight: '1.25' }}>{post.title}</h1>
+        <span style={{ color: '#0067f4', fontWeight: '700', fontSize: '0.85rem', textTransform: 'uppercase' }}>{post.category}</span>
+        <h1 style={{ fontSize: '2.5rem', fontWeight: '800', margin: '12px 0 20px', lineHeight: '1.25', color: 'var(--color-text-heading, #0f172a)' }}>{post.title}</h1>
 
-        <div style={{ display: 'flex', alignItems: 'center', gap: '20px', color: '#94a3b8', fontSize: '0.9rem', flexWrap: 'wrap' }}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: '20px', color: 'var(--color-text-secondary, #475569)', fontSize: '0.9rem', flexWrap: 'wrap' }}>
           <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
             <img src={post.authorImage} alt={post.author} style={{ width: '36px', height: '36px', borderRadius: '50%', objectFit: 'cover' }} />
             <div>
-              <span style={{ fontWeight: '600', color: '#fff' }}>{post.author}</span>
+              <span style={{ fontWeight: '700', color: '#0f172a' }}>{post.author}</span>
               <span style={{ display: 'block', fontSize: '0.75rem', color: '#64748b' }}>{post.authorRole}</span>
             </div>
           </div>
@@ -79,15 +82,15 @@ export default function BlogPost({ postSlug, onBack }) {
       </div>
 
       {/* Table of Contents Box */}
-      <div style={{ padding: '20px 24px', background: 'rgba(15,23,42,0.8)', border: '1px solid rgba(255,255,255,0.1)', borderRadius: '12px', marginBottom: '40px' }}>
-        <h3 style={{ fontSize: '1.05rem', fontWeight: '700', marginBottom: '12px', display: 'flex', alignItems: 'center', gap: '8px' }}>
-          <BookOpen size={16} style={{ color: '#10b981' }} /> Table of Contents
+      <div style={{ padding: '20px 24px', background: '#ffffff', border: '1px solid var(--color-gray-200, #e2e8f0)', borderRadius: '12px', marginBottom: '40px', boxShadow: '0 4px 16px rgba(15,23,42,0.04)' }}>
+        <h3 style={{ fontSize: '1.05rem', fontWeight: '700', marginBottom: '12px', display: 'flex', alignItems: 'center', gap: '8px', color: '#0f172a' }}>
+          <BookOpen size={16} style={{ color: '#0067f4' }} /> Table of Contents
         </h3>
-        <ul style={{ listStyle: 'none', padding: 0, margin: 0, fontSize: '0.92rem', display: 'flex', flexDirection: 'column', gap: '8px', color: '#38bdf8' }}>
-          <li><a href="#intro" style={{ color: '#38bdf8', textDecoration: 'none' }}>1. Introduction &amp; Core Concepts</a></li>
-          <li><a href="#core-vitals" style={{ color: '#38bdf8', textDecoration: 'none' }}>2. Core Web Vitals (LCP, INP, CLS) Optimization</a></li>
-          <li><a href="#schemas" style={{ color: '#38bdf8', textDecoration: 'none' }}>3. JSON-LD Schemas &amp; Rich Snippets</a></li>
-          <li><a href="#summary" style={{ color: '#38bdf8', textDecoration: 'none' }}>4. Key Takeaways &amp; Implementation</a></li>
+        <ul style={{ listStyle: 'none', padding: 0, margin: 0, fontSize: '0.92rem', display: 'flex', flexDirection: 'column', gap: '8px' }}>
+          <li><a href="#intro" style={{ color: '#0067f4', textDecoration: 'none', fontWeight: '500' }}>1. Introduction &amp; Core Concepts</a></li>
+          <li><a href="#core-vitals" style={{ color: '#0067f4', textDecoration: 'none', fontWeight: '500' }}>2. Core Web Vitals (LCP, INP, CLS) Optimization</a></li>
+          <li><a href="#schemas" style={{ color: '#0067f4', textDecoration: 'none', fontWeight: '500' }}>3. JSON-LD Schemas &amp; Rich Snippets</a></li>
+          <li><a href="#summary" style={{ color: '#0067f4', textDecoration: 'none', fontWeight: '500' }}>4. Key Takeaways &amp; Implementation</a></li>
         </ul>
       </div>
 
@@ -95,7 +98,7 @@ export default function BlogPost({ postSlug, onBack }) {
       <div
         className="article-body-content"
         dangerouslySetInnerHTML={{ __html: post.content }}
-        style={{ fontSize: '1.1rem', lineHeight: '1.8', color: '#cbd5e1' }}
+        style={{ fontSize: '1.1rem', lineHeight: '1.8', color: 'var(--color-text-primary, #1e293b)' }}
       />
 
       {/* Author EEAT Bio Footer Box */}

@@ -65,24 +65,28 @@ export default function HTMLSitemap({ onNavigate }) {
   }
 
   return (
-    <div style={{ maxWidth: '1000px', margin: '0 auto', padding: '60px 24px 100px', color: '#f8fafc' }}>
+    <div style={{ maxWidth: '1100px', margin: '0 auto', padding: '110px 24px 100px', color: 'var(--color-text-primary, #1e293b)' }}>
       <SEO pathname="/sitemap" breadcrumbs={[{ name: 'Home', url: '/' }, { name: 'HTML Sitemap', url: '/sitemap' }]} />
 
       <div style={{ textAlign: 'center', marginBottom: '50px' }}>
-        <h1 style={{ fontSize: '2.6rem', fontWeight: '800', marginBottom: '12px' }}>HTML Sitemap &amp; Directory</h1>
-        <p style={{ color: '#94a3b8', fontSize: '1.05rem' }}>Comprehensive URL hierarchy and navigation map of SriVoraTech</p>
+        <h1 style={{ fontSize: '2.8rem', fontWeight: '800', marginBottom: '12px', color: 'var(--color-text-heading, #0f172a)', letterSpacing: '-0.02em' }}>
+          HTML Sitemap &amp; Directory
+        </h1>
+        <p style={{ color: 'var(--color-text-secondary, #475569)', fontSize: '1.1rem' }}>
+          Comprehensive URL hierarchy and navigation map of SriVoraTech
+        </p>
       </div>
 
-      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: '30px' }}>
+      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(240px, 1fr))', gap: '24px' }}>
         {categories.map((cat, idx) => {
           const Icon = cat.icon
           return (
-            <div key={idx} style={{ background: '#0f172a', border: '1px solid #1e293b', borderRadius: '16px', padding: '24px' }}>
+            <div key={idx} style={{ background: '#ffffff', border: '1px solid var(--color-gray-200, #e2e8f0)', borderRadius: '16px', padding: '24px', boxShadow: '0 4px 20px rgba(15, 23, 42, 0.05)' }}>
               <div style={{ display: 'flex', alignItems: 'center', gap: '10px', marginBottom: '18px' }}>
                 <div style={{ width: '36px', height: '36px', borderRadius: '8px', background: 'rgba(0, 103, 244, 0.1)', color: '#0067f4', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
                   <Icon size={18} />
                 </div>
-                <h2 style={{ fontSize: '1.15rem', fontWeight: '700', margin: 0, color: '#f8fafc' }}>{cat.title}</h2>
+                <h2 style={{ fontSize: '1.15rem', fontWeight: '700', margin: 0, color: 'var(--color-text-heading, #0f172a)' }}>{cat.title}</h2>
               </div>
               <ul style={{ listStyle: 'none', padding: 0, margin: 0, display: 'flex', flexDirection: 'column', gap: '10px' }}>
                 {cat.links.map((link, lIdx) => (
@@ -92,11 +96,11 @@ export default function HTMLSitemap({ onNavigate }) {
                       onClick={(e) => handleLink(e, link)}
                       target={link.external ? '_blank' : '_self'}
                       rel={link.external ? 'noopener noreferrer' : ''}
-                      style={{ color: '#94a3b8', textDecoration: 'none', fontSize: '14px', display: 'flex', alignItems: 'center', gap: '6px', transition: 'color 150ms ease' }}
-                      onMouseEnter={(e) => e.currentTarget.style.color = '#38bdf8'}
-                      onMouseLeave={(e) => e.currentTarget.style.color = '#94a3b8'}
+                      style={{ color: 'var(--color-text-secondary, #475569)', textDecoration: 'none', fontSize: '14px', display: 'flex', alignItems: 'center', gap: '6px', transition: 'color 150ms ease', fontWeight: '500' }}
+                      onMouseEnter={(e) => e.currentTarget.style.color = '#0067f4'}
+                      onMouseLeave={(e) => e.currentTarget.style.color = 'var(--color-text-secondary, #475569)'}
                     >
-                      <Link2 size={13} style={{ flexShrink: 0 }} />
+                      <Link2 size={13} style={{ flexShrink: 0, color: '#0067f4' }} />
                       <span>{link.name}</span>
                     </a>
                   </li>

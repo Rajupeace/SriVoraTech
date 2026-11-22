@@ -78,11 +78,11 @@ export default function Hero() {
           </div>
 
           <h1 className="hero-main-title">
-            <span className="hero-line">ARCHITECTING</span>
+            <span className="hero-line">ARCHITECTING </span>
             <span className="hero-line-gradient" style={{ backgroundImage: currentTheme.textGrad }}>
               INTELLIGENT SYSTEMS
             </span>
-            <span className="hero-line">THAT SCALE GLOBALLY</span>
+            <span className="hero-line"> THAT SCALE GLOBALLY</span>
           </h1>
         </div>
 

@@ -66,7 +66,7 @@ export default function ClientPortalPage({ onBack, onNavigate }) {
   ]
 
   return (
-    <div style={{ maxWidth: '1100px', margin: '0 auto', padding: '60px 24px 100px', color: '#f8fafc' }}>
+    <div style={{ maxWidth: '1100px', margin: '0 auto', padding: '110px 24px 100px', color: 'var(--color-text-primary, #1e293b)' }}>
       <SEO
         pathname="/client-portal"
         title="Interactive Client Portal Preview | SriVoraTech"
@@ -77,28 +77,28 @@ export default function ClientPortalPage({ onBack, onNavigate }) {
       <div style={{ marginBottom: '32px' }}>
         <button
           onClick={onBack || (() => window.history.back())}
-          style={{ display: 'inline-flex', alignItems: 'center', gap: '8px', padding: '8px 16px', background: 'rgba(255,255,255,0.06)', border: '1px solid rgba(255,255,255,0.15)', borderRadius: '8px', color: '#cbd5e1', cursor: 'pointer', fontSize: '13.5px', fontWeight: '600', marginBottom: '24px' }}
+          style={{ display: 'inline-flex', alignItems: 'center', gap: '8px', padding: '8px 16px', background: '#ffffff', border: '1px solid var(--color-gray-200, #e2e8f0)', borderRadius: '8px', color: 'var(--color-text-primary, #1e293b)', cursor: 'pointer', fontSize: '13.5px', fontWeight: '600', marginBottom: '24px', boxShadow: '0 2px 6px rgba(0,0,0,0.04)' }}
         >
           <ArrowLeft size={16} /> Back to Home
         </button>
 
         {/* Prominent Demonstration Notice */}
         <div style={{ background: 'rgba(0, 103, 244, 0.08)', border: '1px solid rgba(0, 103, 244, 0.25)', borderRadius: '12px', padding: '16px 20px', marginBottom: '24px', display: 'flex', alignItems: 'flex-start', gap: '14px' }}>
-          <Info size={20} style={{ color: '#38bdf8', flexShrink: 0, marginTop: '2px' }} />
+          <Info size={20} style={{ color: '#0067f4', flexShrink: 0, marginTop: '2px' }} />
           <div>
-            <strong style={{ color: '#38bdf8', fontSize: '14px', display: 'block', marginBottom: '4px' }}>
+            <strong style={{ color: '#0067f4', fontSize: '14px', display: 'block', marginBottom: '4px' }}>
               Interactive Client Portal Preview (Sample Project Data)
             </strong>
-            <p style={{ margin: 0, color: '#94a3b8', fontSize: '13.5px', lineHeight: '1.6' }}>
+            <p style={{ margin: 0, color: 'var(--color-text-secondary, #475569)', fontSize: '13.5px', lineHeight: '1.6' }}>
               This page is an interactive demonstration illustrating how SriVoraTech clients track live sprint milestones, inspect deliverables, and collaborate with our engineering team. Live client credentials and secure private repository access are provisioned upon project agreement.
             </p>
           </div>
         </div>
 
-        <h1 style={{ fontSize: '2.8rem', fontWeight: '800', margin: '8px 0 16px', background: 'linear-gradient(135deg, #fff 0%, #cbd5e1 100%)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent' }}>
+        <h1 style={{ fontSize: '2.8rem', fontWeight: '800', margin: '8px 0 16px', color: 'var(--color-text-heading, #0f172a)', letterSpacing: '-0.02em' }}>
           Client Milestone Tracker (Preview)
         </h1>
-        <p style={{ color: '#94a3b8', fontSize: '1.1rem', lineHeight: '1.7', maxWidth: '750px' }}>
+        <p style={{ color: 'var(--color-text-secondary, #475569)', fontSize: '1.1rem', lineHeight: '1.7', maxWidth: '750px' }}>
           Transparent tracking across all SriVoraTech engineering sprints. View milestone progress, sample deliverables, and our direct support workflow.
         </p>
       </div>

@@ -165,7 +165,8 @@
 }
 
 /* Interactive Category Filter Row & Search */
-.tech-filter-row {
+.tech-filter-row,
+.tech-controls {
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -177,14 +178,16 @@
   z-index: 2;
 }
 
-.tech-category-tabs {
+.tech-category-tabs,
+.tech-categories-pills {
   display: flex;
   align-items: center;
   gap: 8px;
   flex-wrap: wrap;
 }
 
-.tech-tab-btn {
+.tech-tab-btn,
+.tech-cat-btn {
   display: inline-flex;
   align-items: center;
   gap: 0.5rem;
@@ -200,14 +203,16 @@
   transition: all 250ms ease;
 }
 
-.tech-tab-btn:hover {
+.tech-tab-btn:hover,
+.tech-cat-btn:hover {
   color: #0f172a;
   border-color: rgba(0, 103, 244, 0.3);
   transform: translateY(-2px);
   box-shadow: 0 4px 14px rgba(0, 103, 244, 0.08);
 }
 
-.tech-tab-btn.active {
+.tech-tab-btn.active,
+.tech-cat-btn.active {
   background: #0f172a;
   border-color: #0f172a;
   color: #ffffff;
@@ -215,54 +220,62 @@
   transform: translateY(-1px);
 }
 
-.tech-tab-btn.active .tab-icon {
+.tech-tab-btn.active .tab-icon,
+.tech-cat-btn.active svg {
   color: #38bdf8;
 }
 
-.tech-search-box {
+.tech-search-box,
+.tech-search-wrapper {
   display: flex;
   align-items: center;
-  gap: 8px;
-  padding: 8px 16px;
+  gap: 10px;
+  padding: 10px 16px;
   background: #ffffff;
-  border: 1px solid var(--color-gray-200);
+  border: 1.5px solid var(--color-gray-300, #cbd5e1);
   border-radius: var(--radius-full);
-  width: 260px;
+  min-width: 280px;
+  max-width: 100%;
   box-shadow: 0 2px 8px rgba(15, 23, 42, 0.04);
   transition: all 250ms ease;
 }
 
-.tech-search-box:focus-within {
+.tech-search-box:focus-within,
+.tech-search-wrapper:focus-within {
   border-color: var(--color-accent);
-  box-shadow: 0 4px 14px rgba(0, 103, 244, 0.12);
+  box-shadow: 0 4px 14px rgba(0, 103, 244, 0.15);
 }
 
-.tech-search-box input {
+.tech-search-box input,
+.tech-search-input {
   width: 100%;
-  font-size: 13.5px;
-  color: var(--color-gray-800);
+  font-size: 14px;
+  color: var(--color-gray-900);
   background: transparent;
   border: none;
   outline: none;
 }
 
-.search-clear {
+.search-clear,
+.clear-search-btn {
   background: none;
   border: none;
   color: #94a3b8;
   cursor: pointer;
-  padding: 2px;
+  padding: 4px;
   display: flex;
   align-items: center;
   justify-content: center;
 }
 
-.search-clear:hover {
+.search-clear:hover,
+.clear-search-btn:hover {
   color: #475569;
 }
 
 /* Tech Cards Grid */
-.tech-cards-grid {
+.tech-cards-grid,
+.tech-grid {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
   gap: 1.5rem;

@@ -12,7 +12,7 @@ export default function QuoteBlock() {
           <blockquote className="quote-text">
             "We don't just write code — we architect digital experiences that transform businesses and delight users."
           </blockquote>
-          <p className="quote-author">— Badisa Srikanth,SriVoraTech.in</p>
+          <p className="quote-author">— Badisa Srikanth, SriVoraTech.in</p>
         </div>
       </div>
     </section>

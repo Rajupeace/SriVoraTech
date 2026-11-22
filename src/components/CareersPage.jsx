@@ -214,13 +214,6 @@ export default function CareersPage({ onBack }) {
   if (submitted) {
     return (
       <div className="careers-page success-page">
-        <header className="detail-navbar">
-          <button onClick={onBack} className="back-btn">
-            <ArrowLeft size={16} /> Back to Home
-          </button>
-          <span className="detail-logo">SriVora<span className="logo-accent">Tech</span></span>
-        </header>
-
         <main className="careers-success-main">
           <div className="success-card glass-card">
             <div className="success-icon-wrapper">
@@ -274,13 +267,6 @@ export default function CareersPage({ onBack }) {
 
   return (
     <div className="careers-page">
-      <header className="detail-navbar">
-        <button onClick={onBack} className="back-btn">
-          <ArrowLeft size={16} /> Back to Home
-        </button>
-        <span className="detail-logo">SriVora<span className="logo-accent">Tech</span></span>
-      </header>
-
       <main className="careers-main">
         <div className="careers-header">
           <h1 className="careers-title">Join Our Team</h1>
@@ -312,42 +298,63 @@ export default function CareersPage({ onBack }) {
           <form onSubmit={handleSubmit} className="careers-form" noValidate>
 
             <div className="form-group full-width">
-              <label className="form-label">Full Name *</label>
+              <label className="form-label" htmlFor="career-fullName">Full Name *</label>
               <input
+                id="career-fullName"
                 type="text"
                 name="fullName"
                 value={currentData.fullName}
                 onChange={handleChange}
                 placeholder="Enter your full name"
+                aria-invalid={errors.fullName ? 'true' : 'false'}
+                aria-describedby={errors.fullName ? 'fullName-error' : undefined}
                 className={`form-input ${errors.fullName ? 'input-error' : ''}`}
               />
-              {errors.fullName && <span className="error-text">{errors.fullName}</span>}
+              {errors.fullName && (
+                <span className="error-text" id="fullName-error" role="alert">
+                  <AlertCircle size={12} /> {errors.fullName}
+                </span>
+              )}
             </div>
 
             <div className="form-row">
               <div className="form-group">
-                <label className="form-label">Email Address *</label>
+                <label className="form-label" htmlFor="career-email">Email Address *</label>
                 <input
+                  id="career-email"
                   type="email"
                   name="email"
                   value={currentData.email}
                   onChange={handleChange}
                   placeholder="Enter email address"
+                  aria-invalid={errors.email ? 'true' : 'false'}
+                  aria-describedby={errors.email ? 'email-error' : undefined}
                   className={`form-input ${errors.email ? 'input-error' : ''}`}
                 />
-                {errors.email && <span className="error-text">{errors.email}</span>}
+                {errors.email && (
+                  <span className="error-text" id="email-error" role="alert">
+                    <AlertCircle size={12} /> {errors.email}
+                  </span>
+                )}
               </div>
               <div className="form-group">
-                <label className="form-label">Phone Number *</label>
+                <label className="form-label" htmlFor="career-phone">Phone Number *</label>
                 <input
+                  id="career-phone"
                   type="tel"
                   name="phone"
                   value={currentData.phone}
                   onChange={handleChange}
                   placeholder="Enter phone number"
+                  aria-invalid={errors.phone ? 'true' : 'false'}
+                  aria-describedby={errors.phone ? 'phone-error' : undefined}
                   className={`form-input ${errors.phone ? 'input-error' : ''}`}
                 />
-                {errors.phone && <span className="error-text">{errors.phone}</span>}
+                {errors.phone && (
+                  <span className="error-text" id="phone-error" role="alert">
+                    <AlertCircle size={12} /> {errors.phone}
+                  </span>
+                )}
               </div>
             </div>
 

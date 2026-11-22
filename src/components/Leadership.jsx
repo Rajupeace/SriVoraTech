@@ -16,7 +16,7 @@ const leaders = [
     color: '#0067f4',
     photo: srikanthPhoto,
     linkedin: 'https://www.linkedin.com/in/srikanthbadisa/',
-    email: 'srikanthbsqy@gmail.com',
+    email: 'srikanth@srivoratech.in',
     bio: "Badisa Srikanth is the Founder and CEO of SriVoraTech. He leads the company's vision, product strategy, business growth, and innovation initiatives. Passionate about software engineering, artificial intelligence, and entrepreneurship, he focuses on building scalable digital solutions that help businesses accelerate their digital transformation.",
     expertise: [
       'Business Strategy',
@@ -36,7 +36,7 @@ const leaders = [
     color: '#8b5cf6',
     photo: vamsiPhoto,
     linkedin: 'https://linkedin.com/in/vamsikrishna-badisa-7b99872a3/',
-    email: 'vamsibadisabadisa126@gmail.com',
+    email: 'vamsi@srivoratech.in',
     bio: 'Badisa Vamsi Krishna oversees daily operations, project delivery, business development, and customer relationships. He ensures efficient execution, operational excellence, and seamless collaboration between teams and clients.',
     expertise: [
       'Operations Management',
@@ -56,7 +56,7 @@ const leaders = [
     color: '#10b981',
     photo: saiPhoto,
     linkedin: 'https://www.linkedin.com/in/saimanindragarapati/',
-    email: 'saimanindragarapati@gmail.com',
+    email: 'sai@srivoratech.in',
     bio: "Garapati Sai Manindra leads the company's technology vision, engineering excellence, and software architecture. He is responsible for building secure, scalable, and high-performance web applications, mobile apps, cloud platforms, and AI-powered solutions.",
     expertise: [
       'Software Engineering',

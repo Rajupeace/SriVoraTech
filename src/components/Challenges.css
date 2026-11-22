@@ -107,16 +107,25 @@
   height: 360px;
   cursor: pointer;
   outline: none;
+  perspective: 1000px;
+  -webkit-perspective: 1000px;
 }
 
 .challenge-card-flipper {
   position: relative;
   width: 100%;
   height: 100%;
+  transform-style: preserve-3d;
+  -webkit-transform-style: preserve-3d;
+  transition: transform 600ms cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.challenge-card-flipper.flipped {
+  transform: rotateY(180deg);
 }
 
 /* ═══════════════════════════════════════════
-   CARD FACE STYLES — Pure Opacity + Z-index Flip
+   CARD FACE STYLES — Hardware-accelerated 3D
    ═══════════════════════════════════════════ */
 
 .challenge-card {
@@ -136,9 +145,9 @@
     0 1px 3px rgba(0, 0, 0, 0.04);
   overflow: hidden;
   box-sizing: border-box;
-  transition:
-    opacity 400ms ease,
-    box-shadow 400ms ease;
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
+  transition: box-shadow 400ms ease;
 }
 
 /* Hover glow */
@@ -148,11 +157,9 @@
     0 4px 12px rgba(0, 0, 0, 0.06);
 }
 
-/* ── FRONT FACE (default: visible) ── */
+/* ── FRONT FACE (default: 0deg) ── */
 .challenge-front {
-  z-index: 2;
-  opacity: 1;
-  pointer-events: auto;
+  transform: rotateY(0deg);
   background: linear-gradient(160deg, #ffffff 0%, #fafbff 100%);
   border: 1px solid var(--color-gray-200);
 }
@@ -176,11 +183,9 @@
   100% { background-position: 0% 50%; }
 }
 
-/* ── BACK FACE (default: hidden) ── */
+/* ── BACK FACE (default: 180deg) ── */
 .challenge-back {
-  z-index: 1;
-  opacity: 0;
-  pointer-events: none;
+  transform: rotateY(180deg);
   background: linear-gradient(160deg, #f0f7ff 0%, #f5f0ff 40%, #ffffff 100%);
   border: 1px solid rgba(0, 103, 244, 0.15);
 }
@@ -196,19 +201,6 @@
   background: linear-gradient(90deg, #0067f4, #10b981, #0067f4);
   background-size: 200% 100%;
   animation: accent-shimmer 3s ease infinite;
-}
-
-/* ═══ FLIPPED STATE ═══ */
-.challenge-card-flipper.flipped .challenge-front {
-  z-index: 1;
-  opacity: 0;
-  pointer-events: none;
-}
-
-.challenge-card-flipper.flipped .challenge-back {
-  z-index: 2;
-  opacity: 1;
-  pointer-events: auto;
 }
 
 /* ═══════════════════════════════════════════

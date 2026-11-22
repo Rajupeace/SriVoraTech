@@ -393,7 +393,7 @@ export function generateFounderPageSchemas() {
       height: 1024
     },
     url: 'https://www.srivoratech.in/founder',
-    email: 'srikanthbsqy@gmail.com',
+    email: 'srikanth@srivoratech.in',
     nationality: {
       '@type': 'Country',
       name: 'India'

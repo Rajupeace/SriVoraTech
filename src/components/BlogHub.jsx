@@ -82,15 +82,15 @@ export default function BlogHub({ onSelectPost, onNavigate }) {
   })
 
   return (
-    <div className="blog-hub-page" style={{ padding: '60px 24px 100px', maxWidth: '1200px', margin: '0 auto', color: '#f8fafc' }}>
+    <div className="blog-hub-page" style={{ padding: '110px 24px 100px', maxWidth: '1200px', margin: '0 auto', color: 'var(--color-text-primary, #1e293b)' }}>
       <SEO pathname="/blog" breadcrumbs={[{ name: 'Home', url: '/' }, { name: 'Blog', url: '/blog' }]} />
 
       <div style={{ textAlign: 'center', marginBottom: '50px' }}>
-        <span style={{ color: '#10b981', fontWeight: '700', textTransform: 'uppercase', tracking: '1px', fontSize: '0.85rem' }}>Insights &amp; Innovation</span>
-        <h1 style={{ fontSize: '2.8rem', fontWeight: '800', margin: '12px 0 16px', background: 'linear-gradient(135deg, #fff 0%, #cbd5e1 100%)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent' }}>
+        <span style={{ color: '#0067f4', fontWeight: '700', textTransform: 'uppercase', tracking: '1px', fontSize: '0.85rem' }}>Insights &amp; Innovation</span>
+        <h1 style={{ fontSize: '2.8rem', fontWeight: '800', margin: '12px 0 16px', color: 'var(--color-text-heading, #0f172a)', letterSpacing: '-0.02em' }}>
           SriVoraTech Technical Engineering Blog
         </h1>
-        <p style={{ color: '#94a3b8', fontSize: '1.1rem', maxWidth: '700px', margin: '0 auto' }}>
+        <p style={{ color: 'var(--color-text-secondary, #475569)', fontSize: '1.1rem', maxWidth: '700px', margin: '0 auto' }}>
           Deep dives into AI engineering, React/Next.js performance, cloud DevOps, and technical SEO written by our founding team.
         </p>
 
@@ -101,12 +101,13 @@ export default function BlogHub({ onSelectPost, onNavigate }) {
             <input
               type="text"
               placeholder="Search articles..."
+              aria-label="Search articles by title or topic"
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              style={{ width: '100%', padding: '12px 14px 12px 42px', background: 'rgba(15,23,42,0.8)', border: '1px solid rgba(255,255,255,0.15)', borderRadius: '8px', color: '#fff' }}
+              style={{ width: '100%', padding: '12px 14px 12px 42px', background: '#ffffff', border: '1px solid var(--color-gray-200, #e2e8f0)', borderRadius: '8px', color: '#0f172a', boxShadow: '0 2px 6px rgba(0,0,0,0.03)' }}
             />
           </div>
-          <div style={{ display: 'flex', gap: '8px' }}>
+          <div style={{ display: 'flex', gap: '8px', flexWrap: 'wrap', justifyContent: 'center' }}>
             {categories.map((cat, idx) => (
               <button
                 key={idx}
@@ -114,11 +115,12 @@ export default function BlogHub({ onSelectPost, onNavigate }) {
                 style={{
                   padding: '10px 18px',
                   borderRadius: '8px',
-                  border: '1px solid ' + (activeCategory === cat ? '#10b981' : 'rgba(255,255,255,0.1)'),
-                  background: activeCategory === cat ? 'rgba(16,185,129,0.15)' : 'rgba(15,23,42,0.6)',
-                  color: activeCategory === cat ? '#10b981' : '#cbd5e1',
+                  border: '1px solid ' + (activeCategory === cat ? '#0067f4' : 'var(--color-gray-200, #e2e8f0)'),
+                  background: activeCategory === cat ? '#0067f4' : '#ffffff',
+                  color: activeCategory === cat ? '#ffffff' : '#475569',
                   cursor: 'pointer',
-                  fontWeight: '600'
+                  fontWeight: '600',
+                  boxShadow: '0 2px 4px rgba(0,0,0,0.02)'
                 }}
               >
                 {cat}
@@ -137,30 +139,31 @@ export default function BlogHub({ onSelectPost, onNavigate }) {
             className="spotlight-card"
             style={{
               padding: '28px',
-              background: 'rgba(15, 23, 42, 0.7)',
-              border: '1px solid rgba(255,255,255,0.1)',
+              background: '#ffffff',
+              border: '1px solid var(--color-gray-200, #e2e8f0)',
               borderRadius: '16px',
               cursor: 'pointer',
               display: 'flex',
               flexDirection: 'column',
-              justify: 'space-between',
-              transition: 'transform 0.2s ease, border-color 0.2s ease'
+              justifyContent: 'space-between',
+              boxShadow: '0 4px 20px rgba(15, 23, 42, 0.05)',
+              transition: 'transform 0.2s ease, border-color 0.2s ease, box-shadow 0.2s ease'
             }}
           >
             <div>
-              <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '16px', fontSize: '0.82rem', color: '#94a3b8' }}>
-                <span style={{ color: '#10b981', fontWeight: '700' }}>{post.category}</span>
+              <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '16px', fontSize: '0.82rem', color: 'var(--color-text-secondary, #475569)' }}>
+                <span style={{ color: '#0067f4', fontWeight: '700' }}>{post.category}</span>
                 <span style={{ display: 'flex', alignItems: 'center', gap: '4px' }}><Clock size={14} /> {post.readTime}</span>
               </div>
-              <h2 style={{ fontSize: '1.35rem', fontWeight: '700', marginBottom: '12px', lineHeight: '1.4' }}>{post.title}</h2>
-              <p style={{ color: '#94a3b8', fontSize: '0.95rem', lineHeight: '1.6', marginBottom: '20px' }}>{post.excerpt}</p>
+              <h2 style={{ fontSize: '1.35rem', fontWeight: '700', marginBottom: '12px', lineHeight: '1.4', color: 'var(--color-text-heading, #0f172a)' }}>{post.title}</h2>
+              <p style={{ color: 'var(--color-text-secondary, #475569)', fontSize: '0.95rem', lineHeight: '1.6', marginBottom: '20px' }}>{post.excerpt}</p>
             </div>
 
             <div>
-              <div style={{ display: 'flex', alignItems: 'center', gap: '12px', paddingTop: '16px', borderTop: '1px solid rgba(255,255,255,0.08)' }}>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '12px', paddingTop: '16px', borderTop: '1px solid var(--color-gray-200, #e2e8f0)' }}>
                 <img src={post.authorImage} alt={post.author} style={{ width: '40px', height: '40px', borderRadius: '50%', objectFit: 'cover' }} />
                 <div>
-                  <div style={{ fontWeight: '600', fontSize: '0.9rem' }}>{post.author}</div>
+                  <div style={{ fontWeight: '700', fontSize: '0.9rem', color: 'var(--color-text-heading, #0f172a)' }}>{post.author}</div>
                   <div style={{ color: '#64748b', fontSize: '0.78rem' }}>{post.authorRole}</div>
                 </div>
               </div>
