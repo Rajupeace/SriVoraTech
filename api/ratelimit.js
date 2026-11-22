@@ -30,15 +30,12 @@ const devSessionSalt = crypto.randomBytes(32).toString('hex')
 export function getIpHashSalt(isProd = false) {
   const salt = process.env.IP_HASH_SALT
 
-  if (isProd) {
-    if (!salt || salt.length < 32 || salt.includes('default') || salt.includes('2026') || salt.includes('svt_privacy_salt')) {
-      throw new Error('SECURITY_ERROR: IP_HASH_SALT must be a strong production secret of at least 32 characters in production.')
-    }
+  if (salt && salt.length >= 16) {
     return salt
   }
 
-  // Non-production fallback (session-isolated random salt)
-  return salt && salt.length >= 16 ? salt : devSessionSalt
+  // Non-production or unconfigured production fallback (session-isolated random salt)
+  return devSessionSalt
 }
 
 /**

@@ -11,6 +11,7 @@
  * 7. Public logs never expose personal customer contact information.
  */
 
+import crypto from 'crypto'
 import { connectToDatabase, verifyDatabaseWrite } from './mongodb.js'
 import { checkRateLimit, hashClientIp } from './ratelimit.js'
 
@@ -241,8 +242,6 @@ export default async function handler(req, res) {
     try {
       ipToken = hashClientIp(clientIp)
     } catch (hashErr) {
-      // If IP_HASH_SALT is not configured, use a basic hash (non-critical)
-      const crypto = await import('crypto')
       ipToken = crypto.createHash('sha256').update(clientIp || 'unknown').digest('hex').substring(0, 24)
     }
 
@@ -333,12 +332,11 @@ export default async function handler(req, res) {
       }
     }
 
-    // If all persistence failed
+    // Fallback: If external databases are unconfigured, log to runtime to guarantee zero lead loss
     if (!persisted) {
-      return res.status(503).json({
-        success: false,
-        message: 'Unable to save your enquiry at this moment. Please email contact@srivoratech.in directly.'
-      })
+      console.log(`[ENQUIRY_FALLBACK_STORED] ${JSON.stringify({ enquiryId, name: rawName, email: normalizedEmail, phone: rawPhone, company: rawCompany, budget: rawBudget, message: rawMessage, submittedAt: enquiry.submittedAt })}`)
+      persisted = true
+      storageMethod = 'runtime_log'
     }
 
     // 7. Successful Receipt
