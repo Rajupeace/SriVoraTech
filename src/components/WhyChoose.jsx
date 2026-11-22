@@ -73,8 +73,8 @@ export default function WhyChoose() {
   return (
     <section ref={ref} className="why-choose section" id="why-choose">
       <div className="container">
-        <div className={`animate-on-scroll ${isVisible ? 'visible' : ''}`}>
-          <div className="why-badge">
+        <div className={`animate-on-scroll ${isVisible ? 'visible' : ''}`} style={{ textAlign: 'center' }}>
+          <div className="why-badge" style={{ display: 'inline-flex', margin: '0 auto 16px', alignItems: 'center' }}>
             <Sparkles size={14} />
             Why Partner with SriVoraTech
           </div>

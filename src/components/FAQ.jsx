@@ -76,8 +76,8 @@ export default function FAQ() {
   return (
     <section className="faq section" id="faq">
       <div className="container">
-        <div ref={ref} className={`animate-on-scroll ${isVisible ? 'visible' : ''}`}>
-          <div className="faq-badge">
+        <div ref={ref} className={`animate-on-scroll ${isVisible ? 'visible' : ''}`} style={{ textAlign: 'center' }}>
+          <div className="faq-badge" style={{ display: 'inline-flex', margin: '0 auto 16px', alignItems: 'center' }}>
             <HelpCircle size={14} />
             Got Questions?
           </div>

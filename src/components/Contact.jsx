@@ -189,13 +189,6 @@ export default function Contact() {
                   autoComplete="off"
                   aria-hidden="true"
                 />
-                {/* Form completion progress */}
-                <div className="form-progress-track">
-                  <div className="form-progress-fill" style={{ width: `${(filledCount / totalFields) * 100}%` }} />
-                  <span className="form-progress-text">
-                    {filledCount} / {totalFields} fields completed
-                  </span>
-                </div>
 
                 {serverError && (
                   <div style={{ background: '#fef2f2', border: '1px solid #fecaca', borderRadius: '8px', padding: '12px 16px', color: '#b91c1c', fontSize: '13.5px', marginBottom: '16px', display: 'flex', alignItems: 'center', gap: '8px' }}>

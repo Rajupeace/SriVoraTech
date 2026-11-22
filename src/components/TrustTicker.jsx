@@ -1,83 +1,49 @@
-import { useEffect, useRef } from 'react'
-import {
-  Shield, Zap, Award, Clock,
-  Code2, Cpu, Rocket, Star, CheckCircle2, TrendingUp
-} from 'lucide-react'
+import { Rocket, ShieldCheck, Cloud } from 'lucide-react'
 import './TrustTicker.css'
 
-const statsItems = [
-  { icon: <Rocket size={16} />, label: 'Software Builds', value: 'Tailored Solutions', color: '#0067f4' },
-  { icon: <Clock size={16} />, label: 'Development Model', value: 'Iterative Sprints', color: '#10b981' },
-  { icon: <Shield size={16} />, label: 'Architecture Target', value: 'High Availability', color: '#06b6d4' },
-  { icon: <Award size={16} />, label: 'IP Ownership Transfer', value: 'Full Code Handover', color: '#0ea5e9' },
-  { icon: <Cpu size={16} />, label: 'AI Architecture', value: 'Applied RAG & LLMs', color: '#f97316' },
-  { icon: <TrendingUp size={16} />, label: 'Code Quality', value: 'Clean & Scalable', color: '#22c55e' },
-  { icon: <Code2 size={16} />, label: 'Tech Stack', value: 'Modern & Proven', color: '#6366f1' },
-]
-
-const trustBadges = [
-  'OWASP Guidelines Aligned',
-  'AWS Cloud Infrastructure',
-  'Multi-Cloud Ready',
-  'Role-Based JWT Security',
-  'TLS / HTTPS Encryption',
-  'Automated CI/CD Pipelines',
-  '100% IP Code Handover',
-  'Modern React & Next.js',
-]
-
 export default function TrustTicker() {
-  const marqueeRef = useRef(null)
-
-  useEffect(() => {
-    const marquee = marqueeRef.current
-    if (!marquee) return
-
-    let animId
-    let pos = 0
-    const speed = 0.4
-
-    const animate = () => {
-      pos -= speed
-      const firstTrack = marquee.querySelector('.ticker-track')
-      if (firstTrack && Math.abs(pos) >= firstTrack.scrollWidth / 2) {
-        pos = 0
-      }
-      marquee.style.transform = `translateX(${pos}px)`
-      animId = requestAnimationFrame(animate)
+  const proofPoints = [
+    {
+      icon: Rocket,
+      title: 'Iterative Agile Sprints',
+      desc: 'Weekly milestone releases, interactive staging previews, and rapid continuous delivery.',
+      badge: 'Speed & Agility'
+    },
+    {
+      icon: ShieldCheck,
+      title: 'Full Source Code Ownership',
+      desc: '100% intellectual property transfer with complete Git repositories and root credentials.',
+      badge: 'Zero Vendor Lock-In'
+    },
+    {
+      icon: Cloud,
+      title: 'Cloud Architecture',
+      desc: 'Enterprise-grade microservices, multi-region AWS/Vercel redundancy, and 99.9% uptime SLA.',
+      badge: 'Enterprise Scalability'
     }
-
-    animId = requestAnimationFrame(animate)
-    return () => cancelAnimationFrame(animId)
-  }, [])
+  ]
 
   return (
-    <div className="trust-ticker-container" aria-label="Key engineering standards and trust badges">
-      {/* Top Track: Engineering Standards */}
-      <div className="ticker-wrapper" ref={marqueeRef}>
-        <div className="ticker-track">
-          {statsItems.concat(statsItems).map((item, idx) => (
-            <div key={`stat-${idx}`} className="ticker-item stat-item">
-              <span className="ticker-icon" style={{ color: item.color }}>{item.icon}</span>
-              <span className="ticker-stat-value" style={{ color: item.color }}>{item.value}</span>
-              <span className="ticker-stat-label">{item.label}</span>
-              <span className="ticker-dot">•</span>
-            </div>
-          ))}
+    <section className="proof-points-section" aria-label="Core Engineering Pillars">
+      <div className="container">
+        <div className="proof-points-grid">
+          {proofPoints.map((point, idx) => {
+            const Icon = point.icon
+            return (
+              <div key={idx} className="proof-point-card">
+                <div className="proof-point-header">
+                  <div className="proof-point-icon-box">
+                    <Icon size={20} />
+                  </div>
+                  <span className="proof-point-badge">{point.badge}</span>
+                </div>
+                <h3 className="proof-point-title">{point.title}</h3>
+                <p className="proof-point-desc">{point.desc}</p>
+              </div>
+            )
+          })}
         </div>
       </div>
-
-      {/* Bottom Track: Technical Badges */}
-      <div className="ticker-badges-row">
-        <div className="ticker-badges-inner">
-          {trustBadges.map((badge, idx) => (
-            <span key={`badge-${idx}`} className="trust-pill">
-              <CheckCircle2 size={12} className="pill-check" />
-              {badge}
-            </span>
-          ))}
-        </div>
-      </div>
-    </div>
+    </section>
   )
 }

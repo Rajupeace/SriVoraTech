@@ -1,6 +1,9 @@
 import React, { useState } from 'react'
 import SEO from './SEO'
-import { Clock, User, Tag, ArrowRight, BookOpen, Search, CheckCircle } from 'lucide-react'
+import { Clock, User, Tag, ArrowRight, BookOpen, Search, CheckCircle, Globe, Cpu, Server, Sparkles, Layers } from 'lucide-react'
+import srikanthPhoto from '../assets/badisa_srikanth.jpg'
+import saiPhoto from '../assets/sai_manindra.jpg'
+import vamsiPhoto from '../assets/vamsi_krishna.jpg'
 import './CareersPage.css' // Re-use styling variables
 
 export const BLOG_POSTS = [
@@ -11,9 +14,12 @@ export const BLOG_POSTS = [
     excerpt: 'A complete step-by-step guide to Core Web Vitals, server components, dynamic metadata generation, and JSON-LD schema integration.',
     category: 'Web Development',
     tags: ['Next.js', 'React', 'SEO', 'Performance'],
+    bannerGradient: 'linear-gradient(135deg, #0f172a 0%, #1e293b 100%)',
+    bannerIcon: Globe,
+    bannerAccent: '#38bdf8',
     author: 'Badisa Srikanth',
     authorRole: 'Founder & CEO, SriVoraTech',
-    authorImage: '/badisa_srikanth.jpg',
+    authorImage: srikanthPhoto,
     readTime: '6 min read',
     date: 'July 28, 2026',
     content: `
@@ -37,9 +43,12 @@ export const BLOG_POSTS = [
     excerpt: 'Learn how SriVoraTech engineers enterprise RAG vector search pipelines and autonomous AI customer assistants.',
     category: 'AI & Automation',
     tags: ['AI', 'Python', 'LLM', 'LangChain'],
+    bannerGradient: 'linear-gradient(135deg, #3b0764 0%, #1e1b4b 100%)',
+    bannerIcon: Cpu,
+    bannerAccent: '#ec4899',
     author: 'Garapati Sai Manindra',
     authorRole: 'Chief Technology Officer (CTO)',
-    authorImage: '/sai_manindra.jpg',
+    authorImage: saiPhoto,
     readTime: '8 min read',
     date: 'July 20, 2026',
     content: `
@@ -57,9 +66,12 @@ export const BLOG_POSTS = [
     excerpt: 'Why custom software engineering built by SriVoraTech offers 3x ROI compared to rigid SaaS subscription tools.',
     category: 'Software Engineering',
     tags: ['Custom Software', 'ERP', 'SaaS', 'Architecture'],
+    bannerGradient: 'linear-gradient(135deg, #0c4a6e 0%, #082f49 100%)',
+    bannerIcon: Server,
+    bannerAccent: '#06b6d4',
     author: 'Badisa Vamsi Krishna',
     authorRole: 'Co-Founder & COO',
-    authorImage: '/vamsi_krishna.jpg',
+    authorImage: vamsiPhoto,
     readTime: '5 min read',
     date: 'July 15, 2026',
     content: `
@@ -86,7 +98,7 @@ export default function BlogHub({ onSelectPost, onNavigate }) {
       <SEO pathname="/blog" breadcrumbs={[{ name: 'Home', url: '/' }, { name: 'Blog', url: '/blog' }]} />
 
       <div style={{ textAlign: 'center', marginBottom: '50px' }}>
-        <span style={{ color: '#0067f4', fontWeight: '700', textTransform: 'uppercase', tracking: '1px', fontSize: '0.85rem' }}>Insights &amp; Innovation</span>
+        <span style={{ color: '#0067f4', fontWeight: '700', textTransform: 'uppercase', letterSpacing: '1px', fontSize: '0.85rem' }}>Insights &amp; Innovation</span>
         <h1 style={{ fontSize: '2.8rem', fontWeight: '800', margin: '12px 0 16px', color: 'var(--color-text-heading, #0f172a)', letterSpacing: '-0.02em' }}>
           SriVoraTech Technical Engineering Blog
         </h1>
@@ -132,44 +144,62 @@ export default function BlogHub({ onSelectPost, onNavigate }) {
 
       {/* Blog Cards Grid */}
       <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(340px, 1fr))', gap: '30px' }}>
-        {filteredPosts.map(post => (
-          <div
-            key={post.id}
-            onClick={() => onSelectPost(post.slug)}
-            className="spotlight-card"
-            style={{
-              padding: '28px',
-              background: '#ffffff',
-              border: '1px solid var(--color-gray-200, #e2e8f0)',
-              borderRadius: '16px',
-              cursor: 'pointer',
-              display: 'flex',
-              flexDirection: 'column',
-              justifyContent: 'space-between',
-              boxShadow: '0 4px 20px rgba(15, 23, 42, 0.05)',
-              transition: 'transform 0.2s ease, border-color 0.2s ease, box-shadow 0.2s ease'
-            }}
-          >
-            <div>
-              <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '16px', fontSize: '0.82rem', color: 'var(--color-text-secondary, #475569)' }}>
-                <span style={{ color: '#0067f4', fontWeight: '700' }}>{post.category}</span>
-                <span style={{ display: 'flex', alignItems: 'center', gap: '4px' }}><Clock size={14} /> {post.readTime}</span>
-              </div>
-              <h2 style={{ fontSize: '1.35rem', fontWeight: '700', marginBottom: '12px', lineHeight: '1.4', color: 'var(--color-text-heading, #0f172a)' }}>{post.title}</h2>
-              <p style={{ color: 'var(--color-text-secondary, #475569)', fontSize: '0.95rem', lineHeight: '1.6', marginBottom: '20px' }}>{post.excerpt}</p>
-            </div>
-
-            <div>
-              <div style={{ display: 'flex', alignItems: 'center', gap: '12px', paddingTop: '16px', borderTop: '1px solid var(--color-gray-200, #e2e8f0)' }}>
-                <img src={post.authorImage} alt={post.author} style={{ width: '40px', height: '40px', borderRadius: '50%', objectFit: 'cover' }} />
+        {filteredPosts.map(post => {
+          const BannerIcon = post.bannerIcon
+          return (
+            <div
+              key={post.id}
+              onClick={() => onSelectPost(post.slug)}
+              className="spotlight-card"
+              style={{
+                background: '#ffffff',
+                border: '1px solid var(--color-gray-200, #e2e8f0)',
+                borderRadius: '16px',
+                cursor: 'pointer',
+                display: 'flex',
+                flexDirection: 'column',
+                justifyContent: 'space-between',
+                boxShadow: '0 4px 20px rgba(15, 23, 42, 0.05)',
+                transition: 'transform 0.2s ease, border-color 0.2s ease, box-shadow 0.2s ease',
+                overflow: 'hidden'
+              }}
+            >
+              {/* Visual Thumbnail Banner */}
+              <div style={{ height: '140px', background: post.bannerGradient, padding: '20px 24px', display: 'flex', alignItems: 'center', justifyContent: 'space-between', borderBottom: '1px solid rgba(255, 255, 255, 0.1)' }}>
                 <div>
-                  <div style={{ fontWeight: '700', fontSize: '0.9rem', color: 'var(--color-text-heading, #0f172a)' }}>{post.author}</div>
-                  <div style={{ color: '#64748b', fontSize: '0.78rem' }}>{post.authorRole}</div>
+                  <span style={{ fontSize: '11px', fontWeight: '800', textTransform: 'uppercase', letterSpacing: '0.08em', color: post.bannerAccent, background: 'rgba(255, 255, 255, 0.1)', padding: '4px 10px', borderRadius: '999px', display: 'inline-block', marginBottom: '8px' }}>
+                    {post.category}
+                  </span>
+                  <div style={{ color: '#ffffff', fontSize: '12px', opacity: 0.85, display: 'flex', alignItems: 'center', gap: '4px' }}>
+                    <Clock size={12} /> {post.readTime}
+                  </div>
+                </div>
+                <div style={{ width: '48px', height: '48px', borderRadius: '12px', background: 'rgba(255, 255, 255, 0.1)', border: `1px solid ${post.bannerAccent}40`, display: 'flex', alignItems: 'center', justifyContent: 'center', color: post.bannerAccent }}>
+                  <BannerIcon size={24} />
+                </div>
+              </div>
+
+              <div style={{ padding: '24px', display: 'flex', flexDirection: 'column', flex: 1, justifyContent: 'space-between' }}>
+                <div>
+                  <h2 style={{ fontSize: '1.28rem', fontWeight: '700', marginBottom: '12px', lineHeight: '1.4', color: 'var(--color-text-heading, #0f172a)' }}>
+                    {post.title}
+                  </h2>
+                  <p style={{ color: 'var(--color-text-secondary, #475569)', fontSize: '0.94rem', lineHeight: '1.6', marginBottom: '20px' }}>
+                    {post.excerpt}
+                  </p>
+                </div>
+
+                <div style={{ display: 'flex', alignItems: 'center', gap: '12px', paddingTop: '16px', borderTop: '1px solid var(--color-gray-200, #e2e8f0)' }}>
+                  <img src={post.authorImage} alt={post.author} style={{ width: '40px', height: '40px', borderRadius: '50%', objectFit: 'cover', border: '1px solid #e2e8f0' }} />
+                  <div>
+                    <div style={{ fontWeight: '700', fontSize: '0.9rem', color: 'var(--color-text-heading, #0f172a)' }}>{post.author}</div>
+                    <div style={{ color: '#64748b', fontSize: '0.78rem' }}>{post.authorRole}</div>
+                  </div>
                 </div>
               </div>
             </div>
-          </div>
-        ))}
+          )
+        })}
       </div>
     </div>
   )

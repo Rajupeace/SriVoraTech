@@ -197,7 +197,7 @@
 
 .timeline-options {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
   gap: 10px;
 }
 
@@ -237,6 +237,7 @@
   font-size: 13px;
   font-weight: 700;
   color: var(--color-gray-800);
+  white-space: nowrap;
 }
 
 /* Summary Card */
@@ -361,17 +362,20 @@
   justify-content: center;
   gap: 8px;
   padding: 12px;
-  background: rgba(255, 255, 255, 0.08);
-  border: 1px solid rgba(255, 255, 255, 0.15);
-  color: #ffffff;
+  background: #ffffff;
+  border: 1px solid #ffffff;
+  color: #0f172a;
   border-radius: var(--radius-md);
   font-size: 13.5px;
   font-weight: 700;
   cursor: pointer;
   transition: all 200ms ease;
+  display: flex;
+  align-items: center;
 }
 
 .summary-pdf-btn:hover {
-  background: rgba(255, 255, 255, 0.15);
-  border-color: rgba(255, 255, 255, 0.3);
+  background: #f1f5f9;
+  border-color: #f1f5f9;
+  color: #0067f4;
 }

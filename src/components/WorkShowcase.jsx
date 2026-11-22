@@ -1252,6 +1252,7 @@ export default function WorkShowcase() {
   const [selectedProject, setSelectedProject] = useState(null)
   const [activeTab, setActiveTab] = useState('all')
   const [searchQuery, setSearchQuery] = useState('')
+  const [showRoadmap, setShowRoadmap] = useState(false)
 
   useEffect(() => {
     const handleKeyDown = (e) => {
@@ -1270,7 +1271,15 @@ export default function WorkShowcase() {
   }, [selectedProject])
 
   const filteredWorks = works.filter((w) => {
-    const matchesTab = activeTab === 'all' || w.catGroup === activeTab
+    if (activeTab === 'all') {
+      if (searchQuery !== '') {
+        return w.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
+          w.about.toLowerCase().includes(searchQuery.toLowerCase()) ||
+          w.technologies.some(t => t.toLowerCase().includes(searchQuery.toLowerCase()))
+      }
+      return showRoadmap ? true : (!w.isUpcoming && w.status !== 'Planned')
+    }
+    const matchesTab = w.catGroup === activeTab
     const matchesSearch = searchQuery === '' || 
       w.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
       w.about.toLowerCase().includes(searchQuery.toLowerCase()) ||
@@ -1334,6 +1343,35 @@ export default function WorkShowcase() {
             </div>
           )}
         </div>
+
+        {/* Roadmap toggle on all tab */}
+        {activeTab === 'all' && !searchQuery && (
+          <div style={{ textAlign: 'center', marginTop: '36px' }}>
+            <button
+              onClick={() => setShowRoadmap(!showRoadmap)}
+              style={{
+                display: 'inline-flex',
+                alignItems: 'center',
+                gap: '8px',
+                padding: '12px 24px',
+                background: '#ffffff',
+                border: '1.5px solid #0f172a',
+                borderRadius: '9999px',
+                color: '#0f172a',
+                fontSize: '14px',
+                fontWeight: '700',
+                cursor: 'pointer',
+                boxShadow: '0 4px 14px rgba(15, 23, 42, 0.06)',
+                transition: 'all 200ms ease'
+              }}
+              onMouseEnter={(e) => { e.currentTarget.style.background = '#0f172a'; e.currentTarget.style.color = '#ffffff'; }}
+              onMouseLeave={(e) => { e.currentTarget.style.background = '#ffffff'; e.currentTarget.style.color = '#0f172a'; }}
+            >
+              <span>{showRoadmap ? 'Show Flagship Products (6)' : 'Explore Upcoming Architecture Roadmap (2 Platforms)'}</span>
+              <ArrowRight size={15} style={{ transform: showRoadmap ? 'rotate(-90deg)' : 'rotate(90deg)', transition: 'transform 200ms ease' }} />
+            </button>
+          </div>
+        )}
       </div>
 
       {selectedProject && (

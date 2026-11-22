@@ -27,11 +27,29 @@
 .leadership-badge-header-row {
   display: flex;
   align-items: center;
-  justify-content: space-between;
+  justify-content: center;
+  position: relative;
   max-width: 1200px;
   margin: 0 auto 16px;
-  flex-wrap: wrap;
   gap: 16px;
+}
+
+.leadership-scroll-nav {
+  position: absolute;
+  right: 0;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+@media (max-width: 768px) {
+  .leadership-badge-header-row {
+    flex-direction: column;
+    gap: 12px;
+  }
+  .leadership-scroll-nav {
+    position: static;
+  }
 }
 
 .leadership-badge {
@@ -85,24 +103,15 @@
   scroll-behavior: smooth;
   scroll-snap-type: x mandatory;
   -webkit-overflow-scrolling: touch;
-  padding: 16px 4px 32px;
+  padding: 16px 4px 24px;
   margin: 0 auto;
-  max-width: 1200px;
-  scrollbar-width: thin;
-  scrollbar-color: var(--color-gray-300) transparent;
+  max-width: 1240px;
+  scrollbar-width: none; /* Removed redundant native horizontal scrollbar */
+  -ms-overflow-style: none;
 }
 
 .leadership-carousel-wrapper::-webkit-scrollbar {
-  height: 6px;
-}
-
-.leadership-carousel-wrapper::-webkit-scrollbar-track {
-  background: transparent;
-}
-
-.leadership-carousel-wrapper::-webkit-scrollbar-thumb {
-  background: var(--color-gray-300);
-  border-radius: var(--radius-full);
+  display: none;
 }
 
 .leadership-carousel-track {
@@ -121,7 +130,7 @@
   padding: 32px 28px;
   display: flex;
   flex-direction: row;
-  align-items: flex-start;
+  align-items: center;
   gap: 28px;
   background: linear-gradient(180deg, #ffffff 0%, #f8fafc 100%);
   border-radius: var(--radius-xl);

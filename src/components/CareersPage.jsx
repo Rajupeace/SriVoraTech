@@ -273,6 +273,17 @@ export default function CareersPage({ onBack }) {
           <p className="careers-subtitle">
             We're always looking for passionate people. Whether you're starting out or bringing years of expertise — let's build something great together.
           </p>
+          <div style={{ display: 'flex', justifyContent: 'center', gap: '10px', flexWrap: 'wrap', marginTop: '16px' }}>
+            <span style={{ fontSize: '12.5px', fontWeight: '700', padding: '5px 12px', background: 'rgba(0, 103, 244, 0.08)', color: '#0067f4', borderRadius: '999px', border: '1px solid rgba(0, 103, 244, 0.2)' }}>
+              🚀 High-Velocity Sprint Culture
+            </span>
+            <span style={{ fontSize: '12.5px', fontWeight: '700', padding: '5px 12px', background: 'rgba(16, 185, 129, 0.08)', color: '#059669', borderRadius: '999px', border: '1px solid rgba(16, 185, 129, 0.2)' }}>
+              💡 Direct Architect Mentorship
+            </span>
+            <span style={{ fontSize: '12.5px', fontWeight: '700', padding: '5px 12px', background: 'rgba(139, 92, 246, 0.08)', color: '#7c3aed', borderRadius: '999px', border: '1px solid rgba(139, 92, 246, 0.2)' }}>
+              ⭐ Modern Applied AI &amp; Cloud Stack
+            </span>
+          </div>
         </div>
 
         <div className="tab-switcher">
@@ -412,7 +423,7 @@ export default function CareersPage({ onBack }) {
                       name="college"
                       value={fresherData.college}
                       onChange={handleChange}
-                      placeholder="e.g. SRM Institute, VIT, Anna University"
+                      placeholder="e.g. SRM, VIT, Anna Univ"
                       className={`form-input ${errors.college ? 'input-error' : ''}`}
                     />
                     {errors.college && <span className="error-text">{errors.college}</span>}
@@ -433,7 +444,7 @@ export default function CareersPage({ onBack }) {
 
                 <div className="form-row">
                   <div className="form-group">
-                    <label className="form-label">Year of Graduation</label>
+                    <label className="form-label">Year of Graduation *</label>
                     <div className="select-wrapper">
                       <select
                         name="graduationYear"

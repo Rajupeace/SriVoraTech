@@ -89,13 +89,14 @@
   line-height: 1.65;
 }
 
-/* Filter Tabs */
+/* Filter Tabs - Single Clean Row with Horizontal Scroll on Mobile */
 .services-light-tabs {
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 10px;
-  flex-wrap: wrap;
+  gap: 8px;
+  flex-wrap: nowrap;
+  overflow-x: auto;
   max-width: 950px;
   margin: 0 auto 32px;
   padding: 6px;
@@ -103,6 +104,12 @@
   border: 1px solid #e2e8f0;
   border-radius: 999px;
   box-shadow: 0 4px 20px rgba(0, 0, 0, 0.03);
+  scrollbar-width: none;
+  -webkit-overflow-scrolling: touch;
+}
+
+.services-light-tabs::-webkit-scrollbar {
+  display: none;
 }
 
 .light-tab-btn {
@@ -189,7 +196,8 @@
   left: 0;
   right: 0;
   height: 4px;
-  border-radius: 20px 20px 0 0;
+  border-top-left-radius: inherit;
+  border-top-right-radius: inherit;
 }
 
 .service-light-card:hover {

@@ -42,7 +42,7 @@
   --font-body: 'Inter', system-ui, -apple-system, sans-serif;
 
   /* Spacing */
-  --section-padding-y: 100px;
+  --section-padding-y: 80px;
   --section-padding-x: 24px;
   --max-width: 1240px;
   --max-width-lg: 1440px;

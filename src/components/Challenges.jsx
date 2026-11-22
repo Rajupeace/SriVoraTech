@@ -125,7 +125,7 @@ export default function Challenges() {
   return (
     <section className="challenges section" id="challenges">
       <div className="container">
-        <div ref={ref} className={`animate-on-scroll ${isVisible ? 'visible' : ''}`}>
+        <div ref={ref} className={`animate-on-scroll ${isVisible ? 'visible' : ''}`} style={{ textAlign: 'center' }}>
           <div className="challenges-badge-top">
             <AlertTriangle size={14} />
             Overcoming Roadblocks

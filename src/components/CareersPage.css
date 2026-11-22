@@ -255,12 +255,13 @@
 }
 
 .careers-form .select-wrapper::after {
-  content: '▾';
+  content: '▼';
   position: absolute;
-  right: 1rem;
+  right: 1.1rem;
   top: 50%;
   transform: translateY(-50%);
-  color: #64748b;
+  color: #0f172a;
+  font-size: 11px;
   pointer-events: none;
 }
 

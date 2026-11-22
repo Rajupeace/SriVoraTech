@@ -1,8 +1,39 @@
 import React from 'react'
 import SEO from './SEO'
-import { Link2, Globe, Server, FileText, Layout, Layers, ShieldCheck, Mail, Users, Scale } from 'lucide-react'
+import {
+  Link2, Globe, Server, FileText, Layout, Layers, ShieldCheck, Mail,
+  Users, Scale, Calculator, Briefcase, BookOpen, Bot, Sparkles, Code2,
+  ExternalLink, BarChart2, Smartphone, Palette, Search
+} from 'lucide-react'
 
 export default function HTMLSitemap({ onNavigate }) {
+  const getContextualIcon = (path, name) => {
+    const lowerPath = path.toLowerCase()
+    const lowerName = name.toLowerCase()
+
+    if (lowerPath === '/') return <Globe size={14} style={{ flexShrink: 0, color: '#0067f4' }} />
+    if (lowerPath.includes('about')) return <Users size={14} style={{ flexShrink: 0, color: '#0067f4' }} />
+    if (lowerPath.includes('founder')) return <Users size={14} style={{ flexShrink: 0, color: '#0067f4' }} />
+    if (lowerPath.includes('services')) {
+      if (lowerName.includes('web')) return <Code2 size={14} style={{ flexShrink: 0, color: '#0067f4' }} />
+      if (lowerName.includes('mobile')) return <Smartphone size={14} style={{ flexShrink: 0, color: '#0067f4' }} />
+      if (lowerName.includes('ai')) return <Bot size={14} style={{ flexShrink: 0, color: '#0067f4' }} />
+      if (lowerName.includes('design')) return <Palette size={14} style={{ flexShrink: 0, color: '#0067f4' }} />
+      if (lowerName.includes('seo')) return <Search size={14} style={{ flexShrink: 0, color: '#0067f4' }} />
+      return <Layers size={14} style={{ flexShrink: 0, color: '#0067f4' }} />
+    }
+    if (lowerPath.includes('case-studies')) return <Sparkles size={14} style={{ flexShrink: 0, color: '#0067f4' }} />
+    if (lowerPath.includes('pricing')) return <Calculator size={14} style={{ flexShrink: 0, color: '#0067f4' }} />
+    if (lowerPath.includes('careers')) return <Briefcase size={14} style={{ flexShrink: 0, color: '#0067f4' }} />
+    if (lowerPath.includes('blog')) return <BookOpen size={14} style={{ flexShrink: 0, color: '#0067f4' }} />
+    if (lowerPath.includes('contact')) return <Mail size={14} style={{ flexShrink: 0, color: '#0067f4' }} />
+    if (lowerPath.includes('seo-dashboard')) return <BarChart2 size={14} style={{ flexShrink: 0, color: '#0067f4' }} />
+    if (lowerPath.includes('privacy') || lowerPath.includes('terms')) return <Scale size={14} style={{ flexShrink: 0, color: '#0067f4' }} />
+    if (lowerPath.includes('client-portal')) return <ShieldCheck size={14} style={{ flexShrink: 0, color: '#0067f4' }} />
+    if (lowerPath.includes('.xml') || lowerPath.includes('.txt')) return <FileText size={14} style={{ flexShrink: 0, color: '#0067f4' }} />
+    return <Link2 size={14} style={{ flexShrink: 0, color: '#0067f4' }} />
+  }
+
   const categories = [
     {
       title: 'Main Navigation Pages',
@@ -77,13 +108,13 @@ export default function HTMLSitemap({ onNavigate }) {
         </p>
       </div>
 
-      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(240px, 1fr))', gap: '24px' }}>
+      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(240px, 1fr))', gap: '24px', alignItems: 'start' }}>
         {categories.map((cat, idx) => {
           const Icon = cat.icon
           return (
             <div key={idx} style={{ background: '#ffffff', border: '1px solid var(--color-gray-200, #e2e8f0)', borderRadius: '16px', padding: '24px', boxShadow: '0 4px 20px rgba(15, 23, 42, 0.05)' }}>
-              <div style={{ display: 'flex', alignItems: 'center', gap: '10px', marginBottom: '18px' }}>
-                <div style={{ width: '36px', height: '36px', borderRadius: '8px', background: 'rgba(0, 103, 244, 0.1)', color: '#0067f4', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '10px', marginBottom: '18px', minHeight: '44px' }}>
+                <div style={{ width: '36px', height: '36px', borderRadius: '8px', background: 'rgba(0, 103, 244, 0.1)', color: '#0067f4', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
                   <Icon size={18} />
                 </div>
                 <h2 style={{ fontSize: '1.15rem', fontWeight: '700', margin: 0, color: 'var(--color-text-heading, #0f172a)' }}>{cat.title}</h2>
@@ -96,12 +127,13 @@ export default function HTMLSitemap({ onNavigate }) {
                       onClick={(e) => handleLink(e, link)}
                       target={link.external ? '_blank' : '_self'}
                       rel={link.external ? 'noopener noreferrer' : ''}
-                      style={{ color: 'var(--color-text-secondary, #475569)', textDecoration: 'none', fontSize: '14px', display: 'flex', alignItems: 'center', gap: '6px', transition: 'color 150ms ease', fontWeight: '500' }}
+                      style={{ color: 'var(--color-text-secondary, #475569)', textDecoration: 'none', fontSize: '14px', display: 'flex', alignItems: 'center', gap: '8px', transition: 'color 150ms ease', fontWeight: '500' }}
                       onMouseEnter={(e) => e.currentTarget.style.color = '#0067f4'}
                       onMouseLeave={(e) => e.currentTarget.style.color = 'var(--color-text-secondary, #475569)'}
                     >
-                      <Link2 size={13} style={{ flexShrink: 0, color: '#0067f4' }} />
+                      {getContextualIcon(link.path, link.name)}
                       <span>{link.name}</span>
+                      {link.external && <ExternalLink size={12} style={{ opacity: 0.6, marginLeft: 'auto' }} />}
                     </a>
                   </li>
                 ))}

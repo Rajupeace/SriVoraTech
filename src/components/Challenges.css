@@ -172,6 +172,8 @@
   left: 0;
   right: 0;
   height: 3px;
+  border-top-left-radius: inherit;
+  border-top-right-radius: inherit;
   background: linear-gradient(90deg, #ef4444, #f97316, #ef4444);
   background-size: 200% 100%;
   animation: accent-shimmer 3s ease infinite;
@@ -198,6 +200,8 @@
   left: 0;
   right: 0;
   height: 3px;
+  border-top-left-radius: inherit;
+  border-top-right-radius: inherit;
   background: linear-gradient(90deg, #0067f4, #10b981, #0067f4);
   background-size: 200% 100%;
   animation: accent-shimmer 3s ease infinite;

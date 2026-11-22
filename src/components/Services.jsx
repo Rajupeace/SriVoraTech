@@ -27,10 +27,10 @@ import {
 import './Services.css'
 
 export const serviceDivisions = [
-  { id: 'all', label: 'All Divisions', count: 18 },
-  { id: 'software-engineering', label: 'Division 1: Software Engineering', count: 7, icon: Code },
-  { id: 'ai-automation', label: 'Division 2: AI & Intelligent Automation', count: 6, icon: Bot },
-  { id: 'cloud-engineering', label: 'Division 3: Cloud & Digital Engineering', count: 5, icon: Cloud },
+  { id: 'all', label: 'All Services', count: 18 },
+  { id: 'software-engineering', label: 'Software Engineering', count: 7, icon: Code },
+  { id: 'ai-automation', label: 'AI & Automation', count: 6, icon: Bot },
+  { id: 'cloud-engineering', label: 'Cloud & Digital', count: 5, icon: Cloud },
 ]
 
 export const servicesData = [
@@ -440,6 +440,7 @@ export const servicesData = [
 export default function Services({ onNavigate }) {
   const [ref, isVisible] = useScrollAnimation()
   const [activeDivision, setActiveDivision] = useState('all')
+  const [showAllServices, setShowAllServices] = useState(false)
 
   const scrollToContact = (serviceTitle) => {
     const contactElement = document.getElementById('contact')
@@ -457,6 +458,10 @@ export default function Services({ onNavigate }) {
   const filteredServices = activeDivision === 'all'
     ? servicesData
     : servicesData.filter(s => s.division === activeDivision)
+
+  const displayedServices = (activeDivision === 'all' && !showAllServices)
+    ? filteredServices.slice(0, 6)
+    : filteredServices
 
   return (
     <section ref={ref} className="services-light section" id="services">
@@ -494,7 +499,7 @@ export default function Services({ onNavigate }) {
 
         {/* Services Cards Grid */}
         <div className="services-light-grid">
-          {filteredServices.map((service, idx) => {
+          {displayedServices.map((service, idx) => {
             const Icon = service.icon
             return (
               <div
@@ -585,6 +590,35 @@ export default function Services({ onNavigate }) {
             )
           })}
         </div>
+
+        {/* View all 18 services toggle button */}
+        {activeDivision === 'all' && (
+          <div style={{ textAlign: 'center', marginTop: '40px' }}>
+            <button
+              onClick={() => setShowAllServices(!showAllServices)}
+              style={{
+                display: 'inline-flex',
+                alignItems: 'center',
+                gap: '8px',
+                padding: '12px 28px',
+                background: '#ffffff',
+                border: '1.5px solid #0f172a',
+                borderRadius: '9999px',
+                color: '#0f172a',
+                fontSize: '14.5px',
+                fontWeight: '700',
+                cursor: 'pointer',
+                boxShadow: '0 4px 16px rgba(15, 23, 42, 0.08)',
+                transition: 'all 200ms ease'
+              }}
+              onMouseEnter={(e) => { e.currentTarget.style.background = '#0f172a'; e.currentTarget.style.color = '#ffffff'; }}
+              onMouseLeave={(e) => { e.currentTarget.style.background = '#ffffff'; e.currentTarget.style.color = '#0f172a'; }}
+            >
+              <span>{showAllServices ? 'Show Fewer Capabilities' : `Explore All ${filteredServices.length} Capabilities`}</span>
+              <ArrowRight size={16} style={{ transform: showAllServices ? 'rotate(-90deg)' : 'rotate(90deg)', transition: 'transform 200ms ease' }} />
+            </button>
+          </div>
+        )}
       </div>
     </section>
   )

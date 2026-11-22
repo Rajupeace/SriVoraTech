@@ -382,8 +382,8 @@ export default function WebsiteRating() {
       <div className="container">
         
         {/* Public Header */}
-        <div ref={ref} className={`animate-on-scroll ${isVisible ? 'visible' : ''}`}>
-          <div className="rating-badge">
+        <div ref={ref} className={`animate-on-scroll ${isVisible ? 'visible' : ''}`} style={{ textAlign: 'center' }}>
+          <div className="rating-badge" style={{ display: 'inline-flex', margin: '0 auto 16px', alignItems: 'center' }}>
             <Sparkles size={14} />
             <span>Community Reviews & Feedback</span>
             <Lock 
@@ -600,76 +600,92 @@ export default function WebsiteRating() {
         ) : (
           // ── PUBLIC VIEW RATING SYSTEM ──
           <>
-            {/* Live Stats Summary Row */}
-            <div className="rating-live-counters">
-              <div className="live-counter-pill">
-                <ShieldCheck size={16} className="counter-icon users-icon" />
-                <div className="counter-data">
-                  <span className="counter-number">Moderated</span>
-                  <span className="counter-label">Verified Standards</span>
+            {/* Live Stats Summary Row - Only show when real reviews exist */}
+            {totalCount > 0 && (
+              <div className="rating-live-counters">
+                <div className="live-counter-pill">
+                  <ShieldCheck size={16} className="counter-icon users-icon" />
+                  <div className="counter-data">
+                    <span className="counter-number">Moderated</span>
+                    <span className="counter-label">Verified Standards</span>
+                  </div>
+                </div>
+                <div className="live-counter-pill">
+                  <Users size={16} className="counter-icon users-icon" />
+                  <div className="counter-data">
+                    <span className="counter-number">{totalCount}</span>
+                    <span className="counter-label">Verified Reviews</span>
+                  </div>
+                </div>
+                <div className="live-counter-pill featured-pill">
+                  <Star size={16} className="counter-icon star-icon" fill="#f59e0b" color="#f59e0b" />
+                  <div className="counter-data">
+                    <span className="counter-number">{averageRating !== null ? averageRating : '—'}</span>
+                    <span className="counter-label">Average Score</span>
+                  </div>
                 </div>
               </div>
-              <div className="live-counter-pill">
-                <Users size={16} className="counter-icon users-icon" />
-                <div className="counter-data">
-                  <span className="counter-number">{totalCount}</span>
-                  <span className="counter-label">Verified Reviews</span>
-                </div>
-              </div>
-              <div className="live-counter-pill featured-pill">
-                <Star size={16} className="counter-icon star-icon" fill="#f59e0b" color="#f59e0b" />
-                <div className="counter-data">
-                  <span className="counter-number">{averageRating !== null ? averageRating : '—'}</span>
-                  <span className="counter-label">Average Score</span>
-                </div>
-              </div>
-            </div>
+            )}
 
             <div className={`rating-main-card glass-card ${submitAnim ? 'submit-flash' : ''}`}>
-              
-              {/* Star statistics summary grid */}
-              <div className="rating-stats-grid">
-                <div className="rating-overall-box">
-                  <div className="big-rating-number">{averageRating !== null ? averageRating : '—'}</div>
-                  <div className="overall-stars">
-                    {[1, 2, 3, 4, 5].map((star) => (
-                      <Star
-                        key={star}
-                        size={22}
-                        fill={averageRating && star <= Math.round(averageRating) ? '#f59e0b' : 'none'}
-                        color={averageRating && star <= Math.round(averageRating) ? '#f59e0b' : '#cbd5e1'}
-                      />
-                    ))}
+              {totalCount > 0 ? (
+                /* Star statistics summary grid */
+                <div className="rating-stats-grid">
+                  <div className="rating-overall-box">
+                    <div className="big-rating-number">{averageRating !== null ? averageRating : '—'}</div>
+                    <div className="overall-stars">
+                      {[1, 2, 3, 4, 5].map((star) => (
+                        <Star
+                          key={star}
+                          size={22}
+                          fill={averageRating && star <= Math.round(averageRating) ? '#f59e0b' : 'none'}
+                          color={averageRating && star <= Math.round(averageRating) ? '#f59e0b' : '#cbd5e1'}
+                        />
+                      ))}
+                    </div>
+                    <span className="overall-count">
+                      Based on {totalCount} verified client reviews
+                    </span>
+                    {satisfactionRate !== null && (
+                      <span className="overall-satisfaction">{satisfactionRate}% Verified Client Satisfaction</span>
+                    )}
                   </div>
-                  <span className="overall-count">
-                    {totalCount > 0 ? `Based on ${totalCount} verified client reviews` : 'No verified customer reviews yet.'}
-                  </span>
-                  {satisfactionRate !== null && (
-                    <span className="overall-satisfaction">{satisfactionRate}% Verified Client Satisfaction</span>
-                  )}
-                </div>
 
-                <div className="rating-breakdown-box">
-                  {[5, 4, 3, 2, 1].map((starLevel) => {
-                    const pct = distribution[starLevel] || 0
-                    const starCount = counts[starLevel] || 0
-                    return (
-                      <div key={starLevel} className="breakdown-row">
-                        <span className="star-level-label">{starLevel} ★</span>
-                        <div className="breakdown-bar-bg">
-                          <div
-                            className={`breakdown-bar-fill star-bar-${starLevel}`}
-                            style={{ width: `${pct}%` }}
-                          />
+                  <div className="rating-breakdown-box">
+                    {[5, 4, 3, 2, 1].map((starLevel) => {
+                      const pct = distribution[starLevel] || 0
+                      const starCount = counts[starLevel] || 0
+                      return (
+                        <div key={starLevel} className="breakdown-row">
+                          <span className="star-level-label">{starLevel} ★</span>
+                          <div className="breakdown-bar-bg">
+                            <div
+                              className={`breakdown-bar-fill star-bar-${starLevel}`}
+                              style={{ width: `${pct}%` }}
+                            />
+                          </div>
+                          <span className="breakdown-percent">
+                            {pct}% <span className="star-count-tag">({starCount})</span>
+                          </span>
                         </div>
-                        <span className="breakdown-percent">
-                          {pct}% <span className="star-count-tag">({starCount})</span>
-                        </span>
-                      </div>
-                    )
-                  })}
+                      )
+                    })}
+                  </div>
                 </div>
-              </div>
+              ) : (
+                <div className="rating-welcome-invitation" style={{ textAlign: 'center', padding: '32px 20px 20px' }}>
+                  <div style={{ display: 'inline-flex', alignItems: 'center', gap: '8px', padding: '6px 16px', background: 'rgba(0, 103, 244, 0.08)', borderRadius: '999px', color: '#0067f4', fontSize: '13px', fontWeight: '700', marginBottom: '14px', border: '1px solid rgba(0, 103, 244, 0.2)' }}>
+                    <Sparkles size={15} />
+                    <span>Client &amp; Community Transparency</span>
+                  </div>
+                  <h3 style={{ fontSize: '22px', fontWeight: '800', color: '#0f172a', margin: '0 0 10px', letterSpacing: '-0.02em' }}>
+                    Authentic Verified Ratings
+                  </h3>
+                  <p style={{ color: '#64748b', fontSize: '15px', maxWidth: '600px', margin: '0 auto 12px', lineHeight: '1.6' }}>
+                    We never seed artificial ratings or manufactured testimonials. Have you worked with SriVoraTech on a project or evaluated our prototypes? Submit your genuine rating and feedback below.
+                  </p>
+                </div>
+              )}
 
               <div className="rating-divider" />
 

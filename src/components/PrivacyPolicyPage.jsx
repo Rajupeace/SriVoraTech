@@ -90,9 +90,9 @@ export default function PrivacyPolicyPage({ onBack, onNavigate }) {
           </p>
         </section>
 
-        <section style={{ borderTop: '1px solid var(--color-gray-200, #e2e8f0)', paddingTop: '20px' }}>
-          <h2 style={{ fontSize: '1.2rem', fontWeight: '700', color: 'var(--color-text-heading, #0f172a)', marginBottom: '8px' }}>
-            Data Access, Rectification &amp; Deletion
+        <section style={{ borderTop: '1px solid var(--color-gray-200, #e2e8f0)', paddingTop: '24px' }}>
+          <h2 style={{ fontSize: '1.4rem', fontWeight: '700', color: 'var(--color-text-heading, #0f172a)', marginBottom: '12px', display: 'flex', alignItems: 'center', gap: '10px' }}>
+            <ShieldCheck size={20} color="#0067f4" /> 5. Data Access, Rectification &amp; Deletion
           </h2>
           <p style={{ color: 'var(--color-text-secondary, #475569)', fontSize: '14px', lineHeight: '1.6' }}>
             Under applicable data protection principles (including India's Digital Personal Data Protection Act and GDPR principles), you have the right to request access to or permanent deletion of your enquiry data. To exercise these rights, email:
