@@ -7,9 +7,9 @@ import './TrustTicker.css'
 
 const statsItems = [
   { icon: <Rocket size={16} />, label: 'Software Builds', value: 'Tailored Solutions', color: '#0067f4' },
-  { icon: <Clock size={16} />, label: 'Target MVP Sprint', value: '2–4 Weeks', color: '#10b981' },
-  { icon: <Shield size={16} />, label: 'Architecture Target', value: '99.9% Uptime', color: '#06b6d4' },
-  { icon: <Award size={16} />, label: 'IP Ownership Transfer', value: '100% Handover', color: '#0ea5e9' },
+  { icon: <Clock size={16} />, label: 'Development Model', value: 'Iterative Sprints', color: '#10b981' },
+  { icon: <Shield size={16} />, label: 'Architecture Target', value: 'High Availability', color: '#06b6d4' },
+  { icon: <Award size={16} />, label: 'IP Ownership Transfer', value: 'Full Code Handover', color: '#0ea5e9' },
   { icon: <Cpu size={16} />, label: 'AI Architecture', value: 'Applied RAG & LLMs', color: '#f97316' },
   { icon: <TrendingUp size={16} />, label: 'Code Quality', value: 'Clean & Scalable', color: '#22c55e' },
   { icon: <Code2 size={16} />, label: 'Tech Stack', value: 'Modern & Proven', color: '#6366f1' },

@@ -219,19 +219,19 @@ export default function App() {
         <main>
           <Hero />
           <TrustTicker />
-          <ProjectCards />
-          <QuoteBlock />
-          <Challenges />
-          <WhyChoose />
-          <Leadership />
-          <OnboardingSteps />
           <Services onNavigate={navigate} />
-          <ProjectEstimator />
-          <TechStack />
+          <WhyChoose />
+          <ProjectCards />
           <WorkShowcase />
+          <TechStack />
+          <OnboardingSteps />
+          <ProjectEstimator />
+          <Challenges />
+          <QuoteBlock />
+          <Leadership />
           <Achievements />
-          <FAQ />
           <WebsiteRating />
+          <FAQ />
           <Contact />
           <PreFooterCTA />
         </main>

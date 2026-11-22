@@ -50,9 +50,9 @@ const advantages = [
     title: 'Cloud Foundations',
     shortDesc: 'Built for enterprise resilience with Docker containerization, cloud-native deployments, and proactive health monitoring.',
     badge: 'High Availability',
-    metric: 'Architecture Target: 99.9%',
+    metric: 'Fault-Tolerant Systems',
     color: '#f59e0b',
-    features: ['Dockerized services', 'Multi-region deploy ready', '24/7 uptime health checks']
+    features: ['Dockerized services', 'Multi-region deploy ready', 'Proactive health checks']
   },
   {
     id: 6,

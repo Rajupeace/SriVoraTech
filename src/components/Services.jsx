@@ -433,7 +433,7 @@ export const servicesData = [
       'Periodic Security Updates & Patch Management'
     ],
     technologies: ['CloudWatch', 'Prometheus', 'Grafana', 'Sentry', 'Docker'],
-    benefits: ['Proactive error detection', 'Target 99.9% availability', 'Rapid incident triage & resolution']
+    benefits: ['Proactive error detection', 'High availability cloud architecture', 'Rapid incident triage & resolution']
   }
 ]
 

@@ -318,7 +318,7 @@ export default function FounderPage({ onNavigate }) {
               </div>
               <h3>Company Mission</h3>
               <p>
-                To accelerate digital product development for startups and enterprise leaders by delivering world-class AI engineering, scalable software architectures, and reliable cloud solutions with 99.9% operational uptime.
+                To accelerate digital product development for startups and enterprise leaders by delivering world-class AI engineering, scalable software architectures, and reliable cloud solutions with high operational availability and resilience.
               </p>
             </div>
           </div>

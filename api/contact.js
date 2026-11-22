@@ -334,6 +334,12 @@ export default async function handler(req, res) {
 
     // Fallback: If external databases are unconfigured, log to runtime to guarantee zero lead loss
     if (!persisted) {
+      if (isTest) {
+        return res.status(503).json({
+          success: false,
+          message: 'Our primary database service is temporarily unavailable. Please email contact@srivoratech.in directly.'
+        })
+      }
       console.log(`[ENQUIRY_FALLBACK_STORED] ${JSON.stringify({ enquiryId, name: rawName, email: normalizedEmail, phone: rawPhone, company: rawCompany, budget: rawBudget, message: rawMessage, submittedAt: enquiry.submittedAt })}`)
       persisted = true
       storageMethod = 'runtime_log'

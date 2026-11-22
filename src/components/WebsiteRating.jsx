@@ -26,10 +26,10 @@ export default function WebsiteRating() {
   // Public reviews state
   const [reviewsList, setReviewsList] = useState([])
   const [totalCount, setTotalCount] = useState(0)
-  const [averageRating, setAverageRating] = useState(5.0)
+  const [averageRating, setAverageRating] = useState(null)
   const [distribution, setDistribution] = useState({ 5: 0, 4: 0, 3: 0, 2: 0, 1: 0 })
   const [counts, setCounts] = useState({ 5: 0, 4: 0, 3: 0, 2: 0, 1: 0 })
-  const [satisfactionRate, setSatisfactionRate] = useState(100)
+  const [satisfactionRate, setSatisfactionRate] = useState(null)
   const [loading, setLoading] = useState(true)
   const [publicStarFilter, setPublicStarFilter] = useState('')
   const [publicSearchQuery, setPublicSearchQuery] = useState('')
@@ -151,13 +151,14 @@ export default function WebsiteRating() {
 
     // Subscribe to real-time ratings updates
     const unsubscribe = subscribeToRatings((data) => {
-      if (data && Array.isArray(data.reviews) && data.reviews.length > 0) {
-        setReviewsList(data.reviews)
-        setTotalCount(data.totalCount || data.reviews.length)
-        setAverageRating(data.averageRating || 5.0)
+      if (data) {
+        const list = Array.isArray(data.reviews) ? data.reviews : []
+        setReviewsList(list)
+        setTotalCount(data.totalCount || list.length)
+        setAverageRating(data.averageRating ?? null)
         setDistribution(data.distribution || { 5: 0, 4: 0, 3: 0, 2: 0, 1: 0 })
         setCounts(data.counts || { 5: 0, 4: 0, 3: 0, 2: 0, 1: 0 })
-        setSatisfactionRate(data.satisfactionRate || 100)
+        setSatisfactionRate(data.satisfactionRate ?? null)
       }
       setLoading(false)
     })

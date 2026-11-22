@@ -53,7 +53,7 @@ export default function PreFooterCTA() {
             </div>
 
             <div className="cta-trust-list">
-              <span><Rocket size={14} /> 2–4 Wks Rapid MVP Sprint</span>
+              <span><Rocket size={14} /> Iterative Agile Sprints</span>
               <span><Shield size={14} /> 100% IP Code Ownership</span>
               <span><CheckCircle2 size={14} /> Transparent Milestones</span>
             </div>

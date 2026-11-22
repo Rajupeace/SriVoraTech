@@ -96,10 +96,10 @@ export default function Hero() {
 
         {/* Trust metrics pills */}
         <div className="hero-trust-badges">
-          <span className="trust-pill"><Rocket size={14} /> Agile 2–4 Wk Sprints</span>
+          <span className="trust-pill"><Rocket size={14} /> Iterative Agile Sprints</span>
           <span className="trust-pill"><ShieldCheck size={14} /> 100% IP & Source Ownership</span>
-          <span className="trust-pill"><Clock size={14} /> 99.9% Architecture Target</span>
-          <span className="trust-pill"><Zap size={14} /> High-Performance Cloud Architecture</span>
+          <span className="trust-pill"><Clock size={14} /> High-Availability Architecture</span>
+          <span className="trust-pill"><Zap size={14} /> High-Performance Cloud Engineering</span>
         </div>
 
         {/* Action Call to Action buttons */}

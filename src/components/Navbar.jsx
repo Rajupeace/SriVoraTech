@@ -3,14 +3,14 @@ import { Menu, X, ArrowRight, Zap } from 'lucide-react'
 import './Navbar.css'
 
 const navLinks = [
+  { label: 'Services', href: '#services' },
+  { label: 'Our Work', href: '#our-works' },
+  { label: 'Tech Stack', href: '#tech-stack' },
+  { label: 'Estimator', href: '#estimator' },
   { label: 'About', href: '/about', isRoute: true },
   { label: 'Founder', href: '/founder', isRoute: true },
-  { label: 'Services', href: '#services' },
-  { label: 'Estimator', href: '#estimator' },
-  { label: 'Tech Stack', href: '#tech-stack' },
-  { label: 'Our Work', href: '#our-works' },
-  { label: 'Client Portal', href: '/client-portal', isRoute: true },
   { label: 'Leadership', href: '#leadership' },
+  { label: 'Client Portal', href: '/client-portal', isRoute: true },
   { label: 'Careers', href: '/careers', isRoute: true },
   { label: 'Contact', href: '#contact' },
 ]
