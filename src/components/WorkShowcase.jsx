@@ -1,7 +1,7 @@
 import { useState, useEffect, useRef, useCallback } from 'react'
 import { useScrollAnimation } from '../hooks/useScrollAnimation'
 import {
-  ArrowUpRight, ArrowLeft, X, CheckCircle2, Search, Link2, MapPin, Building2,
+  ArrowUpRight, ArrowLeft, ArrowRight, X, CheckCircle2, Search, Link2, MapPin, Building2,
   Users, ChevronRight, ChevronLeft, Filter, ExternalLink, Globe, Play, Pause,
   Layers, Database, Server, ShieldCheck, Code2, Cpu, Sparkles, Check, HelpCircle,
   FileCode, Terminal, GitBranch
