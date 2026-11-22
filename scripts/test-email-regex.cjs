@@ -75,3 +75,4 @@ if (failed > 0) {
 } else {
   console.log(`\nALL ${testCases.length} EMAIL VALIDATION TESTS PASSED!`);
 }
+

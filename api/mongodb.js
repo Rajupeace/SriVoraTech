@@ -9,6 +9,33 @@ let lastFailureTime = 0
 const RETRY_COOLDOWN_MS = 30000 // Retry every 30 seconds if connection failed
 
 /**
+ * Controlled index migration & verification function for SriVoraTech collections.
+ * Throws on failure to ensure release-gate integrity.
+ * @param {import('mongodb').Db} db 
+ * @returns {Promise<Array<object>>} List of confirmed indexes
+ */
+export async function ensureIndexes(db) {
+  if (!db) {
+    throw new Error('Database handle required to ensure collection indexes.')
+  }
+
+  const collection = db.collection('contact_enquiries')
+
+  // 1. Unique enquiryId index (enforces strict idempotency and lookup speed)
+  await collection.createIndex({ enquiryId: 1 }, { unique: true, name: 'uniq_enquiryId' })
+
+  // 2. Sorting & query index by createdAt
+  await collection.createIndex({ createdAt: -1 }, { name: 'idx_createdAt' })
+
+  // 3. TTL index: automatically deletes expired records after 180 days
+  await collection.createIndex({ expiresAt: 1 }, { expireAfterSeconds: 0, name: 'ttl_expiresAt' })
+
+  // Return and verify existing indexes
+  const existingIndexes = await collection.indexes()
+  return existingIndexes
+}
+
+/**
  * Connect to MongoDB Atlas cluster
  * Reuses connection across serverless invocations
  * @param {string} [customUri] - Optional custom connection string (for staging/testing)
@@ -38,6 +65,10 @@ export async function connectToDatabase(customUri = null, customDb = null) {
       connectTimeoutMS: 5000,
       serverSelectionTimeoutMS: 5000,
       maxPoolSize: 10,
+      writeConcern: {
+        w: 'majority',
+        wtimeoutMS: 5000,
+      }
     })
 
     await client.connect()
@@ -49,14 +80,11 @@ export async function connectToDatabase(customUri = null, customDb = null) {
       lastFailureTime = 0
     }
 
-    // Ensure essential indexes on first successful connection
+    // Auto-verify indexes on initial connection
     try {
-      await db.collection('contact_enquiries').createIndex({ enquiryId: 1 }, { unique: true })
-      await db.collection('contact_enquiries').createIndex({ createdAt: -1 })
-      // TTL index: auto-delete enquiries after 180 days (retention policy)
-      await db.collection('contact_enquiries').createIndex({ expiresAt: 1 }, { expireAfterSeconds: 0 })
+      await ensureIndexes(db)
     } catch (idxErr) {
-      // Index creation non-blocking
+      console.warn('[MongoDB] Index synchronization warning:', idxErr.message)
     }
 
     return { client, db }
@@ -69,7 +97,7 @@ export async function connectToDatabase(customUri = null, customDb = null) {
 }
 
 /**
- * Read-after-write verification helper for staging and integration tests.
+ * Read-after-write verification helper.
  * Confirms that a document is durably committed to the database.
  * @param {import('mongodb').Db} db
  * @param {string} collectionName

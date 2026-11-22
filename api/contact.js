@@ -1,19 +1,14 @@
 /**
  * Production Contact API Endpoint for SriVoraTech
  * 
- * Reliability & Compliance Rules:
- * 1. MongoDB Atlas is the authoritative primary store — NO ephemeral filesystem or /tmp fallbacks on Vercel.
- * 2. HTTP 200 is ONLY returned when enquiry is durably persisted and verified via read-after-write.
+ * Strict Gate Compliance:
+ * 1. MongoDB Atlas is the sole authoritative primary store with majority write concern.
+ * 2. Read-after-write verification confirms persistence before HTTP 200.
  * 3. Distributed Redis rate limiting (max 5 submissions per 10 minutes per IP).
- * 4. Strict email format validation rejecting internal/leading/trailing spaces.
- * 5. Privacy: IP is stored as a salted one-way hash token; logs never expose personal contact info.
- * 6. Google Sheets webhook is an optional secondary integration (non-blocking).
- * 
- * Required Environment Variables:
- * - MONGODB_URI: MongoDB Atlas connection string (Required for production durable storage)
- * - MONGODB_DB: Database name (Optional, defaults to 'srivoratech')
- * - REDIS_URL / KV_URL: Redis connection URL for distributed rate limiting (Optional, memory fallback used if omitted)
- * - IP_HASH_SALT: Secret salt for IP pseudonymization (Optional)
+ * 4. Production strictly blocks execution if Redis rate limiting is unavailable (no silent memory fallback).
+ * 5. Strict email validation: non-strings return 400; internal spaces return 400; surrounding whitespace trimmed.
+ * 6. IP pseudonymized via salted cryptographic token (production requires minimum 32-char secret).
+ * 7. Public logs never expose personal customer contact information.
  */
 
 import { connectToDatabase, verifyDatabaseWrite } from './mongodb.js'
@@ -21,18 +16,31 @@ import { checkRateLimit, hashClientIp } from './ratelimit.js'
 
 const GOOGLE_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbzzB8S5E3JqKFYuj-2RX7oHWXkv0taRPv0aQBAjIr2TQkVp0K0grPCIcZWVrbbXQlSo/exec'
 
-// Strict email validation function
+/**
+ * Strict email validator
+ * Handles type safety, length bounds, whitespace rules, and RFC 5322 syntax.
+ */
 export function validateEmail(email) {
-  if (!email || typeof email !== 'string') {
+  if (email === undefined || email === null) {
     return { valid: false, error: 'Email address is required.' }
   }
 
-  // Reject internal or surrounding whitespace
-  if (/\s/.test(email)) {
-    return { valid: false, error: 'Email address must not contain spaces or whitespace.' }
+  if (typeof email !== 'string') {
+    return { valid: false, error: 'Email must be a valid text string.' }
   }
 
+  // Sanitize surrounding whitespace (copy-paste convenience)
   const trimmed = email.trim()
+
+  if (trimmed.length === 0) {
+    return { valid: false, error: 'Email address cannot be empty.' }
+  }
+
+  // Reject internal whitespace
+  if (/\s/.test(trimmed)) {
+    return { valid: false, error: 'Email address must not contain internal spaces or whitespace.' }
+  }
+
   if (trimmed.length > 254) {
     return { valid: false, error: 'Email address must not exceed 254 characters.' }
   }
@@ -97,14 +105,23 @@ export default async function handler(req, res) {
 
   const clientIp = req.headers['x-forwarded-for']?.split(',')[0]?.trim() || req.socket?.remoteAddress || 'unknown'
 
-  // 1. Distributed Rate Limiting (max 5 per 10 minutes)
+  // 1. Distributed Rate Limiting
   const rateLimit = await checkRateLimit(clientIp, { maxRequests: 5, windowSeconds: 600 })
+
+  if (rateLimit.serviceUnavailable) {
+    console.error('[Rate Limit Error]:', rateLimit.error)
+    return res.status(503).json({
+      success: false,
+      message: 'Rate limiting service is temporarily unavailable. Please email contact@srivoratech.in directly.'
+    })
+  }
+
   if (!rateLimit.allowed) {
-    res.setHeader('Retry-After', rateLimit.ttl)
+    res.setHeader('Retry-After', rateLimit.ttl || 600)
     return res.status(429).json({
       success: false,
-      message: 'Too many submissions. Please wait a few minutes before submitting another enquiry.',
-      retryAfter: rateLimit.ttl
+      message: 'Submission limit reached. Please wait a few minutes before submitting another enquiry.',
+      retryAfter: rateLimit.ttl || 600
     })
   }
 
@@ -118,20 +135,40 @@ export default async function handler(req, res) {
       }
     }
 
-    // 2. Spam Honeypot Protection (Silent rejection for bots)
+    // 2. Type-Safety Check: Reject non-string payloads with HTTP 400 (NOT 500)
+    if (body.email !== undefined && body.email !== null && typeof body.email !== 'string') {
+      return res.status(400).json({ success: false, message: 'Email must be a valid text string.' })
+    }
+    if (body.name !== undefined && body.name !== null && typeof body.name !== 'string') {
+      return res.status(400).json({ success: false, message: 'Name must be a valid text string.' })
+    }
+    if (body.fullName !== undefined && body.fullName !== null && typeof body.fullName !== 'string') {
+      return res.status(400).json({ success: false, message: 'Full name must be a valid text string.' })
+    }
+    if (body.message !== undefined && body.message !== null && typeof body.message !== 'string') {
+      return res.status(400).json({ success: false, message: 'Message must be a valid text string.' })
+    }
+    if (body.phone !== undefined && body.phone !== null && typeof body.phone !== 'string') {
+      return res.status(400).json({ success: false, message: 'Phone must be a valid text string.' })
+    }
+    if (body.company !== undefined && body.company !== null && typeof body.company !== 'string') {
+      return res.status(400).json({ success: false, message: 'Company must be a valid text string.' })
+    }
+
+    // 3. Spam Honeypot Protection (Silent rejection for bots)
     if (body.botCheck || body._gotcha || body.website_url) {
       return res.status(200).json({ success: true, message: 'Enquiry received.' })
     }
 
-    const rawName = (body.name || body.fullName || '').trim()
-    const rawEmail = (body.email || '').trim()
-    const rawPhone = (body.phone || '').trim()
-    const rawCompany = (body.company || '').trim()
-    const rawBudget = (body.budget || '').trim()
-    const rawMessage = (body.message || body.whySriVoraTech || '').trim()
+    const rawName = String(body.name || body.fullName || '').trim()
+    const rawEmail = body.email
+    const rawPhone = String(body.phone || '').trim()
+    const rawCompany = String(body.company || '').trim()
+    const rawBudget = String(body.budget || '').trim()
+    const rawMessage = String(body.message || body.whySriVoraTech || '').trim()
     const isTest = Boolean(body.isTest)
 
-    // 3. Field Validations & Length Bounds
+    // 4. Field Validations & Length Bounds
     if (!rawName || rawName.length < 2) {
       return res.status(400).json({
         success: false,
@@ -145,7 +182,7 @@ export default async function handler(req, res) {
       })
     }
 
-    // Email strict validation
+    // Strict Email Validation
     const emailResult = validateEmail(rawEmail)
     if (!emailResult.valid) {
       return res.status(400).json({
@@ -198,7 +235,7 @@ export default async function handler(req, res) {
       })
     }
 
-    // 4. Generate Unique Enquiry ID
+    // 5. Generate Unique Enquiry ID & Pseudonymized IP Token
     const enquiryId = `svt_enq_${Date.now()}_${Math.random().toString(36).substring(2, 7)}`
     const now = new Date()
     const retentionExpiry = new Date(now.getTime() + (180 * 24 * 60 * 60 * 1000)) // 180-day retention
@@ -214,16 +251,15 @@ export default async function handler(req, res) {
       message: rawMessage,
       submittedAt: now.toISOString(),
       createdAt: now,
-      expiresAt: retentionExpiry, // Triggers TTL index deletion
-      ipToken: hashClientIp(clientIp), // Pseudonymized for privacy
+      expiresAt: retentionExpiry,
+      ipToken: hashClientIp(clientIp),
       isTest: isTest || undefined
     }
 
-    // 5. Authoritative MongoDB Atlas Storage (NO Ephemeral Filesystem Fallback)
+    // 6. Authoritative MongoDB Atlas Storage (Majority Write Concern)
     const { db, error: dbError } = await connectToDatabase()
 
     if (!db) {
-      // Durable storage is unavailable — strictly return 503 rather than fake 200
       console.error('[Contact API] MongoDB connection unavailable:', dbError)
       return res.status(503).json({
         success: false,
@@ -231,10 +267,12 @@ export default async function handler(req, res) {
       })
     }
 
-    // Execute insert
-    await db.collection('contact_enquiries').insertOne(enquiry)
+    // Majority acknowledgement write concern
+    await db.collection('contact_enquiries').insertOne(enquiry, {
+      writeConcern: { w: 'majority', wtimeoutMS: 5000 }
+    })
 
-    // Read-after-write verification to guarantee durability before issuing HTTP 200
+    // Read-after-write verification
     const isCommitted = await verifyDatabaseWrite(db, 'contact_enquiries', { enquiryId })
     if (!isCommitted) {
       console.error('[Contact API] Read-after-write verification failed for:', enquiryId)
@@ -244,11 +282,9 @@ export default async function handler(req, res) {
       })
     }
 
-    // Log without exposing sensitive customer personal data
     console.log(`[Contact API] Enquiry durably persisted: ${enquiryId} (domain: ${normalizedEmail.split('@')[1]})`)
 
-    // 6. Optional Non-Blocking Secondary Integration (Google Sheets)
-    // Only forward if not a test submission
+    // 7. Optional Non-Blocking Secondary Integration (Google Sheets)
     if (!isTest && GOOGLE_SCRIPT_URL) {
       fetch(GOOGLE_SCRIPT_URL, {
         method: 'POST',
@@ -265,12 +301,11 @@ export default async function handler(req, res) {
           enquiryId
         })
       }).catch(err => {
-        // Non-blocking error logging
         console.warn('[Contact API] Secondary Google Sheets sync skipped:', err.message)
       })
     }
 
-    // 7. Successful Durable Response
+    // 8. Successful Durable Receipt
     return res.status(200).json({
       success: true,
       message: 'Enquiry received successfully! Our team will contact you within 24 hours.',
