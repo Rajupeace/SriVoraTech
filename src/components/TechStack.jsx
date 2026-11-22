@@ -260,73 +260,103 @@ export default function TechStack() {
           </div>
         </div>
 
-        {/* Tech Grid */}
-        <div className="tech-cards-grid">
-          {filteredTechnologies.map((tech, idx) => {
-            const Icon = tech.icon
+        {/* Live Filter Indicator */}
+        <div className="tech-status-summary">
+          <span className="tech-count-badge">
+            Showing <strong>{filteredTechnologies.length}</strong> of <strong>{technologies.length}</strong> Technologies
+          </span>
+          {searchQuery && (
+            <span className="tech-query-badge">
+              Keyword: &ldquo;{searchQuery}&rdquo;
+            </span>
+          )}
+        </div>
 
-            return (
-              <div 
-                key={tech.id} 
-                className={`tech-card animate-on-scroll delay-${(idx % 4) + 1} ${isVisible ? 'visible' : ''}`}
-                style={{ 
-                  '--tech-accent': tech.color, 
-                  '--delay': `${0.04 + idx * 0.04}s` 
-                }}
-              >
+        {/* Tech Grid or Empty State */}
+        {filteredTechnologies.length === 0 ? (
+          <div className="tech-empty-state">
+            <div className="tech-empty-icon-box">
+              <Sparkles size={28} className="empty-sparkle-icon" />
+            </div>
+            <h3 className="tech-empty-title">No technologies found matching &ldquo;{searchQuery}&rdquo;</h3>
+            <p className="tech-empty-desc">
+              Try searching for alternative keywords (e.g., &ldquo;React&rdquo;, &ldquo;API&rdquo;, &ldquo;Cloud&rdquo;, &ldquo;Docker&rdquo;) or reset your filters.
+            </p>
+            <button
+              onClick={() => { setSearchQuery(''); setActiveCategory('all'); }}
+              className="tech-empty-reset-btn"
+            >
+              Reset Search & Filters
+            </button>
+          </div>
+        ) : (
+          <div className="tech-cards-grid">
+            {filteredTechnologies.map((tech, idx) => {
+              const Icon = tech.icon
+
+              return (
                 <div 
-                  className="tech-top-accent-line" 
-                  style={{ background: tech.color }} 
-                />
-
-                <div className="tech-card-header">
+                  key={tech.id} 
+                  className={`tech-card animate-on-scroll delay-${(idx % 4) + 1} ${isVisible ? 'visible' : ''}`}
+                  style={{ 
+                    '--tech-accent': tech.color, 
+                    '--delay': `${0.04 + idx * 0.04}s` 
+                  }}
+                >
                   <div 
-                    className="tech-icon-wrapper" 
-                    style={{ 
-                      background: `${tech.color}14`, 
-                      color: tech.color, 
-                      borderColor: `${tech.color}30` 
-                    }}
-                  >
-                    <Icon size={24} />
-                  </div>
-                  <div className="tech-meta">
-                    <span 
-                      className="tech-badge" 
+                    className="tech-top-accent-line" 
+                    style={{ background: tech.color }} 
+                  />
+
+                  <div className="tech-card-header">
+                    <div 
+                      className="tech-icon-wrapper" 
                       style={{ 
+                        background: `${tech.color}14`, 
                         color: tech.color, 
-                        borderColor: `${tech.color}30`, 
-                        background: `${tech.color}0f` 
+                        borderColor: `${tech.color}30` 
                       }}
                     >
-                      {tech.badge}
-                    </span>
-                    <span className="tech-tier-chip" style={{ color: tech.color }}>
-                      {tech.tier}
-                    </span>
+                      <Icon size={24} />
+                    </div>
+                    <div className="tech-meta">
+                      <span 
+                        className="tech-badge" 
+                        style={{ 
+                          color: tech.color, 
+                          borderColor: `${tech.color}30`, 
+                          background: `${tech.color}0f` 
+                        }}
+                      >
+                        {tech.badge}
+                      </span>
+                      <span className="tech-tier-chip" style={{ color: tech.color }}>
+                        {tech.tier}
+                      </span>
+                    </div>
+                  </div>
+
+                  <h3 className="tech-name">{tech.name}</h3>
+                  <p className="tech-desc">{tech.desc}</p>
+
+                  <div className="tech-use-case">
+                    <span className="use-case-label">Primary Application:</span>
+                    <span className="use-case-text">{tech.useCase}</span>
+                  </div>
+
+                  <div className="tech-tags">
+                    {tech.tags.map((tag) => (
+                      <span key={tag} className="tech-tag">
+                        <Zap size={10} style={{ color: tech.color }} />
+                        {tag}
+                      </span>
+                    ))}
                   </div>
                 </div>
-
-                <h3 className="tech-name">{tech.name}</h3>
-                <p className="tech-desc">{tech.desc}</p>
-
-                <div className="tech-use-case">
-                  <span className="use-case-label">Primary Application:</span>
-                  <span className="use-case-text">{tech.useCase}</span>
-                </div>
-
-                <div className="tech-tags">
-                  {tech.tags.map((tag) => (
-                    <span key={tag} className="tech-tag">
-                      <Zap size={10} style={{ color: tech.color }} />
-                      {tag}
-                    </span>
-                  ))}
-                </div>
-              </div>
-            )
-          })}
-        </div>
+              )
+            })}
+          </div>
+        )}
       </div>
     </section>
   )

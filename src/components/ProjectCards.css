@@ -552,3 +552,34 @@
   color: #ffffff !important;
 }
 
+/* Dot Pagination */
+.project-dots-row {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  margin-top: 16px;
+}
+
+.project-dot-btn {
+  width: 8px;
+  height: 8px;
+  border-radius: 9999px;
+  background: var(--color-gray-300, #cbd5e1);
+  border: none;
+  cursor: pointer;
+  padding: 0;
+  transition: all 250ms var(--ease-out-smooth);
+}
+
+.project-dot-btn:hover {
+  background: var(--color-gray-500, #64748b);
+  transform: scale(1.25);
+}
+
+.project-dot-btn.active {
+  width: 26px;
+  background: var(--dot-color, var(--color-accent));
+  box-shadow: 0 2px 8px rgba(0, 103, 244, 0.3);
+}
+

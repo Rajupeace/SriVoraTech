@@ -1,16 +1,18 @@
 import { useState, useEffect } from 'react'
-import { Sparkles, ArrowRight, Zap, Shield, Award, Cpu } from 'lucide-react'
+import { Sparkles, ArrowRight, Zap, Shield, Award, Cpu, X } from 'lucide-react'
 import './WelcomeSplash.css'
 
 export default function WelcomeSplash({ onComplete }) {
   const [progress, setProgress] = useState(0)
   const [isDismissing, setIsDismissing] = useState(false)
   const [isDismissed, setIsDismissed] = useState(false)
+  const [dontShowAgain, setDontShowAgain] = useState(false)
 
   useEffect(() => {
-    // Check session storage if splash was already shown
-    const splashSeen = sessionStorage.getItem('svt_splash_seen')
-    if (splashSeen === 'true') {
+    // Check if splash was already dismissed permanently or in this session
+    const permanentDismiss = localStorage.getItem('svt_splash_seen_permanent')
+    const sessionDismiss = sessionStorage.getItem('svt_splash_seen')
+    if (permanentDismiss === 'true' || sessionDismiss === 'true') {
       setIsDismissed(true)
       if (onComplete) onComplete()
       return
@@ -37,6 +39,9 @@ export default function WelcomeSplash({ onComplete }) {
     if (isDismissing) return
     setIsDismissing(true)
     sessionStorage.setItem('svt_splash_seen', 'true')
+    if (dontShowAgain) {
+      localStorage.setItem('svt_splash_seen_permanent', 'true')
+    }
     setTimeout(() => {
       setIsDismissed(true)
       if (onComplete) onComplete()
@@ -54,6 +59,16 @@ export default function WelcomeSplash({ onComplete }) {
       <div className="splash-light-grid" />
 
       <div className="splash-card-light animate-splash-card">
+        {/* Instant Skip Intro Button */}
+        <button
+          className="splash-skip-corner-btn"
+          onClick={triggerDismiss}
+          aria-label="Skip splash introduction"
+        >
+          <span>Skip</span>
+          <X size={14} />
+        </button>
+
         {/* Top Welcome Badge */}
         <div className="splash-light-badge animate-splash-top">
           <Sparkles size={14} className="sparkle-gold" />
@@ -92,6 +107,15 @@ export default function WelcomeSplash({ onComplete }) {
               Explore Platform <ArrowRight size={14} />
             </button>
           </div>
+
+          <label className="splash-permanent-opt">
+            <input
+              type="checkbox"
+              checked={dontShowAgain}
+              onChange={(e) => setDontShowAgain(e.target.checked)}
+            />
+            <span>Don't show this intro on next visit</span>
+          </label>
         </div>
       </div>
     </div>

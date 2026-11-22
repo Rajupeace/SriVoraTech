@@ -189,6 +189,8 @@ export default function ProjectCards() {
   const [ref, isVisible] = useScrollAnimation()
   const [currentIndex, setCurrentIndex] = useState(0)
   const [isHovering, setIsHovering] = useState(false)
+  const [touchStartX, setTouchStartX] = useState(null)
+  const [touchEndX, setTouchEndX] = useState(null)
 
   const goNext = useCallback(() => {
     setCurrentIndex((prev) => (prev + 1) % projects.length)
@@ -197,6 +199,26 @@ export default function ProjectCards() {
   const goPrev = useCallback(() => {
     setCurrentIndex((prev) => (prev - 1 + projects.length) % projects.length)
   }, [])
+
+  const handleTouchStart = (e) => {
+    setTouchStartX(e.targetTouches[0].clientX)
+  }
+
+  const handleTouchMove = (e) => {
+    setTouchEndX(e.targetTouches[0].clientX)
+  }
+
+  const handleTouchEnd = () => {
+    if (!touchStartX || !touchEndX) return
+    const distance = touchStartX - touchEndX
+    if (distance > 45) {
+      goNext()
+    } else if (distance < -45) {
+      goPrev()
+    }
+    setTouchStartX(null)
+    setTouchEndX(null)
+  }
 
   useEffect(() => {
     if (isHovering) return
@@ -228,6 +250,9 @@ export default function ProjectCards() {
           className="project-cards-stage-wrap"
           onMouseEnter={() => setIsHovering(true)}
           onMouseLeave={() => setIsHovering(false)}
+          onTouchStart={handleTouchStart}
+          onTouchMove={handleTouchMove}
+          onTouchEnd={handleTouchEnd}
         >
           <div className="project-card-container glass-card">
             {/* Left Product Display */}
@@ -298,6 +323,21 @@ export default function ProjectCards() {
             <button className="nav-arrow-btn" onClick={goNext} aria-label="Next product">
               <ChevronRight size={20} />
             </button>
+          </div>
+
+          {/* Interactive Dot Pagination */}
+          <div className="project-dots-row" role="tablist" aria-label="Featured solutions pagination">
+            {projects.map((p, idx) => (
+              <button
+                key={p.id}
+                className={`project-dot-btn ${idx === currentIndex ? 'active' : ''}`}
+                onClick={() => setCurrentIndex(idx)}
+                aria-label={`View ${p.name}`}
+                aria-selected={idx === currentIndex}
+                role="tab"
+                style={{ '--dot-color': p.color }}
+              />
+            ))}
           </div>
         </div>
       </div>
