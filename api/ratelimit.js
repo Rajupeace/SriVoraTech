@@ -141,14 +141,7 @@ export async function checkRateLimit(clientIp, options = {}) {
   try {
     ipToken = hashClientIp(clientIp, { isProduction: isProd })
   } catch (err) {
-    if (isProd) {
-      return {
-        allowed: false,
-        serviceUnavailable: true,
-        provider: 'none',
-        error: err.message
-      }
-    }
+    // If IP_HASH_SALT isn't configured, use a basic non-production hash
     ipToken = hashClientIp(clientIp, { isProduction: false })
   }
 
@@ -199,29 +192,17 @@ export async function checkRateLimit(clientIp, options = {}) {
         }
       }
     } catch (redisErr) {
-      // In production, do NOT fall back to memory!
-      if (isProd) {
-        return {
-          allowed: false,
-          serviceUnavailable: true,
-          provider: 'redis',
-          error: 'Production Redis rate limiter communication failed.'
-        }
-      }
+      // Log Redis failure but fall back to memory to keep the form working
+      console.warn('[Rate Limit] Redis communication failed, falling back to memory:', redisErr.message)
     }
   }
 
-  // 2. Production Gate: If Redis is missing or disconnected in production, fail safely
-  if (isProd) {
-    return {
-      allowed: false,
-      serviceUnavailable: true,
-      provider: 'none',
-      error: 'REDIS_URL must be configured and reachable in production.'
-    }
+  // 2. Fallback: In-Memory Rate Limiting (per-instance; acceptable when Redis is not configured)
+  if (isProd && !process.env.REDIS_URL && !process.env.KV_URL && !process.env.UPSTASH_REDIS_URL) {
+    console.warn('[Rate Limit] No REDIS_URL configured — using in-memory rate limiting. Configure REDIS_URL for distributed rate limiting across serverless instances.')
   }
 
-  // 3. Local Development / Non-Production In-Memory Fallback
+  // 3. In-Memory Rate Limiting
   const now = Date.now()
   const record = memoryStore.get(key) || { count: 0, resetTime: now + (windowSec * 1000) }
 

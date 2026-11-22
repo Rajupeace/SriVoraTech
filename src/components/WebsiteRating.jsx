@@ -30,7 +30,6 @@ export default function WebsiteRating() {
   const [distribution, setDistribution] = useState({ 5: 0, 4: 0, 3: 0, 2: 0, 1: 0 })
   const [counts, setCounts] = useState({ 5: 0, 4: 0, 3: 0, 2: 0, 1: 0 })
   const [satisfactionRate, setSatisfactionRate] = useState(100)
-  const [viewCount, setViewCount] = useState(847)
   const [loading, setLoading] = useState(true)
   const [publicStarFilter, setPublicStarFilter] = useState('')
   const [publicSearchQuery, setPublicSearchQuery] = useState('')
@@ -135,9 +134,6 @@ export default function WebsiteRating() {
   }
 
   useEffect(() => {
-    // Increment view count locally
-    incrementViewCount().then(views => setViewCount(views))
-
     // Check if admin is already logged in (has token)
     const token = getAdminToken()
     if (token) {

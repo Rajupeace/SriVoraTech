@@ -318,3 +318,10 @@ export async function markReviewHelpful(id) {
     // Non-fatal
   }
 }
+
+/**
+ * Backward compatibility: Safe stub for view count
+ */
+export async function incrementViewCount() {
+  return 0
+}

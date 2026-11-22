@@ -105,15 +105,12 @@ export default async function handler(req, res) {
 
   const clientIp = req.headers['x-forwarded-for']?.split(',')[0]?.trim() || req.socket?.remoteAddress || 'unknown'
 
-  // 1. Distributed Rate Limiting
+  // 1. Distributed Rate Limiting (graceful degradation: memory fallback when Redis not configured)
   const rateLimit = await checkRateLimit(clientIp, { maxRequests: 5, windowSeconds: 600 })
 
   if (rateLimit.serviceUnavailable) {
-    console.error('[Rate Limit Error]:', rateLimit.error)
-    return res.status(503).json({
-      success: false,
-      message: 'Rate limiting service is temporarily unavailable. Please email contact@srivoratech.in directly.'
-    })
+    // Log the issue but don't block the form — use memory fallback implicitly
+    console.warn('[Rate Limit] Redis unavailable, using memory fallback:', rateLimit.error)
   }
 
   if (!rateLimit.allowed) {
@@ -240,6 +237,15 @@ export default async function handler(req, res) {
     const now = new Date()
     const retentionExpiry = new Date(now.getTime() + (180 * 24 * 60 * 60 * 1000)) // 180-day retention
 
+    let ipToken = 'unknown'
+    try {
+      ipToken = hashClientIp(clientIp)
+    } catch (hashErr) {
+      // If IP_HASH_SALT is not configured, use a basic hash (non-critical)
+      const crypto = await import('crypto')
+      ipToken = crypto.createHash('sha256').update(clientIp || 'unknown').digest('hex').substring(0, 24)
+    }
+
     const enquiry = {
       enquiryId,
       type: 'Contact',
@@ -252,44 +258,43 @@ export default async function handler(req, res) {
       submittedAt: now.toISOString(),
       createdAt: now,
       expiresAt: retentionExpiry,
-      ipToken: hashClientIp(clientIp),
+      ipToken: ipToken,
       isTest: isTest || undefined
     }
 
-    // 6. Authoritative MongoDB Atlas Storage (Majority Write Concern)
-    const { db, error: dbError } = await connectToDatabase()
+    // 6. Durable Storage Strategy
+    let persisted = false
+    let storageMethod = 'none'
 
-    if (!db) {
-      console.error('[Contact API] MongoDB connection unavailable:', dbError)
-      return res.status(503).json({
-        success: false,
-        message: 'Our primary database service is temporarily unavailable. Please email contact@srivoratech.in directly.'
-      })
+    // Attempt A: MongoDB Atlas (Authoritative Primary Store)
+    try {
+      const { db, error: dbError } = await connectToDatabase()
+
+      if (db) {
+        await db.collection('contact_enquiries').insertOne(enquiry, {
+          writeConcern: { w: 'majority', wtimeoutMS: 5000 }
+        })
+
+        // Read-after-write verification
+        const isCommitted = await verifyDatabaseWrite(db, 'contact_enquiries', { enquiryId })
+        if (isCommitted) {
+          persisted = true
+          storageMethod = 'mongodb'
+          console.log(`[Contact API] Enquiry durably persisted: ${enquiryId} (domain: ${normalizedEmail.split('@')[1]})`)
+        } else {
+          console.warn('[Contact API] Read-after-write verification failed for:', enquiryId)
+        }
+      } else {
+        console.warn('[Contact API] MongoDB connection unavailable:', dbError)
+      }
+    } catch (dbErr) {
+      console.warn('[Contact API] MongoDB write failed:', dbErr.message)
     }
 
-    // Majority acknowledgement write concern
-    await db.collection('contact_enquiries').insertOne(enquiry, {
-      writeConcern: { w: 'majority', wtimeoutMS: 5000 }
-    })
-
-    // Read-after-write verification
-    const isCommitted = await verifyDatabaseWrite(db, 'contact_enquiries', { enquiryId })
-    if (!isCommitted) {
-      console.error('[Contact API] Read-after-write verification failed for:', enquiryId)
-      return res.status(500).json({
-        success: false,
-        message: 'Failed to confirm enquiry persistence in database. Please contact us directly.'
-      })
-    }
-
-    console.log(`[Contact API] Enquiry durably persisted: ${enquiryId} (domain: ${normalizedEmail.split('@')[1]})`)
-
-    // 7. Optional Non-Blocking Secondary Integration (Google Sheets)
-    if (!isTest && GOOGLE_SCRIPT_URL) {
-      fetch(GOOGLE_SCRIPT_URL, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
+    // Attempt B: Google Sheets Integration (Secondary / Backup)
+    if (GOOGLE_SCRIPT_URL) {
+      try {
+        const sheetsPayload = {
           formType: 'contact',
           timestamp: enquiry.submittedAt,
           fullName: rawName,
@@ -299,13 +304,44 @@ export default async function handler(req, res) {
           budget: rawBudget || '',
           message: rawMessage,
           enquiryId
-        })
-      }).catch(err => {
-        console.warn('[Contact API] Secondary Google Sheets sync skipped:', err.message)
+        }
+
+        if (!persisted) {
+          // Synchronous call when MongoDB is not available
+          const sheetsResponse = await fetch(GOOGLE_SCRIPT_URL, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(sheetsPayload)
+          })
+          if (sheetsResponse.ok) {
+            persisted = true
+            storageMethod = 'google_sheets'
+            console.log(`[Contact API] Enquiry saved to Google Sheets: ${enquiryId}`)
+          }
+        } else if (!isTest) {
+          // Non-blocking async sync when MongoDB succeeded
+          fetch(GOOGLE_SCRIPT_URL, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(sheetsPayload)
+          }).catch(err => {
+            console.warn('[Contact API] Secondary Google Sheets sync skipped:', err.message)
+          })
+        }
+      } catch (sheetsErr) {
+        console.warn('[Contact API] Google Sheets integration failed:', sheetsErr.message)
+      }
+    }
+
+    // If all persistence failed
+    if (!persisted) {
+      return res.status(503).json({
+        success: false,
+        message: 'Unable to save your enquiry at this moment. Please email contact@srivoratech.in directly.'
       })
     }
 
-    // 8. Successful Durable Receipt
+    // 7. Successful Receipt
     return res.status(200).json({
       success: true,
       message: 'Enquiry received successfully! Our team will contact you within 24 hours.',
