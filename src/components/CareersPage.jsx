@@ -90,7 +90,7 @@ const INITIAL_FRESHER = {
   role: 'Junior Full Stack Developer',
   college: '',
   degree: '',
-  graduationYear: '2025',
+  graduationYear: '2026',
   skills: '',
   portfolio: '',
   resume: '',

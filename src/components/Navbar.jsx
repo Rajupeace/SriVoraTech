@@ -36,6 +36,7 @@ export default function Navbar({ onNavigate }) {
       if (link.href === '/blog' && currentPath.startsWith('/blog')) return true
       return currentPath === link.href
     }
+    if (currentPath !== '/' && currentPath !== '') return false
     return activeSection === link.href.substring(1)
   }
 
@@ -59,6 +60,16 @@ export default function Navbar({ onNavigate }) {
       setMobileOpen(false)
       setCompanyDropdownOpen(false)
     } else {
+      e.preventDefault()
+      const targetId = link.href.replace('#', '')
+      const el = document.getElementById(targetId)
+      if (el) {
+        const headerHeight = 72
+        const y = el.getBoundingClientRect().top + window.pageYOffset - headerHeight - 16
+        window.scrollTo({ top: y, behavior: 'smooth' })
+        window.history.pushState(null, '', link.href)
+        setActiveSection(targetId)
+      }
       setMobileOpen(false)
       setCompanyDropdownOpen(false)
     }
@@ -78,23 +89,34 @@ export default function Navbar({ onNavigate }) {
     const handleScroll = () => {
       setScrolled(window.scrollY > 20)
 
-      // Active section scroll spy
+      if (window.location.pathname !== '/' && window.location.pathname !== '') {
+        setActiveSection('')
+        return
+      }
+
+      // Check if user is near bottom of the page -> activate contact
+      if (window.innerHeight + window.scrollY >= document.documentElement.scrollHeight - 100) {
+        setActiveSection('contact')
+        return
+      }
+
+      // Single active section scroll spy with non-overlapping range
       const sections = ['services', 'our-works', 'tech-stack', 'estimator', 'leadership', 'contact']
-      let matched = false
+      const scrollPos = window.scrollY + 120
+      let current = ''
+
       for (const sectionId of sections) {
         const element = document.getElementById(sectionId)
         if (element) {
-          const rect = element.getBoundingClientRect()
-          if (rect.top <= 140 && rect.bottom >= 140) {
-            setActiveSection(sectionId)
-            matched = true
+          const top = element.offsetTop
+          const height = element.offsetHeight
+          if (scrollPos >= top && scrollPos < top + height) {
+            current = sectionId
             break
           }
         }
       }
-      if (!matched) {
-        setActiveSection('')
-      }
+      setActiveSection(current)
     }
 
     const handleClickOutside = (e) => {
@@ -190,9 +212,17 @@ export default function Navbar({ onNavigate }) {
             href="#contact"
             className="btn-primary header-cta-btn"
             onClick={(e) => {
+              e.preventDefault()
               if (window.location.pathname !== '/') {
-                e.preventDefault()
                 onNavigate('/#contact')
+              } else {
+                const el = document.getElementById('contact')
+                if (el) {
+                  const y = el.getBoundingClientRect().top + window.pageYOffset - 88
+                  window.scrollTo({ top: y, behavior: 'smooth' })
+                  window.history.pushState(null, '', '#contact')
+                  setActiveSection('contact')
+                }
               }
             }}
           >
@@ -256,10 +286,18 @@ export default function Navbar({ onNavigate }) {
             href="#contact"
             className="btn-primary mobile-cta-btn"
             onClick={(e) => {
+              e.preventDefault()
               setMobileOpen(false)
               if (window.location.pathname !== '/') {
-                e.preventDefault()
                 onNavigate('/#contact')
+              } else {
+                const el = document.getElementById('contact')
+                if (el) {
+                  const y = el.getBoundingClientRect().top + window.pageYOffset - 88
+                  window.scrollTo({ top: y, behavior: 'smooth' })
+                  window.history.pushState(null, '', '#contact')
+                  setActiveSection('contact')
+                }
               }
             }}
           >

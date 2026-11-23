@@ -63,6 +63,8 @@ export default function ClientPortalPage({ onBack, onNavigate }) {
     { name: 'System Architecture & Data Flow Diagram.pdf', size: '2.8 MB', date: 'Sample Sprint Document', type: 'Architecture' },
     { name: 'Interactive Figma Component Tokens.fig', size: '14.5 MB', date: 'Sample Sprint Document', type: 'Design' },
     { name: 'API Endpoints Specification (OpenAPI).json', size: '420 KB', date: 'Sample Sprint Document', type: 'API Specs' },
+    { name: 'Security Audit & OWASP Top 10 Checklist.pdf', size: '1.8 MB', date: 'Sample Sprint Document', type: 'Security' },
+    { name: 'PostgreSQL Relational Schema & ER Model.sql', size: '850 KB', date: 'Sample Sprint Document', type: 'Database' },
   ]
 
   const getDeliverableIcon = (name) => {
@@ -86,7 +88,7 @@ export default function ClientPortalPage({ onBack, onNavigate }) {
   }
 
   return (
-    <div style={{ maxWidth: '1100px', margin: '0 auto', padding: '110px 24px 100px', color: 'var(--color-text-primary, #1e293b)' }}>
+    <div style={{ maxWidth: '1100px', margin: '0 auto', padding: '110px 24px 140px', color: 'var(--color-text-primary, #1e293b)' }}>
       <SEO
         pathname="/client-portal"
         title="Interactive Client Portal Preview | SriVoraTech"

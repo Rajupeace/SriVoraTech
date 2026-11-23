@@ -27,13 +27,13 @@
   align-items: center;
   justify-content: center;
   border-radius: var(--radius-full);
-  box-shadow: 0 8px 24px rgba(15, 23, 42, 0.18);
+  box-shadow: 0 6px 20px rgba(15, 23, 42, 0.15);
   transition: all 350ms var(--ease-out-smooth);
 }
 
 .top-btn {
-  width: 44px;
-  height: 44px;
+  width: 40px;
+  height: 40px;
   background: #ffffff;
   border: 1px solid var(--color-gray-200);
   color: var(--color-gray-700);
@@ -47,11 +47,11 @@
 
 .main-trigger {
   gap: 8px;
-  padding: 12px 20px;
+  padding: 10px 18px;
   background: linear-gradient(135deg, #090d16 0%, #1e293b 100%);
   color: #ffffff;
   border: 1px solid rgba(255, 255, 255, 0.15);
-  font-size: 14px;
+  font-size: 13.5px;
   font-weight: 700;
   cursor: pointer;
 }

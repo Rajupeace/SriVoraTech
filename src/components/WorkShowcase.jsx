@@ -798,9 +798,9 @@ function WorkCard({ work, idx, onSelect }) {
             rel="noopener noreferrer"
             style={{ fontSize: '11.5px', color: '#0067f4', fontWeight: '600', display: 'inline-flex', alignItems: 'center', gap: '4px' }}
             onClick={(e) => e.stopPropagation()}
-            title="Open Live Application"
+            title={work.status === 'Prototype' || (work.statusTag && work.statusTag.toLowerCase().includes('prototype')) ? "Open Interactive Prototype" : "Open Live Application"}
           >
-            <Globe size={12} /> Live Site ↗
+            <Globe size={12} /> {work.status === 'Prototype' || (work.statusTag && work.statusTag.toLowerCase().includes('prototype')) ? 'Prototype ↗' : 'Live Site ↗'}
           </a>
         )}
       </div>
@@ -851,7 +851,11 @@ function WorkCard({ work, idx, onSelect }) {
             className="work-direct-live-btn"
             onClick={(e) => e.stopPropagation()}
           >
-            Launch Live Site <ExternalLink size={14} />
+            {work.status === 'Prototype' || (work.statusTag && work.statusTag.toLowerCase().includes('prototype')) ? (
+              <>Launch Prototype <ExternalLink size={14} /></>
+            ) : (
+              <>Launch Live Site <ExternalLink size={14} /></>
+            )}
           </a>
         )}
       </div>

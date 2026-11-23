@@ -27,14 +27,9 @@ const ReactLogo = ({ size = 24 }) => (
 
 const NextLogo = ({ size = 24 }) => (
   <svg width={size} height={size} viewBox="0 0 180 180" fill="none">
-    <mask id="next-mask" maskUnits="userSpaceOnUse" x="0" y="0" width="180" height="180">
-      <circle cx="90" cy="90" r="90" fill="#000"/>
-    </mask>
-    <g mask="url(#next-mask)">
-      <circle cx="90" cy="90" r="90" fill="#0f172a"/>
-      <path d="M149.508 157.438L69.102 54H54V125.973H66.602V69.754L139.73 164.717C143.142 162.464 146.417 159.986 149.508 157.438Z" fill="url(#next-grad)"/>
-      <rect x="114" y="54" width="12" height="72" fill="#fff"/>
-    </g>
+    <circle cx="90" cy="90" r="90" fill="#0f172a"/>
+    <path d="M149.508 157.438L69.102 54H54V125.973H66.602V69.754L139.73 164.717C143.142 162.464 146.417 159.986 149.508 157.438Z" fill="url(#next-grad)"/>
+    <rect x="114" y="54" width="12" height="72" fill="#fff"/>
     <defs>
       <linearGradient id="next-grad" x1="109" y1="116.5" x2="144.5" y2="160.5" gradientUnits="userSpaceOnUse">
         <stop stopColor="#fff"/>
@@ -183,6 +178,17 @@ const technologies = [
     useCase: 'Rapid Responsive UI & Mobile Layouts',
     tags: ['Responsive Design', 'Utility Classes', 'Design Tokens'],
   },
+  {
+    id: 'react-native',
+    name: 'React Native',
+    category: 'frontend',
+    desc: 'Cross-platform mobile applications for iOS and Android sharing a unified enterprise TypeScript codebase.',
+    Logo: ReactLogo,
+    color: '#0284c7',
+    tier: 'Mobile Engineering',
+    useCase: 'iOS & Android Hybrid Apps',
+    tags: ['Cross-Platform', 'Native Modules', 'Fast Refresh'],
+  },
 
   // Backend & APIs
   {
@@ -207,6 +213,17 @@ const technologies = [
     useCase: 'Machine Learning Pipelines & AI Agents',
     tags: ['Async Python', 'Pydantic Types', 'Swagger Docs'],
   },
+  {
+    id: 'nestjs',
+    name: 'NestJS & GraphQL',
+    category: 'backend',
+    desc: 'Progressive TypeScript framework for modular enterprise microservices and type-safe APIs.',
+    Logo: TSLogo,
+    color: '#e0234e',
+    tier: 'Enterprise Backend',
+    useCase: 'Scalable Microservices & GraphQL APIs',
+    tags: ['Dependency Injection', 'GraphQL', 'Microservices'],
+  },
 
   // Cloud & DevOps
   {
@@ -230,6 +247,17 @@ const technologies = [
     tier: 'Containerization',
     useCase: 'Reproducible Deployments & Microservices',
     tags: ['Container Images', 'Docker Compose', 'CI/CD Ready'],
+  },
+  {
+    id: 'github-actions',
+    name: 'CI/CD & GitHub Actions',
+    category: 'cloud',
+    desc: 'Automated test execution, linting, Docker builds, and zero-downtime deployment pipelines.',
+    Logo: DockerLogo,
+    color: '#2088ff',
+    tier: 'DevOps Automation',
+    useCase: 'Continuous Delivery & Automated Testing',
+    tags: ['Automated Testing', 'Docker Builds', 'Zero-Downtime'],
   },
 
   // AI & Data

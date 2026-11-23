@@ -550,7 +550,8 @@
   scroll-behavior: smooth;
   scroll-snap-type: x mandatory;
   -webkit-overflow-scrolling: touch;
-  padding: 10px 4px 16px;
+  padding: 10px 16px 24px;
+  margin-bottom: 24px;
   scrollbar-width: thin;
   scrollbar-color: var(--color-gray-300) transparent;
 }

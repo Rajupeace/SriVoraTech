@@ -1,6 +1,6 @@
 import React from 'react'
 import SEO from './SEO'
-import { Shield, ArrowLeft, Mail, CheckCircle2, Lock, Eye, FileText, Globe, Database } from 'lucide-react'
+import { Shield, ShieldCheck, ArrowLeft, Mail, CheckCircle2, Lock, Eye, FileText, Globe, Database } from 'lucide-react'
 import { COMPANY_CONFIG } from '../config/company'
 
 export default function PrivacyPolicyPage({ onBack, onNavigate }) {

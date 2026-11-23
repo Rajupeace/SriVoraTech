@@ -45,10 +45,7 @@ export default function HTMLSitemap({ onNavigate }) {
         { name: 'All Services', path: '/services' },
         { name: 'Case Studies & Works', path: '/case-studies' },
         { name: 'Pricing & Estimator', path: '/pricing' },
-        { name: 'Careers & Open Roles', path: '/careers' },
-        { name: 'Technical Blog', path: '/blog' },
-        { name: 'Contact Us', path: '/contact' },
-        { name: 'SEO Audit Dashboard', path: '/seo-dashboard' }
+        { name: 'Careers & Open Roles', path: '/careers' }
       ]
     },
     {
@@ -65,18 +62,23 @@ export default function HTMLSitemap({ onNavigate }) {
       ]
     },
     {
-      title: 'Legal & Client Hub',
+      title: 'Client Hub & Resources',
       icon: Scale,
       links: [
-        { name: 'Privacy Policy', path: '/privacy' },
-        { name: 'Terms of Service', path: '/terms' },
-        { name: 'Client Portal & Milestone Tracker', path: '/client-portal' }
+        { name: 'Client Portal & Milestone Tracker', path: '/client-portal' },
+        { name: 'Technical Engineering Blog', path: '/blog' },
+        { name: 'Contact Us', path: '/contact' },
+        { name: 'SEO Audit Dashboard', path: '/seo-dashboard' },
+        { name: 'Schedule Discovery Call', path: '/#contact' },
+        { name: 'Engineering Direct Support', path: '/client-portal' }
       ]
     },
     {
-      title: 'LLM & Search Machine Index Files',
+      title: 'Legal & Search Machine Index Files',
       icon: Server,
       links: [
+        { name: 'Privacy Policy', path: '/privacy' },
+        { name: 'Terms of Service', path: '/terms' },
         { name: 'XML Sitemap Index (sitemap.xml)', path: '/sitemap.xml', external: true },
         { name: 'Robots.txt Directives', path: '/robots.txt', external: true },
         { name: 'LLMs Summary (llms.txt)', path: '/llms.txt', external: true },
@@ -108,11 +110,11 @@ export default function HTMLSitemap({ onNavigate }) {
         </p>
       </div>
 
-      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(240px, 1fr))', gap: '24px', alignItems: 'start' }}>
+      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(240px, 1fr))', gap: '24px', alignItems: 'stretch' }}>
         {categories.map((cat, idx) => {
           const Icon = cat.icon
           return (
-            <div key={idx} style={{ background: '#ffffff', border: '1px solid var(--color-gray-200, #e2e8f0)', borderRadius: '16px', padding: '24px', boxShadow: '0 4px 20px rgba(15, 23, 42, 0.05)' }}>
+            <div key={idx} style={{ background: '#ffffff', border: '1px solid var(--color-gray-200, #e2e8f0)', borderRadius: '16px', padding: '24px', boxShadow: '0 4px 20px rgba(15, 23, 42, 0.05)', display: 'flex', flexDirection: 'column', height: '100%' }}>
               <div style={{ display: 'flex', alignItems: 'center', gap: '10px', marginBottom: '18px', minHeight: '44px' }}>
                 <div style={{ width: '36px', height: '36px', borderRadius: '8px', background: 'rgba(0, 103, 244, 0.1)', color: '#0067f4', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
                   <Icon size={18} />

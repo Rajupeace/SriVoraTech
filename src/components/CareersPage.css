@@ -169,13 +169,13 @@
 }
 
 .tab-btn.active {
-  background: #151619;
+  background: #0067f4;
   color: #ffffff;
-  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.12);
+  box-shadow: 0 4px 16px rgba(0, 103, 244, 0.28);
 }
 
 .tab-btn.active .tab-icon {
-  color: #38bdf8;
+  color: #ffffff;
 }
 
 /* ── Form Card ── */
